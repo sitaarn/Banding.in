@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="page-animate">
+
+<div class="top-menu">
+    <a href="register.html" class="nav-link">Register</a>
+    <a href="#">About Us</a>
+</div>
+
+<div class="auth-card">
+    <div class="user-icon"></div>
+    <h2>SIGN IN</h2>
+
+    <div class="input-group">
+        <input type="email" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" placeholder="Password">
+    </div>
+
+    <button class="glass-btn main-btn">SIGN IN</button>
+
+    <div class="divider">OR LOGIN WITH</div>
+
+    <div class="social-login">
+        <button class="social-btn"><i class="fas fa-envelope"></i></button>
+        <button class="social-btn"><i class="fab fa-google"></i></button>
+        <button class="social-btn"><i class="fab fa-facebook-f"></i></button>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = this.href;
+        }, 300);
+    });
+});
+</script>
+
+</body>
+</html>
