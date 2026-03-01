@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body class="page-animate">
+
+<div class="top-menu">
+    <a href="login.html" class="nav-link">Login</a>
+    <a href="#">About Us</a>
+</div>
+
+<div class="auth-card">
+    <div class="user-icon"></div>
+    <h2>CREATE ACCOUNT</h2>
+
+    <div class="input-group">
+        <input type="text" placeholder="User Name">
+    </div>
+
+    <div class="input-group">
+        <input type="email" placeholder="Email">
+    </div>
+
+    <div class="input-group">
+        <input type="password" placeholder="Password">
+    </div>
+
+    <button class="glass-btn main-btn">REGISTER</button>
+</div>
+
+<script>
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = this.href;
+        }, 300);
+    });
+});
+</script>
+
+</body>
+</html>
