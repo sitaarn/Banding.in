@@ -104,7 +104,7 @@
   <nav>
     <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
     <div class="nav-links">
-      <button class="nav-btn" onclick="goToSearch()">Login</button>
+      <button class="nav-btn" onclick="goToLogin()">Login</button>
       <button class="nav-btn">About Us</button>
     </div>
   </nav>
@@ -166,6 +166,9 @@
     const mockData={platforms:{tokopedia:{color:'#42b549',label:'Tokopedia'},shopee:{color:'#ee4d2d',label:'Shopee'},lazada:{color:'#0f146b',label:'Lazada'},blibli:{color:'#0095d9',label:'Blibli'}},products:[{name:'iPhone 15',prices:{tokopedia:12999000,shopee:12749000,lazada:12899000,blibli:13100000}},{name:'Samsung Galaxy',prices:{tokopedia:8499000,shopee:8299000,lazada:8350000,blibli:8600000}},{name:'Nike Air Max',prices:{tokopedia:1850000,shopee:1799000,lazada:1920000,blibli:1875000}},{name:'Laptop Asus',prices:{tokopedia:9999000,shopee:9750000,lazada:9850000,blibli:10200000}},{name:'AirPods Pro',prices:{tokopedia:3499000,shopee:3299000,lazada:3350000,blibli:3600000}},{name:'Xiaomi Redmi',prices:{tokopedia:2199000,shopee:2099000,lazada:2150000,blibli:2299000}},{name:'Tas Ransel',prices:{tokopedia:350000,shopee:299000,lazada:320000,blibli:375000}},{name:'PS5',prices:{tokopedia:8999000,shopee:8799000,lazada:8850000,blibli:9100000}}]};
     function doSearch(){const query=document.getElementById('searchInput').value.trim();if(!query)return;const area=document.getElementById('resultsArea');const ms=document.getElementById('mostSearched');ms.style.display='none';area.style.display='flex';area.innerHTML='<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';setTimeout(()=>{const ap=[...document.querySelectorAll('.pf-btn[data-platform!="all"].active')].map(b=>b.dataset.platform);if(!ap.length){area.innerHTML='<div style="text-align:center;color:rgba(58,80,104,.5);font-size:.82rem;">Pilih minimal satu platform dulu ya 😊</div>';return;}const match=mockData.products.find(p=>p.name.toLowerCase().includes(query.toLowerCase()))||mockData.products[0];const entries=ap.map(p=>({platform:p,price:match.prices[p]})).sort((a,b)=>a.price-b.price);const minPrice=entries[0].price;area.innerHTML=`<div class="results-grid">${entries.map(e=>`<div class="result-card"><div class="result-left"><span class="result-platform" style="background:${mockData.platforms[e.platform].color}">${mockData.platforms[e.platform].label}</span><span class="result-name">${match.name}</span></div><div style="display:flex;align-items:center"><span class="result-price ${e.price===minPrice?'cheapest':''}"">Rp ${e.price.toLocaleString('id-ID')}</span>${e.price===minPrice?'<span class="badge-cheapest">TERMURAH</span>':''}</div></div>`).join('')}</div>`;},900);}
     document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('search').classList.contains('hidden'))doSearch();});
+    function goToLogin(){
+  window.location.href = "login.html";
+}
   </script>
 </body>
 </html>
