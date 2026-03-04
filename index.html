@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us — Banding.in</title>
+  <title>Banding.in — Find Your Best Prices</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,7 +11,7 @@
       --text-dark: #1e2d3a; --text-mid: #3a5068; --text-soft: #5a7a90;
       --blue: #4a7fc1; --teal: #5bbcb8;
     }
-    html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; overflow: hidden; }
     .bg { position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#c8dce8 0%,#a0c8d4 40%,#88bcc8 70%,#7ab0c4 100%); }
     .bg::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 20% 80%,rgba(91,188,184,.28) 0%,transparent 70%),radial-gradient(ellipse 500px 400px at 80% 20%,rgba(74,127,193,.22) 0%,transparent 70%),radial-gradient(ellipse 400px 300px at 60% 70%,rgba(255,255,255,.15) 0%,transparent 60%); }
     .blobs{position:fixed;inset:0;z-index:1;pointer-events:none;}
@@ -32,10 +32,8 @@
     @keyframes floatOrb{0%,100%{transform:translateY(0);opacity:.6;}50%{transform:translateY(-18px);opacity:1;}}
     .grid-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:60px 60px;}
 
-    /* NAV */
     nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;}
-    .nav-brand{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-dark);opacity:.7;text-decoration:none;}
-    .nav-brand em{font-style:italic;}
+    .nav-brand{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-dark);opacity:.7;}
     .nav-links{display:flex;gap:10px;align-items:center;}
     .nav-btn{padding:7px 20px;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.25);color:var(--text-dark);backdrop-filter:blur(8px);transition:all .2s;letter-spacing:.03em;text-decoration:none;display:inline-block;}
     .nav-btn:hover{background:rgba(255,255,255,.45);}
@@ -49,8 +47,6 @@
     .user-online{width:6px;height:6px;border-radius:50%;background:#2a9d8f;flex-shrink:0;}
     .user-chevron{font-size:.6rem;color:var(--text-soft);margin-left:2px;transition:transform .2s;}
     .user-chip-wrap.open .user-chevron{transform:rotate(180deg);}
-
-    /* DROPDOWN */
     .user-dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:180px;background:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.85);border-radius:14px;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(74,127,193,.18);padding:8px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease;}
     .user-chip-wrap.open .user-dropdown{opacity:1;pointer-events:all;transform:translateY(0);}
     .dropdown-info{padding:10px 12px 8px;border-bottom:1px solid rgba(58,80,104,.1);margin-bottom:6px;}
@@ -62,44 +58,23 @@
     .dropdown-item.logout:hover{background:rgba(224,82,82,.08);}
     .dropdown-icon{font-size:.85rem;}
 
-    /* MAIN */
-    main{position:relative;z-index:10;max-width:700px;margin:0 auto;padding:120px 24px 80px;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-
-    .hero{text-align:center;margin-bottom:56px;animation:fadeUp .7s ease both;}
-    .hero-label{display:inline-block;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;padding:5px 14px;border-radius:999px;background:rgba(91,188,184,.15);border:1px solid rgba(91,188,184,.3);}
-    .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,2.8rem);color:var(--text-dark);line-height:1.2;margin-bottom:16px;}
-    .hero-title em{font-style:italic;color:var(--blue);}
-    .hero-sub{font-size:.92rem;color:var(--text-soft);font-weight:300;line-height:1.75;max-width:460px;margin:0 auto;}
-
-    .story{padding:28px 32px;border-radius:20px;background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.55);backdrop-filter:blur(14px);margin-bottom:20px;animation:fadeUp .7s .1s ease both;}
-    .story-label{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(58,80,104,.45);margin-bottom:12px;}
-    .story-text{font-size:.88rem;color:var(--text-mid);line-height:1.85;font-weight:300;}
-    .story-text+.story-text{margin-top:12px;}
-
-    .features{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
-    .feat{padding:20px 18px;border-radius:16px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5);backdrop-filter:blur(10px);transition:all .25s;animation:fadeUp .7s ease both;}
-    .feat:nth-child(2){animation-delay:.05s;}
-    .feat:nth-child(3){animation-delay:.1s;}
-    .feat:hover{background:rgba(255,255,255,.4);transform:translateY(-3px);}
-    .feat-icon{font-size:1.4rem;margin-bottom:10px;}
-    .feat-title{font-size:.82rem;font-weight:600;color:var(--text-dark);margin-bottom:5px;}
-    .feat-desc{font-size:.74rem;color:var(--text-soft);line-height:1.6;font-weight:300;}
-
-    .team-section{margin-bottom:28px;animation:fadeUp .7s .2s ease both;}
-    .section-label{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(58,80,104,.45);margin-bottom:16px;}
-    .team-row{display:flex;gap:10px;flex-wrap:wrap;}
-    .team-card{flex:1;min-width:130px;padding:18px 16px;border-radius:16px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5);backdrop-filter:blur(10px);text-align:center;transition:all .25s;}
-    .team-card:hover{background:rgba(255,255,255,.42);transform:translateY(-3px);}
-    .team-ava{width:40px;height:40px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
-    .team-name{font-size:.82rem;font-weight:500;color:var(--text-dark);}
-    .team-role{font-size:.68rem;color:var(--text-soft);margin-top:2px;}
-
-    .cta-row{display:flex;gap:10px;justify-content:center;animation:fadeUp .7s .3s ease both;}
-    .btn-dark{padding:11px 28px;border-radius:999px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;text-decoration:none;display:inline-block;}
-    .btn-dark:hover{background:var(--blue);}
-    .btn-ghost{padding:11px 28px;border-radius:999px;background:rgba(255,255,255,.3);color:var(--text-dark);border:1.5px solid rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;backdrop-filter:blur(8px);text-decoration:none;display:inline-block;}
-    .btn-ghost:hover{background:rgba(255,255,255,.5);}
+    /* LANDING */
+    .page{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;}
+    .landing-center{display:flex;flex-direction:column;align-items:center;gap:28px;animation:fadeUp .9s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+    .platform-pills{display:flex;gap:10px;animation:fadeUp .9s .1s ease both;}
+    .pill{padding:6px 14px;border-radius:999px;font-size:.72rem;font-weight:500;letter-spacing:.04em;background:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.5);color:var(--text-mid);backdrop-filter:blur(6px);}
+    .main-card{position:relative;padding:34px 58px;border-radius:24px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.2);backdrop-filter:blur(16px);cursor:pointer;transition:all .3s ease;box-shadow:0 8px 40px rgba(74,127,193,.15),inset 0 1px 0 rgba(255,255,255,.5);animation:fadeUp .9s .2s ease both;}
+    .main-card:hover{background:rgba(255,255,255,.32);box-shadow:0 16px 60px rgba(74,127,193,.25),inset 0 1px 0 rgba(255,255,255,.6);transform:translateY(-3px);}
+    .main-card::after{content:'Klik untuk mulai →';position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-size:.72rem;color:rgba(58,80,104,.6);white-space:nowrap;letter-spacing:.05em;font-weight:400;}
+    .brand-name{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--text-dark);letter-spacing:-.01em;line-height:1;}
+    .brand-name em{font-style:italic;color:var(--blue);}
+    .tagline{font-size:.88rem;color:var(--text-soft);font-weight:300;letter-spacing:.08em;text-align:center;animation:fadeUp .9s .35s ease both;}
+    .stats-row{display:flex;gap:32px;animation:fadeUp .9s .45s ease both;}
+    .stat{text-align:center;}
+    .stat-number{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-dark);line-height:1;}
+    .stat-label{font-size:.7rem;color:var(--text-soft);letter-spacing:.06em;margin-top:3px;}
+    .stat-divider{width:1px;background:rgba(58,80,104,.2);align-self:stretch;}
   </style>
 </head>
 <body>
@@ -109,74 +84,30 @@
   <div class="grid-overlay"></div>
 
   <nav>
-    <a class="nav-brand" href="index.html">Banding<em>.in</em></a>
+    <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
     <div class="nav-links" id="navLinks">
       <!-- diisi script -->
     </div>
   </nav>
 
-  <main>
-    <div class="hero">
-      <span class="hero-label">About Us</span>
-      <h1 class="hero-title">Capek buka <em>10 tab</em><br>cuma buat cek harga?</h1>
-      <p class="hero-sub">Kami juga. Makanya kita bikin Banding.in — biar kamu bisa cek semua platform sekaligus, langsung ketemu yang paling murah.</p>
-    </div>
-
-    <div class="story">
-      <div class="story-label">Cerita di baliknya</div>
-      <p class="story-text">Awalnya cuma frustrasi biasa. Mau beli sesuatu di Shopee, eh ternyata di Tokopedia lebih murah. Sudah pindah ke Tokopedia, temen bilang ada yang lebih murah lagi di Lazada. Drama banget.</p>
-      <p class="story-text">Akhirnya kita duduk bareng dan bikin solusinya sendiri. Banding.in lahir dari kebutuhan nyata — bukan dari deck presentasi atau riset pasar yang panjang. Just a bunch of people yang males boros waktu dan uang.</p>
-    </div>
-
-    <div class="features">
-      <div class="feat">
-        <div class="feat-icon">⚡</div>
-        <div class="feat-title">Satu cari, semua keluar</div>
-        <div class="feat-desc">Tokopedia, Shopee, Lazada, Blibli — langsung keliatan semua harganya.</div>
+  <div class="page" id="landing">
+    <div class="landing-center">
+      <div class="platform-pills">
+        <span class="pill">Tokopedia</span><span class="pill">Shopee</span><span class="pill">Lazada</span><span class="pill">Blibli</span>
       </div>
-      <div class="feat">
-        <div class="feat-icon">📍</div>
-        <div class="feat-title">Langsung ketahuan yang termurah</div>
-        <div class="feat-desc">Nggak perlu ngitung sendiri, kita yang tandain mana yang paling worth it.</div>
+      <div class="main-card" onclick="goToSearch()">
+        <div class="brand-name">Banding<em>.in</em></div>
       </div>
-      <div class="feat">
-        <div class="feat-icon">🆓</div>
-        <div class="feat-title">Gratis, titik</div>
-        <div class="feat-desc">Nggak ada premium plan, nggak ada iklan nyebelin. Gratis selamanya.</div>
+      <p class="tagline">find your best prices.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-number">4</div><div class="stat-label">PLATFORM</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="stat-number">Real‑time</div><div class="stat-label">PERBANDINGAN</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="stat-number">Gratis</div><div class="stat-label">SELAMANYA</div></div>
       </div>
     </div>
-
-    <div class="team-section">
-      <div class="section-label">Yang bikin ini</div>
-      <div class="team-row">
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(74,127,193,.15)">🧑‍💻</div>
-          <div class="team-name">Ardi</div>
-          <div class="team-role">Code & kopi</div>
-        </div>
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(91,188,184,.15)">👩‍🎨</div>
-          <div class="team-name">Sari</div>
-          <div class="team-role">Desain & vibe</div>
-        </div>
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(42,157,143,.15)">🧑‍🔧</div>
-          <div class="team-name">Bimo</div>
-          <div class="team-role">Data & server</div>
-        </div>
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(233,196,106,.15)">👩‍💼</div>
-          <div class="team-name">Nadia</div>
-          <div class="team-role">Arah & strategi</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="cta-row">
-      <a class="btn-dark" href="search.html">Cobain sekarang</a>
-      <a class="btn-ghost" href="mailto:halo@banding.in">Hubungi kami</a>
-    </div>
-  </main>
+  </div>
 
   <script>
     const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
@@ -196,7 +127,7 @@
             <div class="user-online"></div>
             <span class="user-chevron">▼</span>
           </div>
-          <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown">
             <div class="dropdown-info">
               <div class="dropdown-info-name">${userName}</div>
               <div class="dropdown-info-label">Sedang login ✓</div>
@@ -206,12 +137,12 @@
             </div>
           </div>
         </div>
-        <a class="nav-btn" href="search.html">Home</a>
+        <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
       `;
     } else {
       navLinks.innerHTML = `
-        <a class="nav-btn" href="login.html">Login</a>
-        <a class="nav-btn" href="index.html">Home</a>
+        <button class="nav-btn" onclick="window.location.href='login.html'">Login</button>
+        <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
       `;
     }
 
@@ -223,13 +154,21 @@
       localStorage.removeItem('loggedIn');
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
-      window.location.href = 'index.html';
+      window.location.reload();
     }
 
     document.addEventListener('click', function(e) {
       const wrap = document.getElementById('userChipWrap');
       if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
     });
+
+    function goToSearch() {
+      if (isLoggedIn) {
+        window.location.href = 'search-after-login.html';
+      } else {
+        window.location.href = 'search.html';
+      }
+    }
   </script>
 </body>
 </html>
