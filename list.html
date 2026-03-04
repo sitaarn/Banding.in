@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banding.in — Find Your Best Prices</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --text-dark: #1e2d3a; --text-mid: #3a5068; --text-soft: #5a7a90;
+      --blue: #4a7fc1; --teal: #5bbcb8;
+    }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; overflow: hidden; }
+    .bg { position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#c8dce8 0%,#a0c8d4 40%,#88bcc8 70%,#7ab0c4 100%); }
+    .bg::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 20% 80%,rgba(91,188,184,.28) 0%,transparent 70%),radial-gradient(ellipse 500px 400px at 80% 20%,rgba(74,127,193,.22) 0%,transparent 70%),radial-gradient(ellipse 400px 300px at 60% 70%,rgba(255,255,255,.15) 0%,transparent 60%); }
+    .blobs{position:fixed;inset:0;z-index:1;pointer-events:none;}
+    .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:drift linear infinite;}
+    .blob-1{width:420px;height:420px;background:radial-gradient(circle,#5bbcb8,transparent);top:-100px;left:-80px;animation-duration:18s;}
+    .blob-2{width:300px;height:300px;background:radial-gradient(circle,#4a7fc1,transparent);bottom:-60px;right:-60px;animation-duration:22s;animation-delay:-8s;}
+    .blob-3{width:200px;height:200px;background:radial-gradient(circle,#fff,transparent);top:40%;left:70%;animation-duration:15s;animation-delay:-4s;opacity:.18;}
+    @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,25px) scale(.95);}}
+    .orbs{position:fixed;inset:0;z-index:1;pointer-events:none;}
+    .orb{position:absolute;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);animation:floatOrb ease-in-out infinite;}
+    .orb-1{width:14px;height:14px;top:18%;left:15%;animation-duration:6s;}
+    .orb-2{width:8px;height:8px;top:70%;left:25%;animation-duration:8s;animation-delay:-2s;}
+    .orb-3{width:20px;height:20px;top:30%;left:75%;animation-duration:7s;animation-delay:-1s;}
+    .orb-4{width:10px;height:10px;top:80%;left:65%;animation-duration:9s;animation-delay:-3s;}
+    .orb-5{width:6px;height:6px;top:55%;left:85%;animation-duration:5s;animation-delay:-.5s;}
+    .orb-6{width:16px;height:16px;top:12%;left:55%;animation-duration:10s;animation-delay:-4s;}
+    .orb-7{width:9px;height:9px;top:88%;left:40%;animation-duration:7.5s;animation-delay:-1.5s;}
+    @keyframes floatOrb{0%,100%{transform:translateY(0);opacity:.6;}50%{transform:translateY(-18px);opacity:1;}}
+    .grid-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:60px 60px;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;}
+    .nav-brand{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-dark);opacity:.7;}
+    .nav-links{display:flex;gap:10px;}
+    .nav-btn{padding:7px 20px;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.25);color:var(--text-dark);backdrop-filter:blur(8px);transition:all .2s;letter-spacing:.03em;}
+    .nav-btn:hover{background:rgba(255,255,255,.45);}
+    .page{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease,transform .5s ease;}
+    .page.hidden{opacity:0;pointer-events:none;transform:scale(.97);}
+
+    /* ── LANDING ── */
+    .landing-center{display:flex;flex-direction:column;align-items:center;gap:28px;animation:fadeUp .9s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+    .platform-pills{display:flex;gap:10px;animation:fadeUp .9s .1s ease both;}
+    .pill{padding:6px 14px;border-radius:999px;font-size:.72rem;font-weight:500;letter-spacing:.04em;background:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.5);color:var(--text-mid);backdrop-filter:blur(6px);}
+    .main-card{position:relative;padding:34px 58px;border-radius:24px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.2);backdrop-filter:blur(16px);cursor:pointer;transition:all .3s ease;box-shadow:0 8px 40px rgba(74,127,193,.15),inset 0 1px 0 rgba(255,255,255,.5);animation:fadeUp .9s .2s ease both;}
+    .main-card:hover{background:rgba(255,255,255,.32);box-shadow:0 16px 60px rgba(74,127,193,.25),inset 0 1px 0 rgba(255,255,255,.6);transform:translateY(-3px);}
+    .main-card::after{content:'Klik untuk mulai →';position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-size:.72rem;color:rgba(58,80,104,.6);white-space:nowrap;letter-spacing:.05em;font-weight:400;}
+    .brand-name{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--text-dark);letter-spacing:-.01em;line-height:1;}
+    .brand-name em{font-style:italic;color:var(--blue);}
+    .tagline{font-size:.88rem;color:var(--text-soft);font-weight:300;letter-spacing:.08em;text-align:center;animation:fadeUp .9s .35s ease both;}
+    .stats-row{display:flex;gap:32px;animation:fadeUp .9s .45s ease both;}
+    .stat{text-align:center;}
+    .stat-number{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-dark);line-height:1;}
+    .stat-label{font-size:.7rem;color:var(--text-soft);letter-spacing:.06em;margin-top:3px;}
+    .stat-divider{width:1px;background:rgba(58,80,104,.2);align-self:stretch;}
+
+    /* ── SEARCH ── */
+    .search-wrapper{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:680px;padding:0 24px;animation:fadeUp .6s ease both;}
+    .search-brand{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text-dark);cursor:pointer;transition:opacity .2s;}
+    .search-brand:hover{opacity:.7;}
+    .search-brand em{font-style:italic;color:var(--blue);}
+    .search-box{width:100%;background:rgba(255,255,255,.5);border:1.5px solid rgba(255,255,255,.7);border-radius:18px;backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(74,127,193,.15),inset 0 1px 0 rgba(255,255,255,.8);padding:6px 6px 6px 22px;display:flex;align-items:center;gap:12px;}
+    .search-input{flex:1;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--text-dark);font-weight:400;}
+    .search-input::placeholder{color:rgba(58,80,104,.35);}
+    .search-btn{padding:12px 26px;border-radius:12px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+    .search-btn:hover{background:var(--blue);transform:scale(1.02);}
+    .platform-filter{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+    .pf-btn{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.25);backdrop-filter:blur(8px);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+    .pf-btn.active{background:rgba(255,255,255,.6);border-color:rgba(255,255,255,.9);color:var(--text-dark);box-shadow:0 2px 12px rgba(74,127,193,.15);}
+    .pf-btn:hover{background:rgba(255,255,255,.45);}
+    .pf-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .most-searched{width:100%;}
+    .most-searched-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;color:rgba(58,80,104,.5);text-transform:uppercase;margin-bottom:12px;}
+    .most-searched-tags{display:flex;flex-wrap:wrap;gap:8px;}
+    .ms-tag{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(8px);color:var(--text-mid);font-size:.78rem;font-weight:400;letter-spacing:.02em;cursor:pointer;transition:all .2s;user-select:none;}
+    .ms-tag:hover{background:rgba(255,255,255,.55);color:var(--text-dark);transform:translateY(-2px);box-shadow:0 4px 16px rgba(74,127,193,.12);}
+    .ms-tag-icon{font-size:.82rem;}
+    .results-area{width:100%;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5);border-radius:18px;backdrop-filter:blur(14px);padding:24px;display:flex;align-items:center;justify-content:center;}
+    .results-grid{display:flex;flex-direction:column;gap:10px;width:100%;}
+    .result-card{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(255,255,255,.5);border-radius:12px;border:1px solid rgba(255,255,255,.7);animation:fadeUp .4s ease both;}
+    .result-card:nth-child(2){animation-delay:.05s;}
+    .result-card:nth-child(3){animation-delay:.1s;}
+    .result-card:nth-child(4){animation-delay:.15s;}
+    .result-left{display:flex;align-items:center;gap:12px;}
+    .result-platform{font-size:.68rem;font-weight:600;letter-spacing:.06em;padding:4px 10px;border-radius:999px;color:white;}
+    .result-name{font-size:.85rem;color:var(--text-dark);}
+    .result-price{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-dark);}
+    .result-price.cheapest{color:#2a9d8f;}
+    .badge-cheapest{font-size:.62rem;background:#2a9d8f;color:white;padding:2px 7px;border-radius:999px;margin-left:6px;font-weight:600;}
+    .loading-dots{display:flex;gap:8px;justify-content:center;}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(58,80,104,.35);animation:bounce 1.2s ease infinite;}
+    .dot:nth-child(2){animation-delay:.2s;}
+    .dot:nth-child(3){animation-delay:.4s;}
+    @keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.4;}40%{transform:scale(1.2);opacity:1;}}
+
+    /* LISTING PAGE*/
+    #listing {
+      align-items: flex-start;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-top: 72px;
+    }
+    /* scrollbar */
+    #listing::-webkit-scrollbar { width: 6px; }
+    #listing::-webkit-scrollbar-track { background: transparent; }
+    #listing::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 999px; }
+
+    .listing-shell {
+      display: flex;
+      gap: 18px;
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 28px 60px;
+      margin: 0 auto;
+      animation: fadeUp .5s ease both;
+    }
+
+    /* ── Sidebar ── */
+    .ls-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+    }
+
+    .ls-panel {
+      background: rgba(255,255,255,.22);
+      border: 1.5px solid rgba(255,255,255,.5);
+      border-radius: 18px;
+      backdrop-filter: blur(16px);
+      padding: 18px;
+    }
+
+    .ls-panel-title {
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(58,80,104,.5);
+      margin-bottom: 13px;
+    }
+
+    /* Platform toggles */
+    .ls-platform-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      border: 1.5px solid transparent;
+      transition: all .18s;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+    .ls-platform-row:last-child { margin-bottom: 0; }
+    .ls-platform-row:hover { background: rgba(255,255,255,.3); }
+    .ls-platform-row.on {
+      background: rgba(255,255,255,.5);
+      border-color: rgba(255,255,255,.8);
+      color: var(--text-dark);
+      box-shadow: 0 2px 10px rgba(74,127,193,.12);
+    }
+    .ls-pf-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .ls-check {
+      margin-left: auto;
+      width: 16px; height: 16px;
+      border-radius: 5px;
+      border: 1.5px solid rgba(58,80,104,.25);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .18s; flex-shrink: 0;
+    }
+    .ls-platform-row.on .ls-check {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    .ls-check-icon { display: none; }
+    .ls-platform-row.on .ls-check-icon { display: block; }
+
+    /* Sort */
+    .ls-sort-row {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px; border-radius: 10px;
+      cursor: pointer; font-size: .78rem; color: var(--text-mid);
+      border: 1.5px solid transparent; transition: all .18s;
+      margin-bottom: 3px; user-select: none;
+    }
+    .ls-sort-row:last-child { margin-bottom: 0; }
+    .ls-sort-row:hover { background: rgba(255,255,255,.3); color: var(--text-dark); }
+    .ls-sort-row.on {
+      background: rgba(255,255,255,.5);
+      border-color: rgba(255,255,255,.8);
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+    .ls-sort-icon { font-size: .78rem; width: 16px; text-align: center; }
+
+    /* ── PRICE RANGE SLIDER ── */
+    .price-range-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+    .price-display {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .price-display-val {
+      font-family: 'DM Serif Display', serif;
+      font-size: .95rem;
+      color: var(--text-dark);
+      background: rgba(255,255,255,.45);
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 8px;
+      padding: 4px 10px;
+      min-width: 82px;
+      text-align: center;
+    }
+    .price-display-sep { font-size: .7rem; color: var(--text-soft); }
+
+    /* dual range track */
+    .slider-track-wrap {
+      position: relative;
+      height: 28px;
+      display: flex;
+      align-items: center;
+    }
+    .slider-track-bg {
+      position: absolute;
+      left: 0; right: 0;
+      height: 4px;
+      background: rgba(255,255,255,.3);
+      border-radius: 999px;
+    }
+    .slider-track-fill {
+      position: absolute;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .slider-range {
+      position: absolute;
+      left: 0; right: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      pointer-events: none;
+      outline: none;
+    }
+    .slider-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2.5px solid var(--blue);
+      box-shadow: 0 2px 8px rgba(74,127,193,.35);
+      cursor: pointer;
+      pointer-events: all;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .slider-range::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 3px 14px rgba(74,127,193,.5);
+    }
+    .slider-range::-moz-range-thumb {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2.5px solid var(--blue);
+      box-shadow: 0 2px 8px rgba(74,127,193,.35);
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+    .apply-price-btn {
+      width: 100%;
+      padding: 9px;
+      background: var(--text-dark);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: background .2s, transform .15s;
+    }
+    .apply-price-btn:hover { background: var(--blue); transform: scale(1.01); }
+
+    /* ── Main listing area ── */
+    .ls-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+
+    .ls-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ls-query-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .ls-query-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--text-dark);
+      letter-spacing: -.01em;
+    }
+    .ls-query-meta {
+      font-size: .72rem;
+      color: var(--text-soft);
+      letter-spacing: .03em;
+    }
+    .ls-query-meta strong { color: var(--text-mid); font-weight: 600; }
+
+    .ls-back-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 16px;
+      background: rgba(255,255,255,.3);
+      border: 1.5px solid rgba(255,255,255,.6);
+      border-radius: 999px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem; font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all .2s;
+    }
+    .ls-back-btn:hover { background: rgba(255,255,255,.5); color: var(--text-dark); }
+
+    /* ── Product cards ── */
+    .ls-card {
+      background: rgba(255,255,255,.28);
+      border: 1.5px solid rgba(255,255,255,.55);
+      border-radius: 18px;
+      backdrop-filter: blur(16px);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all .25s ease;
+      animation: fadeUp .4s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .ls-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .ls-card:hover {
+      background: rgba(255,255,255,.45);
+      border-color: rgba(255,255,255,.85);
+      box-shadow: 0 8px 30px rgba(74,127,193,.18);
+      transform: translateY(-2px);
+    }
+    .ls-card:nth-child(1) { animation-delay: .04s; }
+    .ls-card:nth-child(2) { animation-delay: .08s; }
+    .ls-card:nth-child(3) { animation-delay: .12s; }
+    .ls-card:nth-child(4) { animation-delay: .16s; }
+    .ls-card:nth-child(5) { animation-delay: .20s; }
+
+    .ls-card-rank {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: rgba(58,80,104,.3);
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .ls-card-rank.gold { color: var(--blue); }
+
+    .ls-card-img {
+      width: 72px; height: 72px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.4);
+      border: 1px solid rgba(255,255,255,.6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .ls-card-img img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+
+    .ls-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+
+    .ls-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .ls-card-name {
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      line-height: 1.35;
+    }
+    .ls-card-sub { font-size: .72rem; color: var(--text-soft); font-weight: 300; margin-top: 1px; }
+
+    .ls-card-badges { display: flex; gap: 5px; flex-shrink: 0; }
+    .ls-badge {
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .ls-badge-cheap { background: rgba(42,157,143,.18); color: #2a9d8f; border: 1px solid rgba(42,157,143,.3); }
+    .ls-badge-new   { background: rgba(74,127,193,.18); color: var(--blue); border: 1px solid rgba(74,127,193,.3); }
+
+    .ls-platform-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .68rem;
+      color: var(--text-soft);
+    }
+    .ls-pf-logo {
+      width: 13px; height: 13px;
+      border-radius: 4px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+
+    /* mini comparison bars */
+    .ls-minibars {
+      display: flex;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .ls-minibar { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .ls-minibar-lbl { font-size: .58rem; color: rgba(58,80,104,.45); letter-spacing: .02em; }
+    .ls-minibar-track {
+      height: 3px;
+      background: rgba(255,255,255,.35);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .ls-minibar-fill { height: 100%; border-radius: 999px; background: rgba(255,255,255,.4); }
+    .ls-minibar-fill.best { background: linear-gradient(90deg, #2a9d8f, #5bbcb8); }
+
+    .ls-card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+    .ls-card-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      letter-spacing: -.01em;
+    }
+    .ls-card-price.best { color: #2a9d8f; }
+    .ls-card-orig {
+      font-size: .7rem;
+      color: rgba(58,80,104,.4);
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+    .ls-card-disc {
+      font-size: .62rem;
+      font-weight: 600;
+      color: #e76f51;
+      background: rgba(231,111,81,.12);
+      border: 1px solid rgba(231,111,81,.2);
+      border-radius: 999px;
+      padding: 2px 6px;
+      margin-left: 5px;
+    }
+
+    .ls-card-actions { display: flex; gap: 7px; align-items: center; }
+    .ls-btn-save {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      border: 1.5px solid rgba(255,255,255,.55);
+      background: rgba(255,255,255,.25);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: rgba(58,80,104,.5);
+      font-size: .88rem;
+      transition: all .18s;
+    }
+    .ls-btn-save:hover, .ls-btn-save.saved {
+      background: rgba(231,111,81,.15);
+      border-color: rgba(231,111,81,.4);
+      color: #e76f51;
+    }
+    .ls-btn-visit {
+      display: flex; align-items: center; gap: 5px;
+      padding: 7px 14px;
+      background: var(--text-dark);
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: background .2s, transform .15s;
+      text-decoration: none;
+    }
+    .ls-btn-visit:hover { background: var(--blue); transform: scale(1.02); }
+
+    /* no results */
+    .ls-empty {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+      gap: 10px;
+    }
+    .ls-empty-icon { font-size: 2.5rem; opacity: .5; }
+    .ls-empty-text { font-size: .88rem; color: var(--text-soft); }
+
+    /* ── Login Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(20,35,50,.45);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(28px);
+      border: 1.5px solid rgba(255,255,255,.85);
+      border-radius: 24px;
+      padding: 36px 32px 28px;
+      width: min(400px, 90vw);
+      box-shadow: 0 24px 60px rgba(30,45,58,.18);
+      text-align: center;
+      transform: scale(.94) translateY(10px);
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .modal-overlay.visible .modal-box { transform: scale(1) translateY(0); }
+
+    .modal-icon {
+      font-size: 2.4rem; margin-bottom: 14px;
+      animation: pulse 2s infinite;
+    }
+    .modal-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem; color: var(--text-dark);
+      letter-spacing: -.01em; margin-bottom: 8px;
+    }
+    .modal-sub {
+      font-size: .82rem; color: var(--text-soft);
+      line-height: 1.55; margin-bottom: 24px;
+    }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn-login {
+      flex: 1; padding: 12px;
+      background: var(--text-dark); color: white;
+      border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: background .2s;
+    }
+    .modal-btn-login:hover { background: var(--blue); }
+    .modal-btn-register {
+      flex: 1; padding: 12px;
+      background: rgba(255,255,255,.6);
+      border: 1.5px solid rgba(255,255,255,.9);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem; font-weight: 600;
+      color: var(--text-mid); cursor: pointer;
+      transition: all .2s;
+    }
+    .modal-btn-register:hover { background: rgba(255,255,255,.85); color: var(--text-dark); }
+    .modal-close {
+      display: block; margin-top: 14px;
+      font-size: .8rem; font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer; transition: all .2s;
+      background: none; border: none;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: .02em;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(58,80,104,.35);
+    }
+    .modal-close:hover {
+      color: var(--text-dark);
+      text-decoration-color: var(--text-dark);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(42,157,143,.92);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 10px 22px; border-radius: 999px;
+      font-size: .78rem; font-weight: 500;
+      letter-spacing: .03em;
+      box-shadow: 0 8px 24px rgba(42,157,143,.3);
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease, transform .3s ease;
+      z-index: 400; white-space: nowrap;
+    }
+    .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* compare tray */
+    .ls-compare-tray {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(30,45,58,.92);
+      backdrop-filter: blur(20px);
+      color: white;
+      border-radius: 16px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.25);
+      font-size: .78rem;
+      z-index: 200;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .ls-compare-tray.visible { transform: translateX(-50%) translateY(0); }
+    .ls-tray-chips { display: flex; gap: 6px; }
+    .ls-tray-chip {
+      background: rgba(255,255,255,.12);
+      border-radius: 7px;
+      padding: 3px 10px;
+      font-size: .68rem;
+    }
+    .ls-tray-btn {
+      background: var(--blue);
+      color: white; border: none;
+      border-radius: 9px;
+      padding: 7px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem; font-weight: 600;
+      cursor: pointer; transition: opacity .2s;
+    }
+    .ls-tray-btn:hover { opacity: .82; }
+    .ls-tray-clear {
+      font-size: .68rem;
+      color: rgba(255,255,255,.4);
+      cursor: pointer;
+    }
+    .ls-tray-clear:hover { color: white; }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="orbs">
+    <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+    <div class="orb orb-4"></div><div class="orb orb-5"></div><div class="orb orb-6"></div>
+    <div class="orb orb-7"></div>
+  </div>
+  <div class="grid-overlay"></div>
+
+  <nav>
+    <span class="nav-brand" onclick="goToLanding()" style="cursor:pointer">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="goToSearch()">Login</button>
+      <button class="nav-btn">About Us</button>
+    </div>
+  </nav>
+
+  <!-- ════ LANDING ════ -->
+  <div class="page" id="landing">
+    <div class="landing-center">
+      <div class="platform-pills">
+        <span class="pill">Tokopedia</span>
+        <span class="pill">Shopee</span>
+        <span class="pill">Lazada</span>
+        <span class="pill">Blibli</span>
+      </div>
+      <div class="main-card" onclick="goToSearch()">
+        <div class="brand-name">Banding<em>.in</em></div>
+      </div>
+      <p class="tagline">find your best prices.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-number">4</div><div class="stat-label">PLATFORM</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="stat-number">Real‑time</div><div class="stat-label">PERBANDINGAN</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="stat-number">Gratis</div><div class="stat-label">SELAMANYA</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SEARCH ════ -->
+  <div class="page hidden" id="search">
+    <div class="search-wrapper">
+      <div class="search-brand" onclick="goToLanding()">Banding<em>.in</em></div>
+      <div class="search-box">
+        <input class="search-input" id="searchInput" type="text" placeholder="Search and Compare Prices" />
+        <button class="search-btn" onclick="doSearch()">Bandingkan</button>
+      </div>
+      <div class="platform-filter">
+        <button class="pf-btn active" data-platform="all"       onclick="togglePlatform(this)"><span class="pf-dot" style="background:#888"></span> Semua</button>
+        <button class="pf-btn active" data-platform="tokopedia" onclick="togglePlatform(this)"><span class="pf-dot" style="background:#42b549"></span> Tokopedia</button>
+        <button class="pf-btn active" data-platform="shopee"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#ee4d2d"></span> Shopee</button>
+        <button class="pf-btn active" data-platform="lazada"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#0f146b"></span> Lazada</button>
+        <button class="pf-btn active" data-platform="blibli"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#0095d9"></span> Blibli</button>
+      </div>
+      <div class="most-searched" id="mostSearched">
+        <div class="most-searched-label">🔥 Most Searched Product</div>
+        <div class="most-searched-tags">
+          <span class="ms-tag" onclick="fillSearch('iPhone 15')"><span class="ms-tag-icon">📱</span> iPhone 15</span>
+          <span class="ms-tag" onclick="fillSearch('Samsung Galaxy S24')"><span class="ms-tag-icon">📱</span> Samsung Galaxy S24</span>
+          <span class="ms-tag" onclick="fillSearch('Nike Air Max')"><span class="ms-tag-icon">👟</span> Nike Air Max</span>
+          <span class="ms-tag" onclick="fillSearch('Laptop Asus')"><span class="ms-tag-icon">💻</span> Laptop Asus</span>
+          <span class="ms-tag" onclick="fillSearch('AirPods Pro')"><span class="ms-tag-icon">🎧</span> AirPods Pro</span>
+          <span class="ms-tag" onclick="fillSearch('Xiaomi Redmi')"><span class="ms-tag-icon">📱</span> Xiaomi Redmi</span>
+          <span class="ms-tag" onclick="fillSearch('Tas Ransel')"><span class="ms-tag-icon">🎒</span> Tas Ransel</span>
+          <span class="ms-tag" onclick="fillSearch('PS5')"><span class="ms-tag-icon">🎮</span> PS5</span>
+        </div>
+      </div>
+      <div class="results-area" id="resultsArea" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ════ LISTING ════ -->
+  <div class="page hidden" id="listing">
+    <div class="listing-shell">
+
+      <!-- Sidebar -->
+      <aside class="ls-sidebar">
+
+        <!-- Platform filter -->
+        <div class="ls-panel">
+          <div class="ls-panel-title">Platform</div>
+          <div class="ls-platform-row on" data-pf="tokopedia" onclick="lsTogglePf(this)">
+            <div class="ls-pf-dot" style="background:#42b549"></div>
+            Tokopedia
+            <div class="ls-check">
+              <svg class="ls-check-icon" width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="ls-platform-row on" data-pf="shopee" onclick="lsTogglePf(this)">
+            <div class="ls-pf-dot" style="background:#ee4d2d"></div>
+            Shopee
+            <div class="ls-check">
+              <svg class="ls-check-icon" width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="ls-platform-row on" data-pf="lazada" onclick="lsTogglePf(this)">
+            <div class="ls-pf-dot" style="background:#0f146b"></div>
+            Lazada
+            <div class="ls-check">
+              <svg class="ls-check-icon" width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="ls-platform-row on" data-pf="blibli" onclick="lsTogglePf(this)">
+            <div class="ls-pf-dot" style="background:#0095d9"></div>
+            Blibli
+            <div class="ls-check">
+              <svg class="ls-check-icon" width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sort -->
+        <div class="ls-panel">
+          <div class="ls-panel-title">Urutkan</div>
+          <div class="ls-sort-row on" data-sort="cheapest" onclick="lsSetSort(this)">
+            <span class="ls-sort-icon">↑</span> Termurah
+          </div>
+          <div class="ls-sort-row" data-sort="expensive" onclick="lsSetSort(this)">
+            <span class="ls-sort-icon">↓</span> Termahal
+          </div>
+          <div class="ls-sort-row" data-sort="newest" onclick="lsSetSort(this)">
+            <span class="ls-sort-icon">✦</span> Terbaru
+          </div>
+          <div class="ls-sort-row" data-sort="rating" onclick="lsSetSort(this)">
+            <span class="ls-sort-icon">★</span> Rating
+          </div>
+        </div>
+
+        <!-- Price range slider -->
+        <div class="ls-panel">
+          <div class="ls-panel-title">Rentang Harga</div>
+          <div class="price-range-wrap">
+            <div class="price-display">
+              <div class="price-display-val" id="priceMinLabel">Rp 0</div>
+              <div class="price-display-sep">—</div>
+              <div class="price-display-val" id="priceMaxLabel">Rp 25jt</div>
+            </div>
+            <div class="slider-track-wrap">
+              <div class="slider-track-bg"></div>
+              <div class="slider-track-fill" id="sliderFill"></div>
+              <input class="slider-range" id="sliderMin" type="range" min="0" max="25000000" step="100000" value="0"/>
+              <input class="slider-range" id="sliderMax" type="range" min="0" max="25000000" step="100000" value="25000000"/>
+            </div>
+            <button class="apply-price-btn" onclick="lsApplyPrice()">Terapkan Filter</button>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Main -->
+      <div class="ls-main" id="lsMain">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- Compare tray -->
+    <div class="ls-compare-tray" id="compareTray">
+      <span style="opacity:.45;font-size:.68rem">Bandingkan:</span>
+      <div class="ls-tray-chips" id="trayChips"></div>
+      <button class="ls-tray-btn">Bandingkan →</button>
+      <span class="ls-tray-clear" onclick="clearCompare()">Hapus</span>
+    </div>
+  </div>
+
+  <script>
+  /* ═══════════════════════════════════════
+     ORIGINAL LOGIC (untouched)
+  ═══════════════════════════════════════ */
+  function goToSearch(){
+    document.getElementById('landing').classList.add('hidden');
+    document.getElementById('search').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('searchInput').focus(),300);
+  }
+  function goToLanding(){
+    document.getElementById('search').classList.add('hidden');
+    document.getElementById('listing').classList.add('hidden');
+    document.getElementById('landing').classList.remove('hidden');
+    document.getElementById('resultsArea').style.display='none';
+    document.getElementById('mostSearched').style.display='block';
+    document.getElementById('searchInput').value='';
+  }
+  function togglePlatform(btn){
+    const p=btn.dataset.platform;
+    if(p==='all'){
+      document.querySelectorAll('.pf-btn').forEach(b=>b.classList.add('active'));
+    } else {
+      btn.classList.toggle('active');
+      const pfBtns=[...document.querySelectorAll('.pf-btn')].filter(b=>b.dataset.platform!=='all');
+      const allActive=pfBtns.every(b=>b.classList.contains('active'));
+      document.querySelector('.pf-btn[data-platform="all"]').classList.toggle('active',allActive);
+    }
+  }
+  function fillSearch(q){
+    document.getElementById('searchInput').value=q;
+    doSearch();
+  }
+
+  const mockData = {
+    platforms: {
+      tokopedia:{color:'#42b549',label:'Tokopedia'},
+      shopee:   {color:'#ee4d2d',label:'Shopee'},
+      lazada:   {color:'#0f146b',label:'Lazada'},
+      blibli:   {color:'#0095d9',label:'Blibli'}
+    },
+    products: [
+      {name:'iPhone 15',         emoji:'📱', sub:'128GB · Garansi Resmi', prices:{tokopedia:12999000,shopee:12749000,lazada:12899000,blibli:13100000}},
+      {name:'Samsung Galaxy S24',emoji:'📱', sub:'256GB · Official Store', prices:{tokopedia:8499000,shopee:8299000,lazada:8350000,blibli:8600000}},
+      {name:'Nike Air Max',      emoji:'👟', sub:'Size 40-44 · Original', prices:{tokopedia:1850000,shopee:1799000,lazada:1920000,blibli:1875000}},
+      {name:'Laptop Asus ROG',   emoji:'💻', sub:'16GB RAM · RTX 4060',  prices:{tokopedia:9999000,shopee:9750000,lazada:9850000,blibli:10200000}},
+      {name:'AirPods Pro',       emoji:'🎧', sub:'2nd Gen · MagSafe',    prices:{tokopedia:3499000,shopee:3299000,lazada:3350000,blibli:3600000}},
+      {name:'Xiaomi Redmi Note', emoji:'📱', sub:'8GB/256GB · NFC',      prices:{tokopedia:2199000,shopee:2099000,lazada:2150000,blibli:2299000}},
+      {name:'Tas Ransel',        emoji:'🎒', sub:'Anti-Air · 40L',       prices:{tokopedia:350000, shopee:299000, lazada:320000, blibli:375000}},
+      {name:'PS5 Slim',          emoji:'🎮', sub:'Disc Edition · Baru',  prices:{tokopedia:8999000,shopee:8799000,lazada:8850000,blibli:9100000}}
+    ]
+  };
+
+  function doSearch(){
+    const query=document.getElementById('searchInput').value.trim();
+    if(!query)return;
+    const area=document.getElementById('resultsArea');
+    const ms=document.getElementById('mostSearched');
+    ms.style.display='none';
+    area.style.display='flex';
+    area.innerHTML='<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+
+    setTimeout(()=>{
+      const ap=[...document.querySelectorAll('.pf-btn.active')].map(b=>b.dataset.platform).filter(p=>p!=='all');
+      if(!ap.length){
+        area.innerHTML='<div style="text-align:center;color:rgba(58,80,104,.5);font-size:.82rem;">Pilih minimal satu platform dulu ya 😊</div>';
+        return;
+      }
+      const match=mockData.products.find(p=>p.name.toLowerCase().includes(query.toLowerCase()))||mockData.products[0];
+      const entries=ap.map(p=>({platform:p,price:match.prices[p]})).sort((a,b)=>a.price-b.price);
+      const minPrice=entries[0].price;
+      area.innerHTML=`<div class="results-grid">${entries.map(e=>`
+        <div class="result-card">
+          <div class="result-left">
+            <span class="result-platform" style="background:${mockData.platforms[e.platform].color}">${mockData.platforms[e.platform].label}</span>
+            <span class="result-name">${match.name}</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="result-price ${e.price===minPrice?'cheapest':''}">Rp ${e.price.toLocaleString('id-ID')}</span>
+            ${e.price===minPrice?'<span class="badge-cheapest">TERMURAH</span>':''}
+          </div>
+        </div>`).join('')}
+        <div style="text-align:right;padding-top:8px;">
+          <button onclick="goToListing('${match.name}')" style="padding:8px 20px;border-radius:999px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--blue)'" onmouseout="this.style.background='var(--text-dark)'">Lihat Semua Hasil →</button>
+        </div>
+      </div>`;
+    },900);
+  }
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!document.getElementById('search').classList.contains('hidden')) doSearch();
+  });
+
+  /* ═══════════════════════════════════════
+     LISTING PAGE LOGIC
+  ═══════════════════════════════════════ */
+  let lsCurrentQuery = '';
+  let lsSort = 'cheapest';
+  let lsActivePf = ['tokopedia','shopee','lazada','blibli'];
+  let lsPriceMin = 0;
+  let lsPriceMax = 25000000;
+  let lsCompare = [];
+  let isLoggedIn = false; // auth state
+
+  const PF_COLORS = {tokopedia:'#42b549',shopee:'#ee4d2d',lazada:'#0f146b',blibli:'#0095d9'};
+  const PF_LABELS = {tokopedia:'Tokopedia',shopee:'Shopee',lazada:'Lazada',blibli:'Blibli'};
+
+  // Stable per-platform ratings (won't re-randomize on re-render)
+  const PF_RATINGS = {
+    tokopedia: { star: '4.9', count: '2.341' },
+    shopee:    { star: '4.8', count: '1.820' },
+    lazada:    { star: '4.7', count: '956'   },
+    blibli:    { star: '4.6', count: '612'   }
+  };
+
+  function goToListing(query){
+    lsCurrentQuery = query;
+    document.getElementById('search').classList.add('hidden');
+    document.getElementById('listing').classList.remove('hidden');
+    renderListing();
+    initSlider();
+  }
+
+  function renderListing(){
+    const main = document.getElementById('lsMain');
+
+    // Find the best matching product
+    const match = mockData.products.find(p =>
+      p.name.toLowerCase().includes(lsCurrentQuery.toLowerCase())
+    ) || mockData.products[0];
+
+    // One card per active platform — same product, different store
+    let items = lsActivePf.map(pf => ({
+      ...match,
+      platform: pf,
+      price: match.prices[pf]
+    }));
+
+    // Price range filter
+    items = items.filter(i => i.price >= lsPriceMin && i.price <= lsPriceMax);
+
+    // Sort
+    if(lsSort === 'cheapest')  items.sort((a,b) => a.price - b.price);
+    if(lsSort === 'expensive') items.sort((a,b) => b.price - a.price);
+    if(lsSort === 'newest')    items.sort((a,b) => a.price - b.price); // stable fallback
+    if(lsSort === 'rating') {
+      const rOrder = {tokopedia:0, shopee:1, lazada:2, blibli:3};
+      items.sort((a,b) => rOrder[a.platform] - rOrder[b.platform]);
+    }
+
+    if(!items.length){
+      main.innerHTML = `
+        <div class="ls-topbar">
+          <div class="ls-query-info">
+            <div class="ls-query-title">${match.name}</div>
+            <div class="ls-query-meta">Tidak ada hasil yang sesuai filter harga</div>
+          </div>
+          <button class="ls-back-btn" onclick="backToSearch()">← Cari lagi</button>
+        </div>
+        <div class="ls-empty">
+          <div class="ls-empty-icon">🔍</div>
+          <div class="ls-empty-text">Tidak ada produk di rentang harga ini.<br>Coba sesuaikan filter harga.</div>
+        </div>`;
+      return;
+    }
+
+    const allPrices = lsActivePf.map(pf => match.prices[pf]);
+    const globalMin = Math.min(...allPrices);
+    const globalMax = Math.max(...allPrices);
+
+    const cards = items.map((item, idx) => {
+      const isCheapest = item.price === globalMin;
+      const origPrice  = Math.round(item.price * 1.12);
+      const rating     = PF_RATINGS[item.platform];
+
+      // Mini bars — always show all 4 platforms for price context
+      const bars = ['tokopedia','shopee','lazada','blibli'].map(pf => {
+        const pct    = Math.round((match.prices[pf] / globalMax) * 100);
+        const isBest = match.prices[pf] === globalMin;
+        return `<div class="ls-minibar">
+          <div class="ls-minibar-lbl">${PF_LABELS[pf].slice(0,4)}</div>
+          <div class="ls-minibar-track">
+            <div class="ls-minibar-fill ${isBest?'best':''}" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="ls-card">
+          <div class="ls-card-rank ${idx===0?'gold':''}">${idx+1}</div>
+          <div class="ls-card-img">${item.emoji}</div>
+          <div class="ls-card-body">
+            <div class="ls-card-top">
+              <div>
+                <div class="ls-card-name">${item.name}</div>
+                <div class="ls-card-sub">${item.sub}</div>
+              </div>
+              <div class="ls-card-badges">
+                ${isCheapest ? '<span class="ls-badge ls-badge-cheap">Termurah</span>' : ''}
+              </div>
+            </div>
+            <div class="ls-platform-tag">
+              <div class="ls-pf-logo" style="background:${PF_COLORS[item.platform]}">${item.platform[0].toUpperCase()}</div>
+              ${PF_LABELS[item.platform]} · ⭐ ${rating.star} (${rating.count})
+            </div>
+            <div class="ls-minibars">${bars}</div>
+            <div class="ls-card-foot">
+              <div>
+                <span class="ls-card-price ${isCheapest?'best':''}">Rp ${item.price.toLocaleString('id-ID')}</span>
+                ${isCheapest ? `<span class="ls-card-orig">Rp ${origPrice.toLocaleString('id-ID')}</span><span class="ls-card-disc">-12%</span>` : ''}
+              </div>
+              <div class="ls-card-actions">
+                <button class="ls-btn-save" onclick="toggleSave(this,event)" title="Simpan ke Favorit">♡</button>
+                <a class="ls-btn-visit" href="#" onclick="return false">Kunjungi →</a>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    main.innerHTML = `
+      <div class="ls-topbar">
+        <div class="ls-query-info">
+          <div class="ls-query-title">${match.name}</div>
+          <div class="ls-query-meta">
+            <strong>${items.length} hasil</strong> dari ${items.length} platform · diperbarui barusan
+          </div>
+        </div>
+        <button class="ls-back-btn" onclick="backToSearch()">← Cari lagi</button>
+      </div>
+      ${cards}`;
+  }
+
+  function backToSearch(){
+    document.getElementById('listing').classList.add('hidden');
+    document.getElementById('search').classList.remove('hidden');
+  }
+
+  function lsTogglePf(row){
+    const pf = row.dataset.pf;
+    row.classList.toggle('on');
+    if(row.classList.contains('on')){
+      if(!lsActivePf.includes(pf)) lsActivePf.push(pf);
+    } else {
+      lsActivePf = lsActivePf.filter(p => p !== pf);
+    }
+    renderListing();
+  }
+
+  function lsSetSort(row){
+    document.querySelectorAll('.ls-sort-row').forEach(r => r.classList.remove('on'));
+    row.classList.add('on');
+    lsSort = row.dataset.sort;
+    renderListing();
+  }
+
+  /* ── Favorite / Save — cek login dulu ── */
+  function toggleSave(btn, e){
+    e.stopPropagation();
+    if(!isLoggedIn){
+      showLoginModal();
+      return;
+    }
+    btn.classList.toggle('saved');
+    btn.textContent = btn.classList.contains('saved') ? '♥' : '♡';
+  }
+
+  /* ── Login Modal ── */
+  function showLoginModal(){
+    document.getElementById('loginModal').classList.add('visible');
+  }
+  function closeLoginModal(){
+    document.getElementById('loginModal').classList.remove('visible');
+  }
+  function mockLogin(){
+    isLoggedIn = true;
+    closeLoginModal();
+    // show a quick toast
+    const t = document.getElementById('toast');
+    t.classList.add('visible');
+    setTimeout(()=> t.classList.remove('visible'), 2500);
+  }
+
+  /* ── Price Range Slider ── */
+  function initSlider(){
+    const min = document.getElementById('sliderMin');
+    const max = document.getElementById('sliderMax');
+    updateSlider();
+    min.addEventListener('input', ()=>{
+      if(+min.value > +max.value - 500000) min.value = +max.value - 500000;
+      updateSlider();
+    });
+    max.addEventListener('input', ()=>{
+      if(+max.value < +min.value + 500000) max.value = +min.value + 500000;
+      updateSlider();
+    });
+  }
+
+  function updateSlider(){
+    const min = document.getElementById('sliderMin');
+    const max = document.getElementById('sliderMax');
+    const fill = document.getElementById('sliderFill');
+    const minLbl = document.getElementById('priceMinLabel');
+    const maxLbl = document.getElementById('priceMaxLabel');
+    const total = 25000000;
+    const pctL = (+min.value / total) * 100;
+    const pctR = (+max.value / total) * 100;
+    fill.style.left  = pctL + '%';
+    fill.style.width = (pctR - pctL) + '%';
+    minLbl.textContent = formatPrice(+min.value);
+    maxLbl.textContent = formatPrice(+max.value);
+  }
+
+  function formatPrice(v){
+    if(v === 0) return 'Rp 0';
+    if(v >= 1000000) return 'Rp ' + (v/1000000).toFixed(v%1000000===0?0:1) + 'jt';
+    return 'Rp ' + (v/1000).toFixed(0) + 'rb';
+  }
+
+  function lsApplyPrice(){
+    lsPriceMin = +document.getElementById('sliderMin').value;
+    lsPriceMax = +document.getElementById('sliderMax').value;
+    renderListing();
+  }
+
+  /* ── Compare tray ── */
+  function clearCompare(){
+    lsCompare = [];
+    document.getElementById('compareTray').classList.remove('visible');
+  }
+  </script>
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal" onclick="if(event.target===this)closeLoginModal()">
+    <div class="modal-box">
+      <div class="modal-icon">🔖</div>
+      <div class="modal-title">Simpan ke Favorit</div>
+      <div class="modal-sub">
+        Masuk atau buat akun gratis untuk menyimpan produk favorit dan mendapatkan notifikasi turun harga.
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn-login" onclick="mockLogin()">Masuk</button>
+        <button class="modal-btn-register" onclick="mockLogin()">Daftar Gratis</button>
+      </div>
+      <button class="modal-close" onclick="closeLoginModal()">Lanjutkan tanpa akun</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">✓ Login berhasil! Sekarang kamu bisa simpan favorit.</div>
+
+</body>
+</html>
