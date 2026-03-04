@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banding.in — Find Your Best Prices</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --text-dark: #1e2d3a; --text-mid: #3a5068; --text-soft: #5a7a90;
+      --blue: #4a7fc1; --teal: #5bbcb8;
+    }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; overflow: hidden; }
+    .bg { position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#c8dce8 0%,#a0c8d4 40%,#88bcc8 70%,#7ab0c4 100%); }
+    .bg::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 20% 80%,rgba(91,188,184,.28) 0%,transparent 70%),radial-gradient(ellipse 500px 400px at 80% 20%,rgba(74,127,193,.22) 0%,transparent 70%),radial-gradient(ellipse 400px 300px at 60% 70%,rgba(255,255,255,.15) 0%,transparent 60%); }
+    .blobs{position:fixed;inset:0;z-index:1;pointer-events:none;}
+    .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:drift linear infinite;}
+    .blob-1{width:420px;height:420px;background:radial-gradient(circle,#5bbcb8,transparent);top:-100px;left:-80px;animation-duration:18s;}
+    .blob-2{width:300px;height:300px;background:radial-gradient(circle,#4a7fc1,transparent);bottom:-60px;right:-60px;animation-duration:22s;animation-delay:-8s;}
+    .blob-3{width:200px;height:200px;background:radial-gradient(circle,#fff,transparent);top:40%;left:70%;animation-duration:15s;animation-delay:-4s;opacity:.18;}
+    @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,25px) scale(.95);}}
+    .orbs{position:fixed;inset:0;z-index:1;pointer-events:none;}
+    .orb{position:absolute;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);animation:floatOrb ease-in-out infinite;}
+    .orb-1{width:14px;height:14px;top:18%;left:15%;animation-duration:6s;}
+    .orb-2{width:8px;height:8px;top:70%;left:25%;animation-duration:8s;animation-delay:-2s;}
+    .orb-3{width:20px;height:20px;top:30%;left:75%;animation-duration:7s;animation-delay:-1s;}
+    .orb-4{width:10px;height:10px;top:80%;left:65%;animation-duration:9s;animation-delay:-3s;}
+    .orb-5{width:6px;height:6px;top:55%;left:85%;animation-duration:5s;animation-delay:-.5s;}
+    .orb-6{width:16px;height:16px;top:12%;left:55%;animation-duration:10s;animation-delay:-4s;}
+    .orb-7{width:9px;height:9px;top:88%;left:40%;animation-duration:7.5s;animation-delay:-1.5s;}
+    @keyframes floatOrb{0%,100%{transform:translateY(0);opacity:.6;}50%{transform:translateY(-18px);opacity:1;}}
+    .grid-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:60px 60px;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;}
+    .nav-brand{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-dark);opacity:.7;}
+    .nav-links{display:flex;gap:10px;align-items:center;}
+    .nav-btn{padding:7px 20px;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.25);color:var(--text-dark);backdrop-filter:blur(8px);transition:all .2s;letter-spacing:.03em;text-decoration:none;display:inline-block;}
+    .nav-btn:hover{background:rgba(255,255,255,.45);}
+
+    /* USER CHIP */
+    .user-chip-wrap{position:relative;}
+    .user-chip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:999px;background:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(10px);cursor:pointer;transition:background .2s;user-select:none;}
+    .user-chip:hover{background:rgba(255,255,255,.5);}
+    .user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;color:white;flex-shrink:0;}
+    .user-name{font-size:.78rem;font-weight:500;color:var(--text-dark);letter-spacing:.02em;}
+    .user-online{width:6px;height:6px;border-radius:50%;background:#2a9d8f;flex-shrink:0;}
+    .user-chevron{font-size:.6rem;color:var(--text-soft);margin-left:2px;transition:transform .2s;}
+    .user-chip-wrap.open .user-chevron{transform:rotate(180deg);}
+    .user-dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:180px;background:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.85);border-radius:14px;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(74,127,193,.18);padding:8px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease;}
+    .user-chip-wrap.open .user-dropdown{opacity:1;pointer-events:all;transform:translateY(0);}
+    .dropdown-info{padding:10px 12px 8px;border-bottom:1px solid rgba(58,80,104,.1);margin-bottom:6px;}
+    .dropdown-info-name{font-size:.82rem;font-weight:600;color:var(--text-dark);}
+    .dropdown-info-label{font-size:.68rem;color:var(--text-soft);margin-top:1px;letter-spacing:.03em;}
+    .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;font-size:.78rem;font-weight:500;color:var(--text-mid);cursor:pointer;transition:background .15s;}
+    .dropdown-item:hover{background:rgba(255,255,255,.7);}
+    .dropdown-item.logout{color:#e05252;}
+    .dropdown-item.logout:hover{background:rgba(224,82,82,.08);}
+    .dropdown-icon{font-size:.85rem;}
+
+    /* LANDING */
+    .page{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;}
+    .landing-center{display:flex;flex-direction:column;align-items:center;gap:28px;animation:fadeUp .9s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+    .platform-pills{display:flex;gap:10px;animation:fadeUp .9s .1s ease both;}
+    .pill{padding:6px 14px;border-radius:999px;font-size:.72rem;font-weight:500;letter-spacing:.04em;background:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.5);color:var(--text-mid);backdrop-filter:blur(6px);}
+    .main-card{position:relative;padding:34px 58px;border-radius:24px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.2);backdrop-filter:blur(16px);cursor:pointer;transition:all .3s ease;box-shadow:0 8px 40px rgba(74,127,193,.15),inset 0 1px 0 rgba(255,255,255,.5);animation:fadeUp .9s .2s ease both;}
+    .main-card:hover{background:rgba(255,255,255,.32);box-shadow:0 16px 60px rgba(74,127,193,.25),inset 0 1px 0 rgba(255,255,255,.6);transform:translateY(-3px);}
+    .main-card::after{content:'Klik untuk mulai →';position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-size:.72rem;color:rgba(58,80,104,.6);white-space:nowrap;letter-spacing:.05em;font-weight:400;}
+    .brand-name{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--text-dark);letter-spacing:-.01em;line-height:1;}
+    .brand-name em{font-style:italic;color:var(--blue);}
+    .tagline{font-size:.88rem;color:var(--text-soft);font-weight:300;letter-spacing:.08em;text-align:center;animation:fadeUp .9s .35s ease both;}
+    .stats-row{display:flex;gap:32px;animation:fadeUp .9s .45s ease both;}
+    .stat{text-align:center;}
+    .stat-number{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-dark);line-height:1;}
+    .stat-label{font-size:.7rem;color:var(--text-soft);letter-spacing:.06em;margin-top:3px;}
+    .stat-divider{width:1px;background:rgba(58,80,104,.2);align-self:stretch;}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+  <div class="orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div><div class="orb orb-5"></div><div class="orb orb-6"></div><div class="orb orb-7"></div></div>
+  <div class="grid-overlay"></div>
+
+  <nav>
+    <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
+    <div class="nav-links" id="navLinks">
+      <!-- diisi script -->
+    </div>
+  </nav>
+
+  <div class="page" id="landing">
+    <div class="landing-center">
+      <div class="platform-pills">
+        <span class="pill">Tokopedia</span><span class="pill">Shopee</span><span class="pill">Lazada</span><span class="pill">Blibli</span>
+      </div>
+      <div class="main-card" onclick="goToSearch()">
+        <div class="brand-name">Banding<em>.in</em></div>
+      </div>
+      <p class="tagline">find your best prices.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-number">4</div><div class="stat-label">PLATFORM</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="stat-number">Real‑time</div><div class="stat-label">PERBANDINGAN</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><div class="stat-number">Gratis</div><div class="stat-label">SELAMANYA</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    const userName = localStorage.getItem('userName') || '';
+    const navLinks = document.getElementById('navLinks');
+
+    function getInitials(n) {
+      return n.split(' ').slice(0, 2).map(w => w[0].toUpperCase()).join('');
+    }
+
+    if (isLoggedIn && userName) {
+      navLinks.innerHTML = `
+        <div class="user-chip-wrap" id="userChipWrap">
+          <div class="user-chip" onclick="toggleDropdown()">
+            <div class="user-avatar">${getInitials(userName)}</div>
+            <span class="user-name">${userName}</span>
+            <div class="user-online"></div>
+            <span class="user-chevron">▼</span>
+          </div>
+          <div class="user-dropdown">
+            <div class="dropdown-info">
+              <div class="dropdown-info-name">${userName}</div>
+              <div class="dropdown-info-label">Sedang login ✓</div>
+            </div>
+            <div class="dropdown-item logout" onclick="doLogout()">
+              <span class="dropdown-icon">🚪</span> Logout
+            </div>
+          </div>
+        </div>
+        <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
+      `;
+    } else {
+      navLinks.innerHTML = `
+        <button class="nav-btn" onclick="window.location.href='login.html'">Login</button>
+        <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
+      `;
+    }
+
+    function toggleDropdown() {
+      document.getElementById('userChipWrap').classList.toggle('open');
+    }
+
+    function doLogout() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      window.location.reload();
+    }
+
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('userChipWrap');
+      if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+    });
+
+    function goToSearch() {
+      if (isLoggedIn) {
+        window.location.href = 'search-after-login.html';
+      } else {
+        window.location.href = 'search.html';
+      }
+    }
+  </script>
+</body>
+</html>
