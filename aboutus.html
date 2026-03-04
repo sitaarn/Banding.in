@@ -1,235 +1,305 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us — Banding.in</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --text-dark: #1e2d3a; --text-mid: #3a5068; --text-soft: #5a7a90;
-      --blue: #4a7fc1; --teal: #5bbcb8;
-    }
-    html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
-    .bg { position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#c8dce8 0%,#a0c8d4 40%,#88bcc8 70%,#7ab0c4 100%); }
-    .bg::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 20% 80%,rgba(91,188,184,.28) 0%,transparent 70%),radial-gradient(ellipse 500px 400px at 80% 20%,rgba(74,127,193,.22) 0%,transparent 70%),radial-gradient(ellipse 400px 300px at 60% 70%,rgba(255,255,255,.15) 0%,transparent 60%); }
-    .blobs{position:fixed;inset:0;z-index:1;pointer-events:none;}
-    .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:drift linear infinite;}
-    .blob-1{width:420px;height:420px;background:radial-gradient(circle,#5bbcb8,transparent);top:-100px;left:-80px;animation-duration:18s;}
-    .blob-2{width:300px;height:300px;background:radial-gradient(circle,#4a7fc1,transparent);bottom:-60px;right:-60px;animation-duration:22s;animation-delay:-8s;}
-    .blob-3{width:200px;height:200px;background:radial-gradient(circle,#fff,transparent);top:40%;left:70%;animation-duration:15s;animation-delay:-4s;opacity:.18;}
-    @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,25px) scale(.95);}}
-    .orbs{position:fixed;inset:0;z-index:1;pointer-events:none;}
-    .orb{position:absolute;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);animation:floatOrb ease-in-out infinite;}
-    .orb-1{width:14px;height:14px;top:18%;left:15%;animation-duration:6s;}
-    .orb-2{width:8px;height:8px;top:70%;left:25%;animation-duration:8s;animation-delay:-2s;}
-    .orb-3{width:20px;height:20px;top:30%;left:75%;animation-duration:7s;animation-delay:-1s;}
-    .orb-4{width:10px;height:10px;top:80%;left:65%;animation-duration:9s;animation-delay:-3s;}
-    .orb-5{width:6px;height:6px;top:55%;left:85%;animation-duration:5s;animation-delay:-.5s;}
-    .orb-6{width:16px;height:16px;top:12%;left:55%;animation-duration:10s;animation-delay:-4s;}
-    .orb-7{width:9px;height:9px;top:88%;left:40%;animation-duration:7.5s;animation-delay:-1.5s;}
-    @keyframes floatOrb{0%,100%{transform:translateY(0);opacity:.6;}50%{transform:translateY(-18px);opacity:1;}}
-    .grid-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:60px 60px;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banding.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;}
-    .nav-brand{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-dark);opacity:.7;text-decoration:none;}
-    .nav-brand em{font-style:italic;}
-    .nav-links{display:flex;gap:10px;align-items:center;}
-    .nav-btn{padding:7px 20px;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.25);color:var(--text-dark);backdrop-filter:blur(8px);transition:all .2s;letter-spacing:.03em;text-decoration:none;display:inline-block;}
-    .nav-btn:hover{background:rgba(255,255,255,.45);}
+  :root {
+    --teal-light: #b2d8d8;
+    --teal-mid: #7fb8c0;
+    --teal-dark: #4a8fa0;
+    --glass-bg: rgba(255,255,255,0.22);
+    --glass-border: rgba(255,255,255,0.38);
+    --text-dark: #1e2d35;
+    --text-mid: #3a5260;
+    --text-muted: #5a7a88;
+  }
 
-    /* USER CHIP */
-    .user-chip-wrap{position:relative;}
-    .user-chip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:999px;background:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(10px);cursor:pointer;transition:background .2s;user-select:none;}
-    .user-chip:hover{background:rgba(255,255,255,.5);}
-    .user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;color:white;flex-shrink:0;}
-    .user-name{font-size:.78rem;font-weight:500;color:var(--text-dark);letter-spacing:.02em;}
-    .user-online{width:6px;height:6px;border-radius:50%;background:#2a9d8f;flex-shrink:0;}
-    .user-chevron{font-size:.6rem;color:var(--text-soft);margin-left:2px;transition:transform .2s;}
-    .user-chip-wrap.open .user-chevron{transform:rotate(180deg);}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #c8e6e8 0%, #a0cdd4 25%, #7fb8c4 50%, #8ec5cc 75%, #b0d8dc 100%);
+    position: relative;
+    overflow-x: hidden;
+  }
 
-    /* DROPDOWN */
-    .user-dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:180px;background:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.85);border-radius:14px;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(74,127,193,.18);padding:8px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease;}
-    .user-chip-wrap.open .user-dropdown{opacity:1;pointer-events:all;transform:translateY(0);}
-    .dropdown-info{padding:10px 12px 8px;border-bottom:1px solid rgba(58,80,104,.1);margin-bottom:6px;}
-    .dropdown-info-name{font-size:.82rem;font-weight:600;color:var(--text-dark);}
-    .dropdown-info-label{font-size:.68rem;color:var(--text-soft);margin-top:1px;letter-spacing:.03em;}
-    .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;font-size:.78rem;font-weight:500;color:var(--text-mid);cursor:pointer;transition:background .15s;}
-    .dropdown-item:hover{background:rgba(255,255,255,.7);}
-    .dropdown-item.logout{color:#e05252;}
-    .dropdown-item.logout:hover{background:rgba(224,82,82,.08);}
-    .dropdown-icon{font-size:.85rem;}
+  /* Subtle noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
 
-    /* MAIN */
-    main{position:relative;z-index:10;max-width:700px;margin:0 auto;padding:120px 24px 80px;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  /* Floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 400px; height: 400px; background: rgba(255,255,255,0.15); top: -100px; right: -100px; }
+  .orb-2 { width: 300px; height: 300px; background: rgba(100,180,190,0.2); bottom: 100px; left: -80px; }
+  .orb-3 { width: 200px; height: 200px; background: rgba(255,255,255,0.1); top: 50%; left: 30%; }
 
-    .hero{text-align:center;margin-bottom:56px;animation:fadeUp .7s ease both;}
-    .hero-label{display:inline-block;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;padding:5px 14px;border-radius:999px;background:rgba(91,188,184,.15);border:1px solid rgba(91,188,184,.3);}
-    .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,2.8rem);color:var(--text-dark);line-height:1.2;margin-bottom:16px;}
-    .hero-title em{font-style:italic;color:var(--blue);}
-    .hero-sub{font-size:.92rem;color:var(--text-soft);font-weight:300;line-height:1.75;max-width:460px;margin:0 auto;}
+  /* NAV */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+  }
 
-    .story{padding:28px 32px;border-radius:20px;background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.55);backdrop-filter:blur(14px);margin-bottom:20px;animation:fadeUp .7s .1s ease both;}
-    .story-label{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(58,80,104,.45);margin-bottom:12px;}
-    .story-text{font-size:.88rem;color:var(--text-mid);line-height:1.85;font-weight:300;}
-    .story-text+.story-text{margin-top:12px;}
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    letter-spacing: -0.01em;
+  }
+  .logo span { font-style: italic; }
 
-    .features{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
-    .feat{padding:20px 18px;border-radius:16px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5);backdrop-filter:blur(10px);transition:all .25s;animation:fadeUp .7s ease both;}
-    .feat:nth-child(2){animation-delay:.05s;}
-    .feat:nth-child(3){animation-delay:.1s;}
-    .feat:hover{background:rgba(255,255,255,.4);transform:translateY(-3px);}
-    .feat-icon{font-size:1.4rem;margin-bottom:10px;}
-    .feat-title{font-size:.82rem;font-weight:600;color:var(--text-dark);margin-bottom:5px;}
-    .feat-desc{font-size:.74rem;color:var(--text-soft);line-height:1.6;font-weight:300;}
+  .nav-buttons { display: flex; gap: 10px; }
 
-    .team-section{margin-bottom:28px;animation:fadeUp .7s .2s ease both;}
-    .section-label{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(58,80,104,.45);margin-bottom:16px;}
-    .team-row{display:flex;gap:10px;flex-wrap:wrap;}
-    .team-card{flex:1;min-width:130px;padding:18px 16px;border-radius:16px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5);backdrop-filter:blur(10px);text-align:center;transition:all .25s;}
-    .team-card:hover{background:rgba(255,255,255,.42);transform:translateY(-3px);}
-    .team-ava{width:40px;height:40px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
-    .team-name{font-size:.82rem;font-weight:500;color:var(--text-dark);}
-    .team-role{font-size:.68rem;color:var(--text-soft);margin-top:2px;}
+  .nav-btn {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.4); transform: translateY(-1px); }
 
-    .cta-row{display:flex;gap:10px;justify-content:center;animation:fadeUp .7s .3s ease both;}
-    .btn-dark{padding:11px 28px;border-radius:999px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;text-decoration:none;display:inline-block;}
-    .btn-dark:hover{background:var(--blue);}
-    .btn-ghost{padding:11px 28px;border-radius:999px;background:rgba(255,255,255,.3);color:var(--text-dark);border:1.5px solid rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;backdrop-filter:blur(8px);text-decoration:none;display:inline-block;}
-    .btn-ghost:hover{background:rgba(255,255,255,.5);}
-  </style>
+  /* MAIN CONTENT */
+  main {
+    position: relative;
+    z-index: 10;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 30px 0 40px;
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--text-dark);
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal-dark);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-mid);
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* STORY CARD */
+  .story-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 32px 36px;
+    margin-bottom: 24px;
+  }
+
+  .story-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .story-card p {
+    font-size: 0.975rem;
+    color: var(--text-mid);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+  .story-card p + p { margin-top: 16px; }
+
+  /* FEATURE CARDS */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .feature-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: 18px;
+    padding: 24px 22px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.28);
+  }
+
+  .feature-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-desc {
+    font-size: 0.825rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* CTA BUTTONS */
+  .cta-group {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .btn-primary {
+    padding: 14px 32px;
+    border-radius: 999px;
+    background: var(--text-dark);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover { background: #2c4555; transform: translateY(-1px); }
+
+  .btn-secondary {
+    padding: 14px 32px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.3);
+    color: var(--text-dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.45); transform: translateY(-1px); }
+
+  /* Fade in animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeUp 0.6s ease both; }
+  .story-card { animation: fadeUp 0.6s 0.15s ease both; }
+  .features { animation: fadeUp 0.6s 0.3s ease both; }
+  .cta-group { animation: fadeUp 0.6s 0.45s ease both; }
+
+  @media (max-width: 600px) {
+    .features { grid-template-columns: 1fr; }
+    nav { padding: 16px 20px; }
+    .story-card { padding: 24px 22px; }
+  }
+</style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
-  <div class="orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div><div class="orb orb-5"></div><div class="orb orb-6"></div><div class="orb orb-7"></div></div>
-  <div class="grid-overlay"></div>
 
-  <nav>
-    <a class="nav-brand" href="index.html">Banding<em>.in</em></a>
-    <div class="nav-links" id="navLinks">
-      <!-- diisi script -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav>
+  <div class="logo">Banding<span>.in</span></div>
+  <div class="nav-buttons">
+    <button class="nav-btn">Login</button>
+    <button class="nav-btn">Home</button>
+  </div>
+</nav>
+
+<main>
+
+  <section class="hero">
+    <span class="hero-label">Bandingkan harga sekali klik</span>
+    <h1 class="hero-title">Belanja lebih <em>cerdas</em>,<br>bukan lebih keras</h1>
+    <p class="hero-sub">Temukan harga terbaik dari semua platform belanja Indonesia — dalam satu pencarian.</p>
+  </section>
+
+  <div class="story-card">
+    <p class="story-label">About Us</p>
+    <p>Awalnya sih iseng. Capek aja tiap mau beli sesuatu harus buka 4 tab sekaligus, scroll sana scroll sini, terus lupa tadi harganya berapa. Kayak buang-buang waktu padahal niatnya mau hemat.</p>
+    <p>Akhirnya ya udah, kami bikin sendiri aja. Banding.in bukan startup keren dengan investor gede. Cuma sekumpulan orang yang males ribet dan pengen belanja lebih santai.</p>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-title">One search, all platforms</div>
+      <p class="feature-desc">Tokopedia, Shopee, Lazada, Blibli, semua hasil dalam satu pencarian.</p>
     </div>
-  </nav>
-
-  <main>
-    <div class="hero">
-      <span class="hero-label">About Us</span>
-      <h1 class="hero-title">Capek buka <em>10 tab</em><br>cuma buat cek harga?</h1>
-      <p class="hero-sub">Kami juga. Makanya kita bikin Banding.in — biar kamu bisa cek semua platform sekaligus, langsung ketemu yang paling murah.</p>
+    <div class="feature-card">
+      <div class="feature-title">Cheapest, highlighted</div>
+      <p class="feature-desc">Gak perlu hitung-hitungan sendiri. Kami tandain harga terbaik buat kamu.</p>
     </div>
-
-    <div class="story">
-      <div class="story-label">Cerita di baliknya</div>
-      <p class="story-text">Awalnya cuma frustrasi biasa. Mau beli sesuatu di Shopee, eh ternyata di Tokopedia lebih murah. Sudah pindah ke Tokopedia, temen bilang ada yang lebih murah lagi di Lazada. Drama banget.</p>
-      <p class="story-text">Akhirnya kita duduk bareng dan bikin solusinya sendiri. Banding.in lahir dari kebutuhan nyata — bukan dari deck presentasi atau riset pasar yang panjang. Just a bunch of people yang males boros waktu dan uang.</p>
+    <div class="feature-card">
+      <div class="feature-title">Free. Always.</div>
+      <p class="feature-desc">Tanpa langganan premium, tanpa biaya tersembunyi, tanpa iklan mengganggu. Gratis selamanya.</p>
     </div>
+  </div>
 
-    <div class="features">
-      <div class="feat">
-        <div class="feat-icon">⚡</div>
-        <div class="feat-title">Satu cari, semua keluar</div>
-        <div class="feat-desc">Tokopedia, Shopee, Lazada, Blibli — langsung keliatan semua harganya.</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">📍</div>
-        <div class="feat-title">Langsung ketahuan yang termurah</div>
-        <div class="feat-desc">Nggak perlu ngitung sendiri, kita yang tandain mana yang paling worth it.</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">🆓</div>
-        <div class="feat-title">Gratis, titik</div>
-        <div class="feat-desc">Nggak ada premium plan, nggak ada iklan nyebelin. Gratis selamanya.</div>
-      </div>
-    </div>
+  <div class="cta-group">
+    <button class="btn-primary">Try Now</button>
+    <button class="btn-secondary">Contact Us</button>
+  </div>
 
-    <div class="team-section">
-      <div class="section-label">Yang bikin ini</div>
-      <div class="team-row">
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(74,127,193,.15)">🧑‍💻</div>
-          <div class="team-name">Ardi</div>
-          <div class="team-role">Code & kopi</div>
-        </div>
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(91,188,184,.15)">👩‍🎨</div>
-          <div class="team-name">Sari</div>
-          <div class="team-role">Desain & vibe</div>
-        </div>
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(42,157,143,.15)">🧑‍🔧</div>
-          <div class="team-name">Bimo</div>
-          <div class="team-role">Data & server</div>
-        </div>
-        <div class="team-card">
-          <div class="team-ava" style="background:rgba(233,196,106,.15)">👩‍💼</div>
-          <div class="team-name">Nadia</div>
-          <div class="team-role">Arah & strategi</div>
-        </div>
-      </div>
-    </div>
+</main>
 
-    <div class="cta-row">
-      <a class="btn-dark" href="search.html">Cobain sekarang</a>
-      <a class="btn-ghost" href="mailto:halo@banding.in">Hubungi kami</a>
-    </div>
-  </main>
-
-  <script>
-    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
-    const userName = localStorage.getItem('userName') || '';
-    const navLinks = document.getElementById('navLinks');
-
-    function getInitials(n) {
-      return n.split(' ').slice(0, 2).map(w => w[0].toUpperCase()).join('');
-    }
-
-    if (isLoggedIn && userName) {
-      navLinks.innerHTML = `
-        <div class="user-chip-wrap" id="userChipWrap">
-          <div class="user-chip" onclick="toggleDropdown()">
-            <div class="user-avatar">${getInitials(userName)}</div>
-            <span class="user-name">${userName}</span>
-            <div class="user-online"></div>
-            <span class="user-chevron">▼</span>
-          </div>
-          <div class="user-dropdown" id="userDropdown">
-            <div class="dropdown-info">
-              <div class="dropdown-info-name">${userName}</div>
-              <div class="dropdown-info-label">Sedang login ✓</div>
-            </div>
-            <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> Logout
-            </div>
-          </div>
-        </div>
-        <a class="nav-btn" href="search.html">Home</a>
-      `;
-    } else {
-      navLinks.innerHTML = `
-        <a class="nav-btn" href="login.html">Login</a>
-        <a class="nav-btn" href="index.html">Home</a>
-      `;
-    }
-
-    function toggleDropdown() {
-      document.getElementById('userChipWrap').classList.toggle('open');
-    }
-
-    function doLogout() {
-      localStorage.removeItem('loggedIn');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userEmail');
-      window.location.href = 'index.html';
-    }
-
-    document.addEventListener('click', function(e) {
-      const wrap = document.getElementById('userChipWrap');
-      if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
-    });
-  </script>
 </body>
 </html>
