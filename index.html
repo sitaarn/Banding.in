@@ -38,7 +38,6 @@
     .nav-btn{padding:7px 20px;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.25);color:var(--text-dark);backdrop-filter:blur(8px);transition:all .2s;letter-spacing:.03em;text-decoration:none;display:inline-block;}
     .nav-btn:hover{background:rgba(255,255,255,.45);}
 
-    /* USER CHIP */
     .user-chip-wrap{position:relative;}
     .user-chip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:999px;background:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(10px);cursor:pointer;transition:background .2s;user-select:none;}
     .user-chip:hover{background:rgba(255,255,255,.5);}
@@ -58,7 +57,6 @@
     .dropdown-item.logout:hover{background:rgba(224,82,82,.08);}
     .dropdown-icon{font-size:.85rem;}
 
-    /* LANDING */
     .page{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;}
     .landing-center{display:flex;flex-direction:column;align-items:center;gap:28px;animation:fadeUp .9s ease both;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
@@ -77,7 +75,9 @@
     .stat-divider{width:1px;background:rgba(58,80,104,.2);align-self:stretch;}
   </style>
 </head>
+
 <body>
+
   <div class="bg"></div>
   <div class="blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
   <div class="orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div><div class="orb orb-5"></div><div class="orb orb-6"></div><div class="orb orb-7"></div></div>
@@ -85,9 +85,7 @@
 
   <nav>
     <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
-    <div class="nav-links" id="navLinks">
-      <!-- diisi script -->
-    </div>
+    <div class="nav-links" id="navLinks"></div>
   </nav>
 
   <div class="page" id="landing">
@@ -95,80 +93,99 @@
       <div class="platform-pills">
         <span class="pill">Tokopedia</span><span class="pill">Shopee</span><span class="pill">Lazada</span><span class="pill">Blibli</span>
       </div>
+
       <div class="main-card" onclick="goToSearch()">
         <div class="brand-name">Banding<em>.in</em></div>
       </div>
+
       <p class="tagline">find your best prices.</p>
+
       <div class="stats-row">
         <div class="stat"><div class="stat-number">4</div><div class="stat-label">PLATFORM</div></div>
         <div class="stat-divider"></div>
-        <div class="stat"><div class="stat-number">Real‑time</div><div class="stat-label">PERBANDINGAN</div></div>
+        <div class="stat"><div class="stat-number">Real-time</div><div class="stat-label">PERBANDINGAN</div></div>
         <div class="stat-divider"></div>
         <div class="stat"><div class="stat-number">Gratis</div><div class="stat-label">SELAMANYA</div></div>
       </div>
     </div>
   </div>
 
-  <script>
-    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
-    const userName = localStorage.getItem('userName') || '';
-    const navLinks = document.getElementById('navLinks');
+<script>
 
-    function getInitials(n) {
-      return n.split(' ').slice(0, 2).map(w => w[0].toUpperCase()).join('');
-    }
+const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+const userName = localStorage.getItem('userName') || '';
+const navLinks = document.getElementById('navLinks');
 
-    if (isLoggedIn && userName) {
-      navLinks.innerHTML = `
-        <div class="user-chip-wrap" id="userChipWrap">
-          <div class="user-chip" onclick="toggleDropdown()">
-            <div class="user-avatar">${getInitials(userName)}</div>
-            <span class="user-name">${userName}</span>
-            <div class="user-online"></div>
-            <span class="user-chevron">▼</span>
-          </div>
-          <div class="user-dropdown">
-            <div class="dropdown-info">
-              <div class="dropdown-info-name">${userName}</div>
-              <div class="dropdown-info-label">Sedang login ✓</div>
-            </div>
-            <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> Logout
-            </div>
-          </div>
-        </div>
-        <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
-      `;
-    } else {
-      navLinks.innerHTML = `
-        <button class="nav-btn" onclick="window.location.href='login.html'">Login</button>
-        <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
-      `;
-    }
+function getInitials(n) {
+  return n.split(' ').slice(0, 2).map(w => w[0].toUpperCase()).join('');
+}
 
-    function toggleDropdown() {
-      document.getElementById('userChipWrap').classList.toggle('open');
-    }
+if (isLoggedIn && userName) {
 
-    function doLogout() {
-      localStorage.removeItem('loggedIn');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userEmail');
-      window.location.reload();
-    }
+navLinks.innerHTML = `
+<div class="user-chip-wrap" id="userChipWrap">
+  <div class="user-chip" onclick="toggleDropdown()">
+    <div class="user-avatar">${getInitials(userName)}</div>
+    <span class="user-name">${userName}</span>
+    <div class="user-online"></div>
+    <span class="user-chevron">▼</span>
+  </div>
 
-    document.addEventListener('click', function(e) {
-      const wrap = document.getElementById('userChipWrap');
-      if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
-    });
+  <div class="user-dropdown">
+    <div class="dropdown-info">
+      <div class="dropdown-info-name">${userName}</div>
+      <div class="dropdown-info-label">Sedang login ✓</div>
+    </div>
 
-    function goToSearch() {
-      if (isLoggedIn) {
-        window.location.href = 'search-after-login.html';
-      } else {
-        window.location.href = 'search.html';
-      }
-    }
-  </script>
+    <div class="dropdown-item logout" onclick="doLogout()">
+      <span class="dropdown-icon">🚪</span> Logout
+    </div>
+  </div>
+</div>
+
+<button class="nav-btn" onclick="window.location.href='../aboutus/aboutus.html'">About Us</button>
+`;
+
+} else {
+
+navLinks.innerHTML = `
+<button class="nav-btn" onclick="goToLogin()">Login</button>
+<button class="nav-btn" onclick="window.location.href='pages/aboutus/aboutus.html'">About Us</button>
+`;
+
+}
+
+function toggleDropdown() {
+  document.getElementById('userChipWrap').classList.toggle('open');
+}
+
+function doLogout() {
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userEmail');
+  window.location.reload();
+}
+
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('userChipWrap');
+  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+});
+
+function goToSearch() {
+
+  if (isLoggedIn) {
+    window.location.href = 'pages/search/search.html';
+  } else {
+    window.location.href = 'pages/search/search.html';
+  }
+
+}
+function goToLogin() {
+  localStorage.setItem("redirectAfterLogin", window.location.href);
+  window.location.href = "pages/login/login.html";
+}
+
+</script>
+
 </body>
 </html>
