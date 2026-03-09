@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banding.in — Bandingkan Harga</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="search.css"/>
+</head>
+<body>
+
+  <!-- BACKGROUND LAYERS -->
+  <div class="bg"></div>
+  <div class="blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+    <div class="orb orb-6"></div>
+    <div class="orb orb-7"></div>
+  </div>
+  <div class="grid-overlay"></div>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
+    <div class="nav-links" id="navLinks">
+      <!-- diisi oleh search.js berdasarkan status login -->
+    </div>
+  </nav>
+
+  <!-- LANDING PAGE (hanya tampil saat sudah login) -->
+  <div class="page" id="landing">
+    <div class="landing-center">
+      <div class="platform-pills">
+        <span class="pill">Tokopedia</span>
+        <span class="pill">Shopee</span>
+        <span class="pill">Lazada</span>
+        <span class="pill">Blibli</span>
+      </div>
+      <div class="main-card" onclick="goToSearch()">
+        <div class="brand-name">Banding<em>.in</em></div>
+      </div>
+      <p class="tagline">find your best prices.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-number">4</div>
+          <div class="stat-label">PLATFORM</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-number">Real‑time</div>
+          <div class="stat-label">PERBANDINGAN</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-number">Gratis</div>
+          <div class="stat-label">SELAMANYA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH PAGE -->
+  <div class="page hidden" id="search">
+    <div class="search-wrapper">
+
+      <div class="search-brand" onclick="goToLanding()">Banding<em>.in</em></div>
+
+      <div class="search-box">
+        <input class="search-input" id="searchInput" type="text" placeholder="" />
+        <button class="search-btn" onclick="doSearch()">Bandingkan</button>
+      </div>
+
+      <div class="platform-filter">
+        <button class="pf-btn active" data-platform="all"       onclick="togglePlatform(this)"><span class="pf-dot" style="background:#888"></span> Semua</button>
+        <button class="pf-btn active" data-platform="tokopedia" onclick="togglePlatform(this)"><span class="pf-dot" style="background:#42b549"></span> Tokopedia</button>
+        <button class="pf-btn active" data-platform="shopee"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#ee4d2d"></span> Shopee</button>
+        <button class="pf-btn active" data-platform="lazada"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#0f146b"></span> Lazada</button>
+        <button class="pf-btn active" data-platform="blibli"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#0095d9"></span> Blibli</button>
+      </div>
+
+      <div class="most-searched" id="mostSearched">
+        <div class="most-searched-label">🔥 Most Searched Product</div>
+        <div class="most-searched-tags">
+          <span class="ms-tag" onclick="fillSearch('iPhone 15')"><span class="ms-tag-icon">📱</span> iPhone 15</span>
+          <span class="ms-tag" onclick="fillSearch('Samsung Galaxy S24')"><span class="ms-tag-icon">📱</span> Samsung Galaxy S24</span>
+          <span class="ms-tag" onclick="fillSearch('Nike Air Max')"><span class="ms-tag-icon">👟</span> Nike Air Max</span>
+          <span class="ms-tag" onclick="fillSearch('Laptop Asus')"><span class="ms-tag-icon">💻</span> Laptop Asus</span>
+          <span class="ms-tag" onclick="fillSearch('AirPods Pro')"><span class="ms-tag-icon">🎧</span> AirPods Pro</span>
+          <span class="ms-tag" onclick="fillSearch('Xiaomi Redmi')"><span class="ms-tag-icon">📱</span> Xiaomi Redmi</span>
+          <span class="ms-tag" onclick="fillSearch('Tas Ransel')"><span class="ms-tag-icon">🎒</span> Tas Ransel</span>
+          <span class="ms-tag" onclick="fillSearch('PS5')"><span class="ms-tag-icon">🎮</span> PS5</span>
+        </div>
+      </div>
+
+      <div class="results-area" id="resultsArea" style="display:none;"></div>
+
+    </div>
+  </div>
+
+  <script src="search.js"></script>
+</body>
+</html>
