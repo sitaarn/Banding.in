@@ -1,7 +1,3 @@
-// =====================
-// SCROLL REVEAL ANIMATION
-// =====================
-// Elemen muncul satu per satu saat di-scroll
 const revealElements = document.querySelectorAll('.story-card, .feature-card, .cta-group');
 
 const observerOptions = {
@@ -81,4 +77,5 @@ document.addEventListener('mousemove', (e) => {
   document.querySelector('.orb-1').style.transform = `translate(${x * 1.2}px, ${y * 1.2}px)`;
   document.querySelector('.orb-2').style.transform = `translate(${-x * 0.8}px, ${-y * 0.8}px)`;
   document.querySelector('.orb-3').style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+
 });
