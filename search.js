@@ -1,13 +1,9 @@
-// STATUS LOGIN
-
 const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
 const userName   = localStorage.getItem('userName') || '';
 
 function getInitials(n) {
   return n.split(' ').slice(0, 2).map(w => w[0].toUpperCase()).join('');
 }
-
-// RENDER NAV sesuai status login
 
 const navLinks = document.getElementById('navLinks');
 
@@ -39,18 +35,11 @@ if (isLoggedIn && userName) {
   `;
 }
 
-// TAMPILAN AWAL sesuai status login
-// Sudah login  → mulai di landing, klik buka search
-// Belum login  → langsung ke search
-
 if (!isLoggedIn) {
   document.getElementById('landing').classList.add('hidden');
   document.getElementById('search').classList.remove('hidden');
   window.addEventListener('load', () => document.getElementById('searchInput').focus());
 }
-
-
-// NAVIGASI ANTAR HALAMAN
 
 function goToSearch() {
   document.getElementById('landing').classList.add('hidden');
@@ -70,8 +59,6 @@ function goToLanding() {
   }
 }
 
-// USER CHIP — dropdown & logout
-
 function toggleDropdown() {
   document.getElementById('userChipWrap').classList.toggle('open');
 }
@@ -88,8 +75,6 @@ document.addEventListener('click', function(e) {
   if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
 });
 
-// PLATFORM FILTER
-
 function togglePlatform(btn) {
   const p = btn.dataset.platform;
   if (p === 'all') {
@@ -101,8 +86,6 @@ function togglePlatform(btn) {
     document.querySelector('.pf-btn[data-platform="all"]').classList.toggle('active', allActive);
   }
 }
-
-// MOCK DATA
 
 const mockData = {
   platforms: {
@@ -122,9 +105,6 @@ const mockData = {
     { name: 'PS5',            prices: { tokopedia:  8999000, shopee:  8799000, lazada:  8850000, blibli:  9100000 } }
   ]
 };
-
-
-// SEARCH LOGIC
 
 function fillSearch(q) {
   document.getElementById('searchInput').value = q;
@@ -174,4 +154,5 @@ function doSearch() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !document.getElementById('search').classList.contains('hidden')) doSearch();
+
 });
