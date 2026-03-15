@@ -1,4 +1,4 @@
-/* listing.js Banding.in */
+/* list.js Banding.in */
 
 /* DATA */
 const mockData = {
@@ -48,7 +48,18 @@ let lsSort         = 'cheapest';
 let lsActivePf     = ['tokopedia', 'shopee', 'lazada', 'blibli'];
 let lsPriceMin     = 0;
 let lsPriceMax     = 25000000;
-let isLoggedIn = localStorage.getItem("loggedIn") === "true";
+let isLoggedIn     = false;
+
+/* === TAMBAHAN: BACA PARAMETER URL === */
+(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const query = urlParams.get('q');
+  if (query) {
+    window.addEventListener('DOMContentLoaded', function() {
+      goToListing(query);
+    });
+  }
+})();
 
 /* NAVIGASI */
 function goToListing(query) {
@@ -77,7 +88,7 @@ function backToSearch() {
   document.getElementById('search').classList.remove('hidden');
 }
 
-/* SEARCH PAGE */
+/* SEARCH PAGE (fungsi-fungsi ini dipanggil dari dalam list.html) */
 function togglePlatform(btn) {
   const p = btn.dataset.platform;
   if (p === 'all') {
@@ -324,33 +335,12 @@ function lsApplyPrice() {
   renderListing();
 }
 
-/* COMPARE TRAY */
-function clearCompare() {
-  document.getElementById('compareTray').classList.remove('visible');
-}
-
-/* KEYBOARD SHORTCUT — Enter to search */
+/* KEYBOARD SHORTCUT — Enter to search (hanya di halaman search) */
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !document.getElementById('search').classList.contains('hidden')) {
     doSearch();
   }
 });
-
-const compareBtn = document.getElementById("compareBtn");
-
-compareBtn.addEventListener("click", function () {
-  const input = document.getElementById("searchInput").value;
-
-  if (!input) {
-    alert("Masukkan nama produk dulu");
-    return;
-  }
-
-  localStorage.setItem("searchQuery", input);
-
-  window.location.href = "../list/list.html";
-});
-
 
 /* INIT */
 window.addEventListener('DOMContentLoaded', initSlider);

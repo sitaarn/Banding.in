@@ -32,20 +32,13 @@ loginForm.addEventListener("submit", function(e) {
     u => u.email === enteredEmail && u.password === enteredPassword
   );
 
-if (matched) {
-  localStorage.setItem("loggedIn", "true");
-  localStorage.setItem("userName", matched.name);
-  localStorage.setItem("userEmail", matched.email);
-
-  const redirect = localStorage.getItem("redirectAfterLogin");
-
-  if (redirect) {
-    localStorage.removeItem("redirectAfterLogin");
-    window.location.href = redirect;
-  } else {
-    window.location.href = "../../search/search.html";
-  }
-
+  if (matched) {
+    // Simpan session ke localStorage
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userName", matched.name);
+    localStorage.setItem("userEmail", matched.email);
+    // Redirect ke halaman pencarian (search.html) setelah login
+    window.location.href = "search.html";
   } else {
     let errorMsg = loginForm.querySelector('.error-msg');
     if (!errorMsg) {
