@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banding.in</title>
+<title>Banding.in - About Us</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,6 +17,8 @@
     --text-dark: #1e2d35;
     --text-mid: #3a5260;
     --text-muted: #5a7a88;
+    --blue: #4a7fc1;
+    --teal: #5bbcb8;
   }
 
   body {
@@ -27,7 +29,6 @@
     overflow-x: hidden;
   }
 
-  /* Subtle noise texture overlay */
   body::before {
     content: '';
     position: fixed;
@@ -37,7 +38,6 @@
     z-index: 0;
   }
 
-  /* Floating orbs */
   .orb {
     position: fixed;
     border-radius: 50%;
@@ -49,7 +49,7 @@
   .orb-2 { width: 300px; height: 300px; background: rgba(100,180,190,0.2); bottom: 100px; left: -80px; }
   .orb-3 { width: 200px; height: 200px; background: rgba(255,255,255,0.1); top: 50%; left: 30%; }
 
-  /* NAV */
+  /* Navbar */
   nav {
     position: relative;
     z-index: 10;
@@ -67,7 +67,7 @@
   }
   .logo span { font-style: italic; }
 
-  .nav-buttons { display: flex; gap: 10px; }
+  .nav-buttons { display: flex; gap: 10px; align-items: center; }
 
   .nav-btn {
     padding: 8px 20px;
@@ -81,10 +81,59 @@
     color: var(--text-dark);
     cursor: pointer;
     transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
   }
   .nav-btn:hover { background: rgba(255,255,255,0.4); transform: translateY(-1px); }
 
-  /* MAIN CONTENT */
+  /* User chip (sama seperti di halaman lain) */
+  .user-chip-wrap { position: relative; }
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px 5px 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .user-chip:hover { background: rgba(255,255,255,0.5); }
+  .user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 600; color: white; flex-shrink: 0;
+  }
+  .user-name { font-size: 0.78rem; font-weight: 500; color: var(--text-dark); letter-spacing: 0.02em; }
+  .user-online { width: 6px; height: 6px; border-radius: 50%; background: #2a9d8f; flex-shrink: 0; }
+  .user-chevron { font-size: 0.6rem; color: var(--text-soft); margin-left: 2px; transition: transform 0.2s; }
+  .user-chip-wrap.open .user-chevron { transform: rotate(180deg); }
+  .user-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0; min-width: 180px;
+    background: rgba(255,255,255,0.7); border: 1.5px solid rgba(255,255,255,0.85);
+    border-radius: 14px; backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(74,127,193,0.18); padding: 8px;
+    opacity: 0; pointer-events: none; transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .user-chip-wrap.open .user-dropdown { opacity: 1; pointer-events: all; transform: translateY(0); }
+  .dropdown-info { padding: 10px 12px 8px; border-bottom: 1px solid rgba(58,80,104,0.1); margin-bottom: 6px; }
+  .dropdown-info-name { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+  .dropdown-info-label { font-size: 0.68rem; color: var(--text-soft); margin-top: 1px; letter-spacing: 0.03em; }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 9px;
+    font-size: 0.78rem; font-weight: 500; color: var(--text-mid); cursor: pointer;
+    transition: background 0.15s; text-decoration: none;
+  }
+  .dropdown-item:hover { background: rgba(255,255,255,0.7); }
+  .dropdown-item.logout { color: #e05252; }
+  .dropdown-item.logout:hover { background: rgba(224,82,82,0.08); }
+  .dropdown-icon { font-size: 0.85rem; }
+
   main {
     position: relative;
     z-index: 10;
@@ -93,7 +142,6 @@
     padding: 20px 24px 60px;
   }
 
-  /* HERO */
   .hero {
     text-align: center;
     padding: 30px 0 40px;
@@ -131,7 +179,6 @@
     line-height: 1.6;
   }
 
-  /* STORY CARD */
   .story-card {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -158,7 +205,6 @@
   }
   .story-card p + p { margin-top: 16px; }
 
-  /* FEATURE CARDS */
   .features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -195,7 +241,6 @@
     font-weight: 300;
   }
 
-  /* CTA BUTTONS */
   .cta-group {
     display: flex;
     justify-content: center;
@@ -233,7 +278,6 @@
   }
   .btn-secondary:hover { background: rgba(255,255,255,0.45); transform: translateY(-1px); }
 
-  /* Fade in animation */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -257,16 +301,14 @@
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
 
-<nav>
+<nav id="mainNav">
   <div class="logo">Banding<span>.in</span></div>
-  <div class="nav-buttons">
-    <button class="nav-btn">Login</button>
-    <button class="nav-btn">Home</button>
+  <div class="nav-buttons" id="navButtons">
+    <!-- Akan diisi oleh JavaScript -->
   </div>
 </nav>
 
 <main>
-
   <section class="hero">
     <h2 class="hero-label" style="font-size: 1rem; letter-spacing: 0.1em; margin-bottom: 12px;">About Us</h2>
     <h1 class="hero-title">Belanja lebih <em>cerdas</em>,<br>bukan lebih keras</h1>
@@ -295,11 +337,77 @@
   </div>
 
   <div class="cta-group">
-    <button class="btn-primary">Try Now</button>
-    <button class="btn-secondary">Contact Us</button>
+    <button class="btn-primary" onclick="window.location.href='search.html'">Try Now</button>
+    <button class="btn-secondary" onclick="window.location.href='contact.html'">Contact Us</button>
   </div>
-
 </main>
+
+<script>
+  function updateNav() {
+    const navButtons = document.getElementById('navButtons');
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    const userName = localStorage.getItem('userName') || 'User';
+    const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+
+    function getInitials(name) {
+      return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    if (isLoggedIn) {
+      navButtons.innerHTML = `
+        <div class="user-chip-wrap" id="userChipWrap">
+          <div class="user-chip" onclick="toggleDropdown()">
+            <div class="user-avatar">${getInitials(userName)}</div>
+            <span class="user-name">${userName}</span>
+            <div class="user-online"></div>
+            <span class="user-chevron">▾</span>
+          </div>
+          <div class="user-dropdown">
+            <div class="dropdown-info">
+              <div class="dropdown-info-name">${userName}</div>
+              <div class="dropdown-info-label">${userEmail}</div>
+            </div>
+            <a class="dropdown-item" href="profile.html">
+              <span class="dropdown-icon">👤</span> Profil Saya
+            </a>
+            <a class="dropdown-item" href="search.html">
+              <span class="dropdown-icon">🔍</span> Cari Produk
+            </a>
+            <div class="dropdown-item logout" onclick="doLogout()">
+              <span class="dropdown-icon">↩</span> Keluar
+            </div>
+          </div>
+        </div>
+        <button class="nav-btn" onclick="window.location.href='landing.html'">Home</button>
+      `;
+    } else {
+      navButtons.innerHTML = `
+        <button class="nav-btn" onclick="window.location.href='login.html'">Login</button>
+        <button class="nav-btn" onclick="window.location.href='landing.html'">Home</button>
+      `;
+    }
+  }
+
+  function toggleDropdown() {
+    document.getElementById('userChipWrap').classList.toggle('open');
+  }
+
+  function doLogout() {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
+    window.location.reload();
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('userChipWrap');
+    if (wrap && !wrap.contains(e.target)) {
+      wrap.classList.remove('open');
+    }
+  });
+
+  window.addEventListener('DOMContentLoaded', updateNav);
+</script>
 
 </body>
 </html>
