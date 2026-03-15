@@ -37,7 +37,8 @@ loginForm.addEventListener("submit", function(e) {
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("userName", matched.name);
     localStorage.setItem("userEmail", matched.email);
-    window.location.href = "search-after-login.html";
+    // Redirect ke halaman pencarian (search.html) setelah login
+    window.location.href = "search.html";
   } else {
     let errorMsg = loginForm.querySelector('.error-msg');
     if (!errorMsg) {

@@ -1,10 +1,10 @@
 function goToSearch() {
-  window.location.href = 'pages/search/search.html';
+  window.location.href = 'search.html';
 }
 
 function goToLogin() {
   localStorage.setItem('redirectAfterLogin', window.location.href);
-  window.location.href = 'pages/login/login.html';
+  window.location.href = 'login.html';
 }
 
 function toggleDropdown() {
@@ -47,12 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </div>
       </div>
-      <button class="nav-btn" onclick="window.location.href='pages/aboutus/aboutus.html'">About Us</button>
+      <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
     `;
   } else {
     navLinks.innerHTML = `
       <button class="nav-btn" onclick="goToLogin()">Login</button>
-      <button class="nav-btn" onclick="window.location.href='pages/aboutus/aboutus.html'">About Us</button>
+      <button class="nav-btn" onclick="window.location.href='aboutus.html'">About Us</button>
     `;
   }
 
