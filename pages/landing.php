@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banding.in — Find Your Best Prices</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="stylelanding.css">
+  <link rel="stylesheet" href="./public/css/stylelanding.css">
 </head>
 <body>
   <div class="bg"></div>
@@ -27,7 +27,38 @@
 
   <nav>
     <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
-    <div class="nav-links" id="navLinks"></div>
+    <div class="nav-links" id="navLinks">
+      <?php if(isLoggedIn()) : ?>
+        <div class="user-chip-wrap" id="userChipWrap">
+          <div class="user-chip" onclick="toggleDropdown()">
+            <div class="user-avatar" id="userAvatar" data-avatar="<?= $_SESSION['nama_lengkap'] ?>"></div>
+            <span class="user-name"><?= $_SESSION['nama_lengkap'] ?></span>
+            <div class="user-online"></div>
+            <span class="user-chevron">▼</span>
+          </div>
+          <div class="user-dropdown">
+            <div class="dropdown-info">
+
+              <div class="dropdown-info-name"><?= $_SESSION['username'] ?></div>
+              <div class="dropdown-info-label">Sedang login ✓</div>
+            </div>
+            <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
+              <span class="dropdown-icon">👤</span> Profil Saya
+            </a>
+            <div class="dropdown-item logout" onclick="doLogout()">
+              <span class="dropdown-icon">🚪</span> Logout
+            </div>
+          </div>
+        </div>
+        <button class="nav-btn" onclick="window.location.href='http://localhost/bandingin/aboutus'">About Us</button>
+
+      <?php else: ?>
+        <button class="nav-btn" onclick="goToLogin()">Login</button>
+        <button class="nav-btn" onclick="window.location.href='http://localhost/bandingin/aboutus'">About Us</button>
+      <?php endif; ?>
+
+
+    </div>
   </nav>
 
   <div class="page" id="landing">
@@ -42,6 +73,9 @@
       <div class="main-card" onclick="goToSearch()">
         <div class="brand-name">Banding<em>.in</em></div>
       </div>
+
+
+
 
       <p class="tagline">find your best prices.</p>
 
@@ -64,6 +98,6 @@
     </div>
   </div>
 
-  <script src="scriptlanding.js"></script>
+  <script src="./public/js/scriptlanding.js"></script>
 </body>
 </html>
