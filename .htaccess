@@ -1,0 +1,19 @@
+Options -Indexes
+Options -Multiviews
+
+RewriteEngine on
+
+RewriteRule ^config/ - [F,L]
+RewriteRule ^controllers/ - [F,L]
+RewriteRule ^includes/ - [F,L]
+RewriteRule ^models/ - [F,L]
+RewriteRule ^views/ - [F,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+
+
+
+
+RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
