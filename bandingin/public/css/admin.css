@@ -1,0 +1,193 @@
+/* admin.css — Banding.in Admin Panel (extends list.css) */
+
+/* ── Admin Badge in Nav ── */
+.admin-badge {
+  display: inline-flex; align-items: center;
+  padding: 4px 12px; border-radius: 999px;
+  background: rgba(74,127,193,.18);
+  border: 1.5px solid rgba(74,127,193,.35);
+  font-size: .68rem; font-weight: 600; letter-spacing: .08em;
+  color: var(--blue); text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+/* ── Admin Menu Items (sidebar) ── */
+.adm-menu-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 12px; border-radius: 10px;
+  cursor: pointer; font-size: .8rem; font-weight: 500;
+  color: var(--text-mid); border: 1.5px solid transparent;
+  transition: all .18s; margin-bottom: 4px; user-select: none;
+}
+.adm-menu-item:last-child { margin-bottom: 0; }
+.adm-menu-item:hover  { background: rgba(255,255,255,.3); color: var(--text-dark); }
+.adm-menu-item.on     { background: rgba(255,255,255,.5); border-color: rgba(255,255,255,.8); color: var(--text-dark); font-weight: 600; box-shadow: 0 2px 10px rgba(74,127,193,.12); }
+.adm-menu-icon        { font-size: .85rem; }
+
+/* ── Sidebar Stat Mini ── */
+.adm-stat-mini .adm-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 4px; border-bottom: 1px solid rgba(255,255,255,.25); }
+.adm-stat-mini .adm-stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+.adm-stat-label { font-size: .72rem; color: var(--text-soft); }
+.adm-stat-val   { font-family: 'DM Serif Display', serif; font-size: .95rem; color: var(--text-dark); }
+
+/* ── Section toggle ── */
+.adm-section        { display: flex; flex-direction: column; gap: 14px; }
+.adm-section.hidden { display: none; }
+
+/* ── Form Card ── */
+.adm-form-card {
+  background: rgba(255,255,255,.22); border: 1.5px solid rgba(255,255,255,.5);
+  border-radius: 20px; backdrop-filter: blur(16px);
+  padding: 26px 28px; display: flex; flex-direction: column; gap: 22px;
+  animation: fadeUp .4s ease both;
+}
+
+/* ── Form Grid ── */
+.adm-form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px;
+}
+.adm-field-full { grid-column: 1 / -1; }
+
+/* ── Field + Label ── */
+.adm-field  { display: flex; flex-direction: column; gap: 7px; }
+.adm-label  { font-size: .68rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(58,80,104,.55); }
+.adm-required { color: #e76f51; }
+.adm-hint   { font-size: .66rem; color: var(--text-soft); margin-top: 3px; }
+
+/* ── Inputs ── */
+.adm-input {
+  width: 100%; padding: 10px 14px; border-radius: 12px;
+  background: rgba(255,255,255,.4); border: 1.5px solid rgba(255,255,255,.65);
+  font-family: 'DM Sans', sans-serif; font-size: .82rem; color: var(--text-dark);
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  backdrop-filter: blur(8px);
+}
+.adm-input:focus { border-color: rgba(74,127,193,.7); box-shadow: 0 0 0 3px rgba(74,127,193,.12); background: rgba(255,255,255,.55); }
+.adm-input::placeholder { color: rgba(58,80,104,.3); }
+.adm-input-error { border-color: rgba(231,111,81,.7) !important; box-shadow: 0 0 0 3px rgba(231,111,81,.12) !important; animation: shake .3s ease; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-5px); }
+  60%      { transform: translateX(5px); }
+}
+
+/* Select */
+.adm-select-wrap { position: relative; }
+.adm-select { -webkit-appearance: none; appearance: none; padding-right: 30px; cursor: pointer; }
+.adm-select-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: .65rem; color: var(--text-soft); pointer-events: none; }
+
+/* Prefix / Suffix inputs */
+.adm-input-prefix-wrap { position: relative; display: flex; align-items: center; }
+.adm-prefix { position: absolute; left: 13px; font-size: .78rem; color: var(--text-soft); pointer-events: none; z-index: 1; }
+.adm-suffix { position: absolute; right: 13px; font-size: .78rem; color: var(--text-soft); pointer-events: none; z-index: 1; }
+.adm-input-prefixed { padding-left: 34px; }
+.adm-input-suffixed { padding-right: 34px; }
+
+/* Icon input */
+.adm-input-icon-wrap { position: relative; display: flex; align-items: center; }
+.adm-input-icon { position: absolute; left: 13px; font-size: .85rem; pointer-events: none; z-index: 1; }
+.adm-input-iconed { padding-left: 36px; }
+
+/* Textarea */
+.adm-textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+/* ── Emoji Picker ── */
+.adm-emoji-wrap { display: flex; flex-direction: column; gap: 8px; }
+.adm-emoji-input { width: 100%; font-size: 1.1rem; text-align: center; }
+.adm-emoji-preview { font-size: 1.6rem; text-align: center; line-height: 1; }
+.adm-emoji-picker { display: flex; flex-wrap: wrap; gap: 5px; }
+.adm-emoji-opt {
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; border-radius: 8px; cursor: pointer;
+  background: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.55);
+  transition: all .15s;
+}
+.adm-emoji-opt:hover { background: rgba(255,255,255,.65); transform: scale(1.15); }
+
+/* ── Radio Group ── */
+.adm-radio-group { display: flex; gap: 14px; padding: 10px 4px; }
+.adm-radio-opt {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .8rem; color: var(--text-mid); cursor: pointer;
+}
+.adm-radio-opt input { accent-color: var(--blue); cursor: pointer; }
+
+/* ── Preview ── */
+.adm-preview-wrap  { display: flex; flex-direction: column; gap: 10px; }
+.adm-preview-label { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,80,104,.45); }
+.adm-preview-card  { pointer-events: none; flex-wrap: wrap; }
+
+/* ── Form Actions ── */
+.adm-form-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 4px; }
+.adm-btn-reset {
+  padding: 11px 22px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,.6);
+  background: rgba(255,255,255,.25); backdrop-filter: blur(8px);
+  font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 500;
+  color: var(--text-mid); cursor: pointer; transition: all .2s;
+}
+.adm-btn-reset:hover { background: rgba(255,255,255,.45); color: var(--text-dark); }
+.adm-btn-submit {
+  padding: 11px 28px; border-radius: 12px; background: var(--text-dark);
+  color: white; border: none; font-family: 'DM Sans', sans-serif;
+  font-size: .85rem; font-weight: 600; cursor: pointer;
+  letter-spacing: .03em; transition: background .2s, transform .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.adm-btn-submit:hover:not(:disabled) { background: var(--blue); transform: scale(1.02); }
+.adm-btn-submit:disabled { opacity: .65; cursor: not-allowed; }
+
+/* Spinner */
+.adm-spinner {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: white;
+  animation: spin .6s linear infinite; display: inline-block; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Product List Search ── */
+.adm-search-wrap { position: relative; display: flex; align-items: center; }
+.adm-search-icon { position: absolute; left: 12px; font-size: .82rem; pointer-events: none; }
+.adm-search-input {
+  padding: 8px 14px 8px 34px; border-radius: 999px; width: 220px;
+  background: rgba(255,255,255,.3); border: 1.5px solid rgba(255,255,255,.6);
+  backdrop-filter: blur(8px); font-family: 'DM Sans', sans-serif;
+  font-size: .78rem; color: var(--text-dark); outline: none; transition: all .2s;
+}
+.adm-search-input:focus { background: rgba(255,255,255,.5); border-color: rgba(74,127,193,.6); width: 260px; }
+.adm-search-input::placeholder { color: rgba(58,80,104,.35); }
+
+/* ── Action buttons in product list ── */
+.adm-btn-edit:hover { background: rgba(74,127,193,.15) !important; border-color: rgba(74,127,193,.4) !important; color: var(--blue) !important; }
+.adm-btn-del:hover  { background: rgba(224,82,82,.15)  !important; border-color: rgba(224,82,82,.4)  !important; color: #e05252 !important; }
+
+/* ── Stats Grid ── */
+.adm-stats-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+}
+.adm-stat-card {
+  background: rgba(255,255,255,.22); border: 1.5px solid rgba(255,255,255,.5);
+  border-radius: 18px; backdrop-filter: blur(16px); padding: 20px 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-align: center; animation: fadeUp .4s ease both;
+}
+.adm-stat-card-icon { font-size: 1.6rem; width: 46px; height: 46px; background: rgba(255,255,255,.3); border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+.adm-stat-card-val  { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--text-dark); line-height: 1; letter-spacing: -.02em; }
+.adm-stat-card-lbl  { font-size: .68rem; font-weight: 500; color: var(--text-soft); letter-spacing: .04em; text-transform: uppercase; }
+
+/* ── Bar Chart ── */
+.adm-bar-row   { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.adm-bar-row:last-child { margin-bottom: 0; }
+.adm-bar-label { display: flex; align-items: center; gap: 7px; font-size: .75rem; color: var(--text-mid); width: 96px; flex-shrink: 0; }
+.adm-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,.3); border-radius: 999px; overflow: hidden; }
+.adm-bar-fill  { height: 100%; border-radius: 999px; transition: width .6s cubic-bezier(.25,.46,.45,.94); }
+.adm-bar-pct   { font-size: .72rem; color: var(--text-soft); width: 36px; text-align: right; }
+.adm-bar-count { font-family: 'DM Serif Display', serif; font-size: .9rem; color: var(--text-dark); width: 28px; text-align: right; }
+
+/* ── Responsive ── */
+@media (max-width: 720px) {
+  .adm-form-grid    { grid-template-columns: 1fr; }
+  .adm-field-full   { grid-column: 1; }
+  .adm-stats-grid   { grid-template-columns: repeat(2, 1fr); }
+  .adm-search-input { width: 160px; }
+  .adm-search-input:focus { width: 180px; }
+}
