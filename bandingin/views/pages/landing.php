@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banding.in — Find Your Best Prices</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="./public/images/logo-b.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="./public/css/stylelanding.css">
 </head>
 <body>
@@ -26,7 +27,7 @@
   <div class="grid-overlay"></div>
 
   <nav>
-    <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
+    <span class="nav-brand"></span>
     <div class="nav-links" id="navLinks">
       <?php if(isLoggedIn()) : ?>
         <div class="user-chip-wrap" id="userChipWrap">
@@ -71,9 +72,9 @@
       </div>
 
       <div class="main-card" onclick="goToSearch()">
-        <div class="brand-name">Banding<em>.in</em></div>
+        <img src="./public/images/logo-b.png" alt="Banding.in Logo" class="brand-logo" />
+        <div class="brand-name">banding<em>.in</em></div>
       </div>
-
 
 
 
@@ -83,11 +84,6 @@
         <div class="stat">
           <div class="stat-number">4</div>
           <div class="stat-label">PLATFORM</div>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <div class="stat-number">Real-time</div>
-          <div class="stat-label">PERBANDINGAN</div>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">

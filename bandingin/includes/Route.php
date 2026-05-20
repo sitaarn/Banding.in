@@ -1,10 +1,8 @@
 <?php
 /**
- * =====================================================
- * HELPER FUNCTIONS - Route Web
+ *  * HELPER FUNCTIONS - Route Web
  * Praktikum Aplikasi Web - Universitas Tidar
- * =====================================================
- */
+ *  */
 
 namespace Includes;
 

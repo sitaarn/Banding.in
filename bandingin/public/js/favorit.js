@@ -35,6 +35,7 @@ async function loadFavoritesFromDB() {
                 name: item.product_name,
                 price: item.price,
                 platform: item.platform,
+                link: item.product_link || '#',
                 emoji: '📦',
                 sub: item.category || '',
                 timestamp: new Date(item.created_at).getTime()
@@ -95,8 +96,12 @@ async function favHapusSemua() {
     await favRender();
 }
 
-function favCariLagi(productName) {
-    window.location.href = 'http://localhost/bandingin/list?q=' + encodeURIComponent(productName);
+function favKunjungi(link) {
+    if (link && link !== '#') {
+        window.open(link, '_blank');
+    } else {
+        showToast('Link produk tidak tersedia', true);
+    }
 }
 
 function favTogglePf(btn) {
@@ -124,7 +129,7 @@ async function favRender() {
     const sort = sortSelect ? sortSelect.value : 'newest';
 
     if (favActivePf.length < 4) {
-        favs = favs.filter(f => favActivePf.includes(f.platform));
+        favs = favs.filter(f => favActivePf.includes((f.platform || '').toLowerCase()));
     }
 
     if (sort === 'newest') favs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -151,8 +156,8 @@ async function favRender() {
 
     listEl.innerHTML = favs.map((fav, idx) => {
         const isCheapest = fav.price === globalMin && globalMin > 0;
-        const pfColor = PF_COLORS[fav.platform] || '#888';
-        const pfLabel = PF_LABELS[fav.platform] || fav.platform;
+        const pfColor = PF_COLORS[fav.platform.toLowerCase()] || '#888';
+        const pfLabel = PF_LABELS[fav.platform.toLowerCase()] || fav.platform;
         return `
             <div class="fav-item">
                 <div class="fav-item-rank ${idx === 0 ? 'gold' : ''}">${idx+1}</div>
@@ -168,7 +173,7 @@ async function favRender() {
                 </div>
                 <div class="fav-item-actions">
                     <button class="fav-btn-hapus" onclick="favHapusSatu(${fav.id}, '${fav.platform}', '${escapeHtml(fav.name).replace(/'/g, "\\'")}')">Hapus</button>
-                    <button class="fav-btn-cari" onclick="favCariLagi('${escapeHtml(fav.name).replace(/'/g, "\\'")}')">Cari Lagi →</button>
+                    <button class="fav-btn-cari" onclick="favKunjungi('${fav.link || '#'}')">Kunjungi →</button>
                 </div>
             </div>
         `;

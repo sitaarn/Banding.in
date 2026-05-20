@@ -5,9 +5,6 @@ Shopee memblokir akses pencarian tanpa login, baik via browser maupun API.
 Solusi: Buka browser dengan undetected-chromedriver, login MANUAL,
 lalu baru jalankan scraping.
 
-Cara Pakai:
-  python scraper_shopee.py "iphone 15"
-
 Alur:
   1. Browser Chrome terbuka otomatis ke halaman login Shopee
   2. Anda LOGIN secara manual (bisa pakai QR code / SMS / password)

@@ -1,10 +1,9 @@
 <?php
 /**
- * =====================================================
- * MODEL: User
+ * 
  * Menangani operasi database untuk tabel users
  * Praktikum Aplikasi Web - Universitas Tidar
- * =====================================================
+ * 
  */
 namespace Models;
 

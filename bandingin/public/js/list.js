@@ -244,6 +244,11 @@ function showToast(msg, isError = false) {
 async function toggleSave(btn, e, id, platform) {
   e.stopPropagation();
 
+  if (typeof APP_IS_LOGGED_IN !== 'undefined' && !APP_IS_LOGGED_IN) {
+    showLoginModal();
+    return;
+  }
+
   btn.disabled = true;
   const originalText = btn.textContent;
   btn.textContent = '⏳';

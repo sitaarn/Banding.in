@@ -29,7 +29,8 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banding.in — Cari & Bandingkan Harga</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="<?= $base ?>public/images/logo-b.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   
   <link rel="stylesheet" href="<?= $base ?>public/css/list.css"/>
   
@@ -62,7 +63,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
   <nav>
     <span class="nav-brand" onclick="backToSearch()">
-      Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
+      banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
     </span>
     <div class="nav-links" id="navLinks">
       
@@ -101,7 +102,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
   <div class="page" id="search">
     <div class="search-wrapper">
-      <div class="search-brand">Banding<em>.in</em></div>
+      <img src="<?= $base ?>public/images/logo-b.png" alt="Banding.in" class="search-logo" />
       <div class="search-box">
         <input class="search-input" id="searchInput" type="text" placeholder="Search and Compare Prices"/>
         <button class="search-btn" onclick="doSearch()">Bandingkan</button>
@@ -186,6 +187,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
   <div class="modal-overlay" id="loginModal" onclick="if(event.target===this) closeLoginModal()">
     <div class="modal-box">
+      <button class="modal-close-x" onclick="closeLoginModal()">✕</button>
       <div class="modal-icon">❤️</div>
       <div class="modal-title">Simpan ke Favorit</div>
       <div class="modal-sub">Masuk atau buat akun gratis untuk menyimpan produk favorit.</div>
@@ -199,6 +201,9 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
   <div class="toast" id="toast"></div>
 
+  <script>
+    const APP_IS_LOGGED_IN = <?= $is_logged_in ? 'true' : 'false' ?>;
+  </script>
   <script src="<?= $base ?>public/js/list.js?v=<?= time(); ?>"></script>
 
 </body>
