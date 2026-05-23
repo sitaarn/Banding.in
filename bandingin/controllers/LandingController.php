@@ -89,4 +89,18 @@ class LandingController {
         echo json_encode($this->ProductModel->all());
         exit;
     }
+
+    public function switchLanguage() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $lang = isset($_GET['lang']) ? $_GET['lang'] : 'en';
+        if (in_array($lang, ['id', 'en'])) {
+            $_SESSION['lang'] = $lang;
+        }
+        // Redirect back
+        $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : BASE_URL;
+        header("Location: " . $referer);
+        exit;
+    }
 }

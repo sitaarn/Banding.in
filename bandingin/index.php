@@ -18,18 +18,13 @@ use Includes\Route;
 // Controllers
 use Controllers\AuthController;
 use Controllers\LandingController;
+use Controllers\SellerController;
+use Controllers\AdminController;
 
 $route = new Route();
 
-
-
 // Mulai session
 startSession();
-
-// $route untuk mengatur hak akses
-
-// Routing
-
 
 $route->middleware(['guest'])->group(function ($childClass) {
     $childClass->get('/landing', [LandingController::class, 'index']);
@@ -55,19 +50,68 @@ $route->middleware(['login'])->group(function ($childClass) {
         'list']);
     $childClass->get('/logout', [AuthController::class, 
         'logout']);
+    $childClass->get('/admin', [LandingController::class, 
+        'admin']);
+    $childClass->post('/profile/update', [AuthController::class,'updateProfil']); 
+});
+
+$route->middleware(['login', 'user'])->group(function ($childClass) {
     $childClass->get('/favorit', [LandingController::class, 
         'favorit']);
     $childClass->post('/favorit/toggle', [LandingController::class, 'favoritbarang']);
-    $childClass->get('/admin', [LandingController::class, 
-        'admin']);
     $childClass->get('/favorites', [LandingController::class, 'getFavorites']);
-    $childClass->post('/profile/update', [AuthController::class,'updateProfil']); 
+});
+
+$route->middleware(['login', 'seller'])->group(function ($childClass) {
+    $childClass->get('/seller/add', [SellerController::class, 'addProduct']);
+    $childClass->post('/seller/store', [SellerController::class, 'storeProduct']);
+});
+
+// ─── Super Admin Routes ────────────────────────
+$route->middleware(['login', 'super_admin'])->group(function ($childClass) {
+    // Dashboard
+    $childClass->get('/admin/dashboard', [AdminController::class, 'dashboard']);
+    
+    // User Management
+    $childClass->get('/admin/users', [AdminController::class, 'users']);
+    $childClass->post('/admin/users/update-role', [AdminController::class, 'updateRole']);
+    $childClass->post('/admin/users/toggle-active', [AdminController::class, 'toggleActive']);
+    $childClass->post('/admin/users/delete', [AdminController::class, 'deleteUser']);
+    $childClass->post('/admin/users/reset-password', [AdminController::class, 'resetPassword']);
+    $childClass->post('/admin/users/create', [AdminController::class, 'createAdmin']);
+    
+    // Platform Management
+    $childClass->get('/admin/platforms', [AdminController::class, 'platforms']);
+    $childClass->post('/admin/platforms/toggle', [AdminController::class, 'togglePlatform']);
+    $childClass->post('/admin/platforms/create', [AdminController::class, 'createPlatform']);
+    
+    // Scraper Management
+    $childClass->get('/admin/scraper', [AdminController::class, 'scraper']);
+    $childClass->post('/admin/scraper/trigger', [AdminController::class, 'triggerScrape']);
+    
+    // Activity Logs
+    $childClass->get('/admin/logs', [AdminController::class, 'logs']);
+    
+    // Reports
+    $childClass->get('/admin/reports', [AdminController::class, 'reports']);
+    $childClass->post('/admin/reports/update', [AdminController::class, 'updateReport']);
+    
+    // Product Verification
+    $childClass->get('/admin/products', [AdminController::class, 'products']);
+    $childClass->post('/admin/products/verify', [AdminController::class, 'verifyProduct']);
+    $childClass->post('/admin/products/bulk-delete', [AdminController::class, 'bulkDelete']);
+});
+
+// ─── Product Report (logged-in users) ──────────
+$route->middleware(['login'])->group(function ($childClass) {
+    $childClass->post('/product/report', [AdminController::class, 'submitReport']);
 });
 
 $route->middleware(['all'])->group(function ($childClass) {
     $prefix = 'api';
 
     $childClass->get("/$prefix/get-all-data", [LandingController::class, 'getAllData']);
+    
+    // Language Switcher Route
+    $childClass->get('/lang/switch', [LandingController::class, 'switchLanguage']);
 });
-
-

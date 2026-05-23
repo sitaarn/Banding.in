@@ -41,6 +41,30 @@ function isAdmin() {
 }
 
 /**
+ * Mengecek apakah user adalah seller
+ */
+function isSeller() {
+    startSession();
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'seller';
+}
+
+/**
+ * Mengecek apakah user adalah super admin
+ */
+function isSuperAdmin() {
+    startSession();
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'super_admin';
+}
+
+/**
+ * Mengecek apakah user adalah standard user (bukan admin dan bukan seller)
+ */
+function isStandardUser() {
+    startSession();
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'user';
+}
+
+/**
  * Mendapatkan data user yang sedang login
  */
 function getCurrentUser() {
@@ -123,6 +147,18 @@ function requireAdmin() {
     if (!isAdmin()) {
         setFlashMessage('error', 'Anda tidak memiliki akses ke halaman ini.');
         redirect(\BASE_URL . 'dashboard');
+        exit;
+    }
+}
+
+/**
+ * Redirect jika bukan super admin
+ */
+function requireSuperAdmin() {
+    requireLogin();
+    if (!isSuperAdmin()) {
+        setFlashMessage('error', 'Only Super Admin can access this page.');
+        redirect(\BASE_URL . 'landing');
         exit;
     }
 }
@@ -232,4 +268,20 @@ function sanitize($data) {
  */
 function e($string) {
     return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Log aktivitas user ke database
+ */
+function logActivity($action, $description = '') {
+    try {
+        $db = getDB();
+        $userId = $_SESSION['user_id'] ?? null;
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $sql = "INSERT INTO activity_logs (user_id, action, description, ip_address) VALUES (?, ?, ?, ?)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$userId, $action, $description, $ip]);
+    } catch (\Exception $e) {
+        // Silently fail — logging should not break the app
+    }
 }

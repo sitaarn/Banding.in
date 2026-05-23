@@ -155,13 +155,14 @@ class AuthController
             }
 
             if (empty($errors)) {
+                $role = isset($_POST['role']) && $_POST['role'] === 'seller' ? 'seller' : 'user';
                 // Buat user baru
                 $userId = $this->userModel->create([
                     'username' => $old['username'],
                     'email' => $old['email'],
                     'nama_lengkap' => $old['nama_lengkap'],  
                     'password' => $_POST['password'],
-                    'role' => 'user'
+                    'role' => $role
                 ]);
 
                 if ($userId) {

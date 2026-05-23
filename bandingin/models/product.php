@@ -48,9 +48,15 @@ class Product {
     }
 
     public function create($data) {
-        $sql = "INSERT INTO {$this->table} (name, image, category) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO {$this->table} (name, image, category, seller_id, status) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $result = $stmt->execute([$data['name'], $data['image'] ?? null, $data['category'] ?? null]);
+        $result = $stmt->execute([
+            $data['name'], 
+            $data['image'] ?? null, 
+            $data['category'] ?? null,
+            $data['seller_id'] ?? null,
+            $data['status'] ?? 'approved'
+        ]);
         if ($result) return $this->db->lastInsertId();
         return false;
     }
@@ -69,8 +75,67 @@ class Product {
     }
 
     public function delete($id) {
+        // First delete related product_prices
+        $sql = "DELETE FROM product_prices WHERE product_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        // Then delete product
         $sql = "DELETE FROM {$this->table} WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+    public function getPending() {
+        $sql = "SELECT p.*, u.username AS seller_name, pp.price, pp.link, pf.name AS platform_name
+                FROM {$this->table} p
+                LEFT JOIN users u ON p.seller_id = u.id
+                LEFT JOIN product_prices pp ON pp.product_id = p.id
+                LEFT JOIN platforms pf ON pp.platform_id = pf.id
+                WHERE p.status = 'pending'
+                ORDER BY p.created_at DESC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    public function getAllWithStatus() {
+        $sql = "SELECT p.*, u.username AS seller_name, pp.price, pp.link, pf.name AS platform_name
+                FROM {$this->table} p
+                LEFT JOIN users u ON p.seller_id = u.id
+                LEFT JOIN product_prices pp ON pp.product_id = p.id
+                LEFT JOIN platforms pf ON pp.platform_id = pf.id
+                ORDER BY p.created_at DESC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    public function updateStatus($id, $status) {
+        $sql = "UPDATE {$this->table} SET status = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$status, $id]);
+    }
+
+    public function bulkDeleteByPlatform($platformId) {
+        $sql = "DELETE pp FROM product_prices pp WHERE pp.platform_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$platformId]);
+
+        // Clean up orphaned products (products with no prices)
+        $sql = "DELETE p FROM products p LEFT JOIN product_prices pp ON p.id = pp.product_id WHERE pp.id IS NULL";
+        $stmt = $this->db->query($sql);
+
+        return true;
+    }
+
+    public function countByStatus($status) {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE status = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$status]);
+        return $stmt->fetchColumn();
+    }
+
+    public function count() {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchColumn();
     }
 }

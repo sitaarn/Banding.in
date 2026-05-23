@@ -22,7 +22,7 @@ class User {
      * Mendapatkan semua user
      */
     public function getAll() {
-        $sql = "SELECT id, username, email, nama_lengkap, created_at
+        $sql = "SELECT id, username, email, nama_lengkap, role, created_at
                 FROM {$this->table}
                 ORDER BY created_at DESC";
         $stmt = $this->db->query($sql);
@@ -107,8 +107,9 @@ class User {
      * Membuat user baru
      */
     public function create($data) {
-        $sql = "INSERT INTO {$this->table} (username, email, password, nama_lengkap)
-                VALUES (?, ?, ?, ?)";
+        $role = $data['role'] ?? 'user';
+        $sql = "INSERT INTO {$this->table} (username, email, password, nama_lengkap, role)
+                VALUES (?, ?, ?, ?, ?)";
 
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
@@ -116,6 +117,7 @@ class User {
             $data['email'],
             password_hash($data['password'], PASSWORD_DEFAULT),
             $data['nama_lengkap'],
+            $role
         ]);
 
         if ($result) {
@@ -204,5 +206,40 @@ class User {
         $sql = "SELECT COUNT(*) FROM {$this->table}";
         $stmt = $this->db->query($sql);
         return $stmt->fetchColumn();
+    }
+
+    public function countByRole($role) {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE role = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$role]);
+        return $stmt->fetchColumn();
+    }
+
+    public function updateRole($id, $role) {
+        $sql = "UPDATE {$this->table} SET role = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$role, $id]);
+    }
+
+    public function toggleActive($id) {
+        $sql = "UPDATE {$this->table} SET is_active = NOT is_active WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    public function resetPassword($id, $defaultPassword = 'password123') {
+        $sql = "UPDATE {$this->table} SET password = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([password_hash($defaultPassword, PASSWORD_DEFAULT), $id]);
+    }
+
+    public function getAllWithStats() {
+        $sql = "SELECT u.id, u.username, u.nama_lengkap, u.email, u.role, u.is_active, u.created_at,
+                (SELECT COUNT(*) FROM products p WHERE p.seller_id = u.id) AS product_count,
+                (SELECT COUNT(*) FROM favorites f WHERE f.user_id = u.id) AS favorite_count
+                FROM {$this->table} u
+                ORDER BY u.created_at DESC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
     }
 }

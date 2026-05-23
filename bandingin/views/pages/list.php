@@ -68,10 +68,18 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <div class="nav-links" id="navLinks">
       
       <?php if($is_logged_in) : ?> 
+        <?php if(!isSeller()) : ?>
         <button class="nav-btn favorite-nav-btn"
                 onclick="window.location.href='<?= $base ?>favorit'">
-          ❤️ Favorit Saya
+          ❤️ <?= __('favorite') ?>
         </button>
+        <?php else : ?>
+        <button class="nav-btn"
+                style="background: linear-gradient(135deg, #2ecad0, #2d5a9e) !important; color: white !important; border: none !important;"
+                onclick="window.location.href='<?= $base ?>seller/add'">
+          <i class="fa-solid fa-plus-circle"></i> <?= __('add_product') ?>
+        </button>
+        <?php endif; ?>
 
         <div class="user-chip-wrap" id="userChipWrap">
           <div class="user-chip" onclick="toggleDropdown()">
@@ -86,17 +94,32 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
               <div class="dropdown-info-label">Sedang login ✓</div>
             </div>
             <a class="dropdown-item" href="<?= $base ?>profile">
-              <span class="dropdown-icon">👤</span> Profil Saya
+              <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
             </a>
+            <?php if(isSuperAdmin()): ?>
+            <a class="dropdown-item" href="<?= $base ?>admin/dashboard">
+              <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
+            </a>
+            <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> Logout
+              <span class="dropdown-icon">🚪</span> <?= __('logout') ?>
             </div>
           </div>
         </div>
       <?php else: ?>
-        <button class="nav-btn" onclick="window.location.href='<?= $base ?>login'">Login</button>
+        <button class="nav-btn" onclick="window.location.href='<?= $base ?>login'"><?= __('login') ?></button>
       <?php endif; ?>
-      <button class="nav-btn" onclick="window.location.href='<?= $base ?>aboutus'">About Us</button>
+      <button class="nav-btn" onclick="window.location.href='<?= $base ?>aboutus'"><?= __('about_us') ?></button>
+      
+      <?php 
+        $currentLang = $_SESSION['lang'] ?? 'en';
+        $nextLang = $currentLang === 'en' ? 'id' : 'en';
+        $flag = $currentLang === 'en' ? '🇺🇸' : '🇮🇩';
+      ?>
+      <button class="nav-btn" style="border-radius: 50%; padding: 5px 10px; font-size: 1.2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= $base ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+        <?= $flag ?>
+      </button>
+
     </div>
   </nav>
 
@@ -104,20 +127,19 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <div class="search-wrapper">
       <img src="<?= $base ?>public/images/logo-b.png" alt="Banding.in" class="search-logo" />
       <div class="search-box">
-        <input class="search-input" id="searchInput" type="text" placeholder="Search and Compare Prices"/>
-        <button class="search-btn" onclick="doSearch()">Bandingkan</button>
+        <input class="search-input" id="searchInput" type="text" placeholder="<?= __('search_placeholder') ?>"/>
+        <button class="search-btn" onclick="doSearch()"><?= __('compare') ?></button>
       </div>
 
       <div class="platform-filter">
-        <button class="pf-btn active" data-platform="all"       onclick="togglePlatform(this)"><span class="pf-dot" style="background:#888"></span> Semua</button>
+        <button class="pf-btn active" data-platform="all"       onclick="togglePlatform(this)"><span class="pf-dot" style="background:#888"></span> <?= __('all') ?></button>
         <button class="pf-btn active" data-platform="tokopedia" onclick="togglePlatform(this)"><span class="pf-dot" style="background:#42b549"></span> Tokopedia</button>
-        <button class="pf-btn active" data-platform="shopee"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#ee4d2d"></span> Shopee</button>
         <button class="pf-btn active" data-platform="lazada"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#0f146b"></span> Lazada</button>
         <button class="pf-btn active" data-platform="blibli"    onclick="togglePlatform(this)"><span class="pf-dot" style="background:#0095d9"></span> Blibli</button>
       </div>
 
       <div class="most-searched" id="mostSearched">
-        <div class="most-searched-label">🔥 Most Searched Product</div>
+        <div class="most-searched-label">🔥 <?= __('most_searched') ?></div>
         <div class="most-searched-tags">
           <span class="ms-tag" onclick="fillSearch('iPhone 15')"><span class="ms-tag-icon">📱</span> iPhone 15</span>
           <span class="ms-tag" onclick="fillSearch('Samsung Galaxy S24')"><span class="ms-tag-icon">📱</span> Samsung Galaxy S24</span>
@@ -137,13 +159,9 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <div class="listing-shell">
       <aside class="ls-sidebar">
         <div class="ls-panel">
-          <div class="ls-panel-title">Platform</div>
+          <div class="ls-panel-title"><?= __('platform') ?></div>
           <div class="ls-platform-row on" data-pf="tokopedia" onclick="lsTogglePf(this)">
             <div class="ls-pf-dot" style="background:#42b549"></div> Tokopedia
-            <div class="ls-check"><svg class="ls-check-icon" width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          </div>
-          <div class="ls-platform-row on" data-pf="shopee" onclick="lsTogglePf(this)">
-            <div class="ls-pf-dot" style="background:#ee4d2d"></div> Shopee
             <div class="ls-check"><svg class="ls-check-icon" width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
           <div class="ls-platform-row on" data-pf="lazada" onclick="lsTogglePf(this)">
@@ -157,13 +175,13 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
         </div>
 
         <div class="ls-panel">
-          <div class="ls-panel-title">Urutkan</div>
-          <div class="ls-sort-row on" data-sort="cheapest"  onclick="lsSetSort(this)"><span class="ls-sort-icon">↑</span> Termurah</div>
-          <div class="ls-sort-row"    data-sort="expensive" onclick="lsSetSort(this)"><span class="ls-sort-icon">↓</span> Termahal</div>
+          <div class="ls-panel-title"><?= __('sort') ?></div>
+          <div class="ls-sort-row on" data-sort="cheapest"  onclick="lsSetSort(this)"><span class="ls-sort-icon">↑</span> <?= __('cheapest') ?></div>
+          <div class="ls-sort-row"    data-sort="expensive" onclick="lsSetSort(this)"><span class="ls-sort-icon">↓</span> <?= __('most_expensive') ?></div>
         </div>
 
         <div class="ls-panel">
-          <div class="ls-panel-title">Rentang Harga</div>
+          <div class="ls-panel-title"><?= __('price_range') ?></div>
           <div class="price-range-wrap">
             <div class="price-display">
               <div class="price-display-val" id="priceMinLabel">Rp 0</div>
@@ -176,7 +194,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
               <input class="slider-range" id="sliderMin" type="range" min="0" max="25000000" step="100000" value="0" oninput="updateSlider()"/>
               <input class="slider-range" id="sliderMax" type="range" min="0" max="25000000" step="100000" value="25000000" oninput="updateSlider()"/>
             </div>
-            <button class="apply-price-btn" onclick="lsApplyPrice()">Terapkan Filter</button>
+            <button class="apply-price-btn" onclick="lsApplyPrice()"><?= __('apply_filter') ?></button>
           </div>
         </div>
       </aside>
@@ -189,13 +207,12 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <div class="modal-box">
       <button class="modal-close-x" onclick="closeLoginModal()">✕</button>
       <div class="modal-icon">❤️</div>
-      <div class="modal-title">Simpan ke Favorit</div>
-      <div class="modal-sub">Masuk atau buat akun gratis untuk menyimpan produk favorit.</div>
+      <div class="modal-title"><?= __('save_to_favorite') ?></div>
+      <div class="modal-sub"><?= __('favorite_login_hint') ?></div>
       <div class="modal-actions">
-        <button class="modal-btn-login"    onclick="window.location.href='<?= $base ?>login'">Masuk</button>
-        <button class="modal-btn-register" onclick="window.location.href='<?= $base ?>login'">Daftar</button>
+        <button class="modal-btn-login"    onclick="window.location.href='<?= $base ?>login'"><?= __('login') ?></button>
       </div>
-      <button class="modal-close" onclick="closeLoginModal()">Lanjutkan tanpa akun</button>
+      <button class="modal-close" onclick="closeLoginModal()"><?= __('continue_without_account') ?></button>
     </div>
   </div>
 
@@ -203,6 +220,20 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
   <script>
     const APP_IS_LOGGED_IN = <?= $is_logged_in ? 'true' : 'false' ?>;
+    const IS_SELLER = <?= (isset($_SESSION['role']) && $_SESSION['role'] === 'seller') ? 'true' : 'false' ?>;
+    
+    // Translations for JS
+    const LANG = {
+        results_found: "<?= __('results_found') ?>",
+        updated_just_now: "<?= __('updated_just_now') ?>",
+        search_again: "<?= __('search_again') ?>",
+        no_products_found: "<?= __('no_products_found') ?>",
+        no_products_hint: "<?= __('no_products_hint') ?>",
+        no_products_price: "<?= __('no_products_price') ?>",
+        no_products_price_hint: "<?= __('no_products_price_hint') ?>",
+        visit: "<?= __('visit') ?>",
+        cheapest: "<?= __('cheapest') ?>"
+    };
   </script>
   <script src="<?= $base ?>public/js/list.js?v=<?= time(); ?>"></script>
 

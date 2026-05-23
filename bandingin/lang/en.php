@@ -1,0 +1,61 @@
+<?php
+return [
+    'login' => 'Login',
+    'about_us' => 'About Us',
+    'my_profile' => 'My Profile',
+    'logout' => 'Logout',
+    'favorite' => 'My Favorites',
+    'add_product' => 'Add Product',
+    'search' => 'Search',
+    'search_placeholder' => 'Search and Compare Prices',
+    'compare' => 'Compare',
+    'all' => 'All',
+    'most_searched' => 'Most Searched Products',
+    'platform' => 'Platform',
+    'sort' => 'Sort',
+    'cheapest' => 'Cheapest',
+    'most_expensive' => 'Most Expensive',
+    'price_range' => 'Price Range',
+    'apply_filter' => 'Apply Filter',
+    'results_found' => 'results found',
+    'updated_just_now' => 'updated just now',
+    'search_again' => 'Search again',
+    'no_products_found' => 'No products found',
+    'no_products_hint' => 'No matching products.<br>Try other keywords.',
+    'no_products_price' => 'No results in this price range',
+    'no_products_price_hint' => 'No products in this price range.<br>Try adjusting the filter.',
+    'visit' => 'Visit',
+    'save_to_favorite' => 'Save to Favorites',
+    'favorite_login_hint' => 'Log in or create a free account to save favorite products.',
+    'continue_without_account' => 'Continue without account',
+    
+    // Landing specific
+    'tagline' => 'find your best prices.',
+    
+    // Seller Add specific
+    'add_new_product' => 'Add New Product',
+    'product_name' => 'Item / Product Name',
+    'product_name_ph' => 'Example: iPhone 15 Pro Max',
+    'ecommerce_choice' => 'E-Commerce Choice',
+    'choose_ecommerce' => 'Choose E-commerce',
+    'product_link' => 'Product Link',
+    'product_link_err' => 'E-commerce link does not match the choice above!',
+    'product_price' => 'Item Price (Rp)',
+    'product_price_ph' => 'Example: 15000000',
+    'save_product' => 'Save Product',
+    'link_alert' => 'Make sure the product link matches the selected e-commerce!',
+
+    // Favorites page
+    'favorites_title' => 'Favorite Collection',
+    'favorites_desc' => 'Selected products you saved.',
+    'back_to_search' => 'Back to Search',
+    
+    // Super Admin & Reports
+    'admin_panel' => 'Admin Panel',
+    'report_mismatch' => 'Report Price Mismatch',
+    'report_reason' => 'Reason for reporting',
+    'report_reason_placeholder' => 'E.g. Price is drastically different, or product is totally different...',
+    'submit_report' => 'Submit Report',
+    'cancel' => 'Cancel',
+    'report' => 'Report',
+];

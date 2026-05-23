@@ -318,6 +318,7 @@ body::before{
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size:40px 40px;
   z-index:0;
+  pointer-events: none;
 }
 
 /* FLOATING BUBBLES */
@@ -332,6 +333,7 @@ body::after{
     radial-gradient(circle at 60% 20%, rgba(74,128,196,0.05) 0%, transparent 60%);
   animation:moveBackground 20s infinite alternate ease-in-out;
   z-index:0;
+  pointer-events: none;
 }
 
 @keyframes moveBackground{
@@ -341,4 +343,67 @@ body::after{
   100%{
     transform:translateY(-40px);
   }
+}
+
+.auth-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* ROLE TOGGLE */
+.role-toggle-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.role-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  display: flex;
+  position: relative;
+  width: 200px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.toggle-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg, #2ecad0, #2d5a9e);
+  border-radius: 30px;
+  transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1;
+}
+
+.toggle-btn {
+  flex: 1;
+  border: none;
+  background: none;
+  color: #e8edf2;
+  font-family: 'Lora', serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s;
+}
+
+.toggle-btn.active {
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.toggle-btn i {
+  margin-right: 5px;
 }

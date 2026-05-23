@@ -1,9 +1,6 @@
 """
 Scraper Lazada — Playwright Version (Perbaikan)
 ================================================
-Perbaikan: scroll lebih lambat, tunggu lazy-loading,
-dan strategi fallback yang lebih agresif.
-
 Cara Pakai:
   python scraper_lazada.py "iphone 15"
   python scraper_lazada.py "ps5 slim" --debug

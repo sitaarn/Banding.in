@@ -44,20 +44,32 @@
               <div class="dropdown-info-label">Sedang login ✓</div>
             </div>
             <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
-              <span class="dropdown-icon">👤</span> Profil Saya
+              <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
             </a>
+            <?php if(isSuperAdmin()): ?>
+            <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
+              <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
+            </a>
+            <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> Logout
+              <span class="dropdown-icon">🚪</span> <?= __('logout') ?>
             </div>
           </div>
         </div>
-        <button class="nav-btn" onclick="window.location.href='http://localhost/bandingin/aboutus'">About Us</button>
-
+        <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>aboutus'"><?= __('about_us') ?></button>
       <?php else: ?>
-        <button class="nav-btn" onclick="goToLogin()">Login</button>
-        <button class="nav-btn" onclick="window.location.href='http://localhost/bandingin/aboutus'">About Us</button>
+        <button class="nav-btn" onclick="goToLogin()"><?= __('login') ?></button>
+        <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>aboutus'"><?= __('about_us') ?></button>
       <?php endif; ?>
 
+      <?php 
+        $currentLang = $_SESSION['lang'] ?? 'en';
+        $nextLang = $currentLang === 'en' ? 'id' : 'en';
+        $flag = $currentLang === 'en' ? '🇺🇸' : '🇮🇩';
+      ?>
+      <button class="nav-btn" style="border-radius: 50%; padding: 5px 10px; font-size: 1.2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+        <?= $flag ?>
+      </button>
 
     </div>
   </nav>
@@ -66,7 +78,6 @@
     <div class="landing-center">
       <div class="platform-pills">
         <span class="pill">Tokopedia</span>
-        <span class="pill">Shopee</span>
         <span class="pill">Lazada</span>
         <span class="pill">Blibli</span>
       </div>
@@ -78,17 +89,17 @@
 
 
 
-      <p class="tagline">find your best prices.</p>
+      <p class="tagline"><?= __('tagline') ?></p>
 
       <div class="stats-row">
         <div class="stat">
-          <div class="stat-number">4</div>
+          <div class="stat-number">3</div>
           <div class="stat-label">PLATFORM</div>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
-          <div class="stat-number">Gratis</div>
-          <div class="stat-label">SELAMANYA</div>
+          <div class="stat-number">Easy</div>
+          <div class="stat-label">To Use</div>
         </div>
       </div>
     </div>

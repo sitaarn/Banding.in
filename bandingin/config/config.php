@@ -65,4 +65,5 @@ require_once INCLUDES_PATH . 'validation.php';
 require_once INCLUDES_PATH . 'FileHandler.php';
 require_once INCLUDES_PATH . 'view.php';
 require_once INCLUDES_PATH . 'Route.php';
+require_once INCLUDES_PATH . 'lang.php';
 

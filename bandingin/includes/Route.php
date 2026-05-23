@@ -17,6 +17,9 @@ class Route {
             'login' => function () { return \isLoggedIn(); },
             'guest' => function () { return \isGuest(); },
             'admin' => function () { return \isAdmin(); },
+            'super_admin' => function () { return \isSuperAdmin(); },
+            'seller' => function () { return \isSeller(); },
+            'user' => function () { return \isStandardUser(); },
             'all' => function () { return true; }
         ];   
     }

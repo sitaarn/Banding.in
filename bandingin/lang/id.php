@@ -1,0 +1,61 @@
+<?php
+return [
+    'login' => 'Masuk',
+    'about_us' => 'Tentang Kami',
+    'my_profile' => 'Profil Saya',
+    'logout' => 'Keluar',
+    'favorite' => 'Favorit Saya',
+    'add_product' => 'Tambah Produk',
+    'search' => 'Cari',
+    'search_placeholder' => 'Cari dan Bandingkan Harga',
+    'compare' => 'Bandingkan',
+    'all' => 'Semua',
+    'most_searched' => 'Produk Paling Sering Dicari',
+    'platform' => 'Platform',
+    'sort' => 'Urutkan',
+    'cheapest' => 'Termurah',
+    'most_expensive' => 'Termahal',
+    'price_range' => 'Rentang Harga',
+    'apply_filter' => 'Terapkan Filter',
+    'results_found' => 'hasil ditemukan',
+    'updated_just_now' => 'diperbarui barusan',
+    'search_again' => 'Cari lagi',
+    'no_products_found' => 'Produk tidak ditemukan',
+    'no_products_hint' => 'Tidak ada produk yang cocok.<br>Coba kata kunci lain.',
+    'no_products_price' => 'Tidak ada hasil di rentang harga ini',
+    'no_products_price_hint' => 'Tidak ada produk di rentang harga ini.<br>Coba sesuaikan filter.',
+    'visit' => 'Kunjungi',
+    'save_to_favorite' => 'Simpan ke Favorit',
+    'favorite_login_hint' => 'Masuk atau buat akun gratis untuk menyimpan produk favorit.',
+    'continue_without_account' => 'Lanjutkan tanpa akun',
+    
+    // Landing specific
+    'tagline' => 'temukan harga terbaikmu.',
+    
+    // Seller Add specific
+    'add_new_product' => 'Tambah Produk Baru',
+    'product_name' => 'Nama Barang / Product',
+    'product_name_ph' => 'Contoh: iPhone 15 Pro Max',
+    'ecommerce_choice' => 'Pilihan E-Commerce',
+    'choose_ecommerce' => 'Pilih E-commerce',
+    'product_link' => 'Link Product',
+    'product_link_err' => 'Link e-commerce tidak sesuai dengan pilihan di atas!',
+    'product_price' => 'Harga Barang (Rp)',
+    'product_price_ph' => 'Contoh: 15000000',
+    'save_product' => 'Simpan Produk',
+    'link_alert' => 'Pastikan link product sesuai dengan e-commerce yang dipilih!',
+
+    // Favorites page
+    'favorites_title' => 'Koleksi Favorit',
+    'favorites_desc' => 'Produk pilihan yang kamu simpan.',
+    'back_to_search' => 'Kembali ke Pencarian',
+
+    // Super Admin & Reports
+    'admin_panel' => 'Panel Admin',
+    'report_mismatch' => 'Laporkan Harga Tidak Sesuai',
+    'report_reason' => 'Alasan pelaporan',
+    'report_reason_placeholder' => 'Misal: Harga jauh berbeda, atau produk berbeda...',
+    'submit_report' => 'Kirim Laporan',
+    'cancel' => 'Batal',
+    'report' => 'Laporkan',
+];

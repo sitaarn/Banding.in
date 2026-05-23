@@ -52,6 +52,11 @@
             <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
               <span class="dropdown-icon">👤</span> Profil Saya
             </a>
+            <?php if(isSuperAdmin()): ?>
+            <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
+              <span class="dropdown-icon">🛡️</span> Panel Admin
+            </a>
+            <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
               <span class="dropdown-icon">🚪</span> Logout
             </div>

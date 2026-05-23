@@ -284,13 +284,13 @@ function renderListing() {
       <div class="ls-topbar">
         <div class="ls-query-info">
           <div class="ls-query-title">${lsCurrentQuery}</div>
-          <div class="ls-query-meta">Produk tidak ditemukan</div>
+          <div class="ls-query-meta">${LANG.no_products_found}</div>
         </div>
-        <button class="ls-back-btn" onclick="backToSearch()">\u2190 Cari lagi</button>
+        <button class="ls-back-btn" onclick="backToSearch()">\u2190 ${LANG.search_again}</button>
       </div>
       <div class="ls-empty">
         <div class="ls-empty-icon">\uD83D\uDD0D</div>
-        <div class="ls-empty-text">Tidak ada produk yang cocok.<br>Coba kata kunci lain.</div>
+        <div class="ls-empty-text">${LANG.no_products_hint}</div>
       </div>`;
     return;
   }
@@ -322,13 +322,13 @@ function renderListing() {
       <div class="ls-topbar">
         <div class="ls-query-info">
           <div class="ls-query-title">${lsCurrentQuery}</div>
-          <div class="ls-query-meta">Tidak ada hasil di rentang harga ini</div>
+          <div class="ls-query-meta">${LANG.no_products_price}</div>
         </div>
-        <button class="ls-back-btn" onclick="backToSearch()">\u2190 Cari lagi</button>
+        <button class="ls-back-btn" onclick="backToSearch()">\u2190 ${LANG.search_again}</button>
       </div>
       <div class="ls-empty">
         <div class="ls-empty-icon">\uD83D\uDD0D</div>
-        <div class="ls-empty-text">Tidak ada produk di rentang harga ini.<br>Coba sesuaikan filter.</div>
+        <div class="ls-empty-text">${LANG.no_products_price_hint}</div>
       </div>`;
     return;
   }
@@ -341,6 +341,8 @@ function renderListing() {
     const visitTarget = visitLink !== '#' ? 'target="_blank"' : '';
     const visitOnclick = visitLink === '#' ? 'return false' : '';
 
+    const favButton = !IS_SELLER ? `<button class="ls-btn-save" onclick="toggleSave(this, event, ${item.id}, '${item.platform}')" title="Save">\u2661</button>` : '';
+
     return `
       <div class="ls-card">
         <div class="ls-card-rank ${idx === 0 ? 'gold' : ''}">${idx + 1}</div>
@@ -351,7 +353,7 @@ function renderListing() {
               <div class="ls-card-sub">${item.sub}</div>
             </div>
             <div class="ls-card-badges">
-              ${isCheapest ? '<span class="ls-badge ls-badge-cheap">Termurah</span>' : ''}
+              ${isCheapest ? `<span class="ls-badge ls-badge-cheap">${LANG.cheapest}</span>` : ''}
             </div>
           </div>
           <div class="ls-platform-tag">
@@ -363,8 +365,9 @@ function renderListing() {
               <span class="ls-card-price ${isCheapest ? 'best' : ''}">Rp ${item.price.toLocaleString('id-ID')}</span>
             </div>
             <div class="ls-card-actions">
-              <button class="ls-btn-save" onclick="toggleSave(this, event, ${item.id}, '${item.platform}')" title="Simpan ke Favorit">\u2661</button>
-              <a class="ls-btn-visit" href="${visitLink}" ${visitTarget} onclick="${visitOnclick}">Kunjungi \u2192</a>
+              ${favButton}
+              ${!IS_SELLER ? `<button class="ls-btn-report" onclick="openReportModal(event, ${item.id}, '${item.platform}')" title="${LANG.report}">\uD83D\uDEA9</button>` : ''}
+              <a class="ls-btn-visit" href="${visitLink}" ${visitTarget} onclick="${visitOnclick}">${LANG.visit} \u2192</a>
             </div>
           </div>
         </div>
@@ -376,10 +379,10 @@ function renderListing() {
       <div class="ls-query-info">
         <div class="ls-query-title">${lsCurrentQuery}</div>
         <div class="ls-query-meta">
-          <strong>${items.length} hasil</strong> ditemukan \u00B7 diperbarui barusan
+          <strong>${items.length} ${LANG.results_found}</strong> \u00B7 ${LANG.updated_just_now}
         </div>
       </div>
-      <button class="ls-back-btn" onclick="backToSearch()">\u2190 Cari lagi</button>
+      <button class="ls-back-btn" onclick="backToSearch()">\u2190 ${LANG.search_again}</button>
     </div>
     ${cards}`;
 }
@@ -406,6 +409,60 @@ function mockLogin() {
   localStorage.setItem('loggedIn', 'true');
   closeLoginModal();
   showToast('✓ Login berhasil! Sekarang kamu bisa simpan favorit.');
+}
+
+/* REPORT MODAL */
+let currentReportProduct = null;
+let currentReportPlatform = null;
+
+function openReportModal(e, productId, platform) {
+  e.stopPropagation();
+  if (typeof APP_IS_LOGGED_IN !== 'undefined' && !APP_IS_LOGGED_IN) {
+    showLoginModal();
+    return;
+  }
+  currentReportProduct = productId;
+  currentReportPlatform = platform;
+  document.getElementById('reportReason').value = '';
+  document.getElementById('reportModal').classList.add('visible');
+}
+
+function closeReportModal() {
+  document.getElementById('reportModal').classList.remove('visible');
+  currentReportProduct = null;
+  currentReportPlatform = null;
+}
+
+async function submitReport() {
+  const reason = document.getElementById('reportReason').value.trim();
+  if (!reason) {
+    showToast('Harap isi alasan pelaporan.', true);
+    return;
+  }
+  
+  const btn = document.getElementById('btnSubmitReport');
+  btn.disabled = true;
+  btn.textContent = '⏳';
+  
+  try {
+    const response = await fetch('http://localhost/bandingin/product/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id: currentReportProduct, platform_id: 1 /* Mocked platform ID since items might use names */, reason: reason })
+    });
+    const result = await response.json();
+    if (result.success) {
+      showToast(result.message || 'Laporan terkirim.');
+      closeReportModal();
+    } else {
+      showToast(result.error || 'Gagal mengirim laporan', true);
+    }
+  } catch (error) {
+    showToast('Terjadi kesalahan.', true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = LANG.submit_report;
+  }
 }
 
 /* PRICE SLIDER */
