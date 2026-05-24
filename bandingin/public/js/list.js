@@ -4,7 +4,6 @@
 var mockData = {
   platforms: {
     tokopedia: { color: '#42b549', label: 'Tokopedia' },
-    shopee: { color: '#ee4d2d', label: 'Shopee' },
     lazada: { color: '#0f146b', label: 'Lazada' },
     blibli: { color: '#0095d9', label: 'Blibli' }
   },
@@ -12,7 +11,7 @@ var mockData = {
 };
 
 // Menggunakan endpoint PHP yang sudah jalan dan terhubung ke MySQL
-fetch('http://localhost/bandingin/models/get_products.php')
+fetch('/bandingin/models/get_products.php')
   .then(res => res.json())
   .then(data => {
     const grouped = {};
@@ -59,7 +58,7 @@ let userFavorites = [];
 
 // Jika user login, ambil data favorit
 if (typeof APP_IS_LOGGED_IN !== 'undefined' && APP_IS_LOGGED_IN) {
-  fetch('http://localhost/bandingin/favorites')
+  fetch('/bandingin/favorites')
     .then(res => res.json())
     .then(result => {
       if (result.success && result.data) {
@@ -69,11 +68,10 @@ if (typeof APP_IS_LOGGED_IN !== 'undefined' && APP_IS_LOGGED_IN) {
     .catch(err => console.error("Error fetching favorites:", err));
 }
 
-const PF_COLORS = { tokopedia: '#42b549', shopee: '#ee4d2d', lazada: '#0f146b', blibli: '#0095d9' };
-const PF_LABELS = { tokopedia: 'Tokopedia', shopee: 'Shopee', lazada: 'Lazada', blibli: 'Blibli' };
+const PF_COLORS = { tokopedia: '#42b549', lazada: '#0f146b', blibli: '#0095d9' };
+const PF_LABELS = { tokopedia: 'Tokopedia', lazada: 'Lazada', blibli: 'Blibli' };
 const PF_RATINGS = {
   tokopedia: { star: '4.9', count: '2.341' },
-  shopee: { star: '4.8', count: '1.820' },
   lazada: { star: '4.7', count: '956' },
   blibli: { star: '4.6', count: '612' }
 };
@@ -103,7 +101,7 @@ function formatPrice(v) {
 /* STATE LISTING */
 let lsCurrentQuery = '';
 let lsSort = 'cheapest';
-let lsActivePf = ['tokopedia', 'shopee', 'lazada', 'blibli'];
+let lsActivePf = ['tokopedia', 'lazada', 'blibli'];
 let lsPriceMin = 0;
 let lsPriceMax = 25000000;
 let isLoggedIn = false;
@@ -111,7 +109,7 @@ let isLoggedIn = false;
 /* NAVIGASI */
 function goToListing(query) {
   lsCurrentQuery = query;
-  lsActivePf = ['tokopedia', 'shopee', 'lazada', 'blibli'];
+  lsActivePf = ['tokopedia', 'lazada', 'blibli'];
   lsSort = 'cheapest';
   lsPriceMin = 0;
   lsPriceMax = 25000000;
@@ -268,7 +266,7 @@ async function toggleSave(btn, e, id, platform) {
   const originalText = btn.textContent;
   btn.textContent = '⏳';
   try {
-    const response = await fetch('http://localhost/bandingin/favorit/toggle', {
+    const response = await fetch('/bandingin/favorit/toggle', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product_id: id, platform: platform })
@@ -359,7 +357,7 @@ function renderListing() {
   const globalMin = Math.min(...items.map(i => i.price));
 
   const cards = items.map((item, idx) => {
-    const isCheapest = idx === 0;
+    const isCheapest = item.price === globalMin && globalMin > 0;
     const visitLink = item.link && item.link !== '#' ? item.link : '#';
     const visitTarget = visitLink !== '#' ? 'target="_blank"' : '';
     const visitOnclick = visitLink === '#' ? 'return false' : '';
@@ -369,7 +367,7 @@ function renderListing() {
 
     return `
       <div class="ls-card">
-        <div class="ls-card-rank ${idx === 0 ? 'gold' : ''}">${idx + 1}</div>
+        <div class="ls-card-rank ${isCheapest ? 'gold' : ''}">${idx + 1}</div>
         <div class="ls-card-body">
           <div class="ls-card-top">
             <div>
@@ -497,7 +495,6 @@ async function submitReport() {
   btn.textContent = '⏳';
   
   const platformMap = {
-    'shopee': 1,
     'tokopedia': 2,
     'lazada': 3,
     'blibli': 4
@@ -505,7 +502,7 @@ async function submitReport() {
   const mappedPlatformId = platformMap[currentReportPlatform] || 1;
 
   try {
-    const response = await fetch('http://localhost/bandingin/product/report', {
+    const response = await fetch('/bandingin/product/report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product_id: currentReportProduct, platform_id: mappedPlatformId, reason: reason })
@@ -575,9 +572,9 @@ document.addEventListener('click', function (e) {
 });
 function doLogout() {
   localStorage.removeItem('loggedIn');
-  window.location.href = 'http://localhost/bandingin/logout';
+  window.location.href = '/bandingin/logout';
 }
-function goToLogin() { window.location.href = 'http://localhost/bandingin/login'; }
-function goToListingPage(query) { window.location.href = 'http://localhost/bandingin/list?q=' + query; }
+function goToLogin() { window.location.href = '/bandingin/login'; }
+function goToListingPage(query) { window.location.href = '/bandingin/list?q=' + query; }
 
 window.addEventListener('DOMContentLoaded', initSlider);

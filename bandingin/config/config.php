@@ -6,7 +6,7 @@
  * 
  */
 
-// Deteksi environment (development atau production)
+// Ini tuh buat Deteksi environment (development atau production)
 define('ENVIRONMENT', 'development'); // Ubah ke 'production' saat hosting
 
 // Konfigurasi Error Reporting
@@ -21,11 +21,18 @@ if (ENVIRONMENT === 'development') {
 }
 
 // Base URL Aplikasi
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+           (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) || 
+           (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
+$protocol = $isHttps ? 'https://' : 'http://';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$baseUrl = $protocol . $host . '/bandingin/';
+
 if (ENVIRONMENT === 'development') {
-    define('BASE_URL', 'https://retrial-blaspheme-juice.ngrok-free.dev/bandingin/');
+    define('BASE_URL', $baseUrl);
     define('FIRSTSECTION_URI', '/bandingin');
 } else {
-    define('BASE_URL', 'https://yourdomain.com/');
+    define('BASE_URL', $baseUrl);
     define('FIRSTSECTION_URI', '/bandingin');
 }
 

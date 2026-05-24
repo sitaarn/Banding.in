@@ -40,7 +40,7 @@
   <div class="features">
     <div class="feature-card">
       <div class="feature-title">One search, all platforms</div>
-      <p class="feature-desc">Tokopedia, Shopee, Lazada, Blibli, semua hasil dalam satu pencarian.</p>
+      <p class="feature-desc">Tokopedia, Lazada, Blibli, semua hasil dalam satu pencarian.</p>
     </div>
     <div class="feature-card">
       <div class="feature-title">Cheapest, highlighted</div>
@@ -53,7 +53,7 @@
   </div>
 
   <div class="cta-group">
-    <button class="btn-primary" onclick="window.location.href='http://localhost/bandingin/list'">Coba Sekarang!</button>
+    <button class="btn-primary" onclick="window.location.href='/bandingin/list'">Coba Sekarang!</button>
     <button class="btn-secondary" onclick="window.location.href='https://wa.me/qr/5KDJCWFAN3IUO1'">Hubungi Kami</button>
   </div>
 </main>

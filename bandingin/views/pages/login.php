@@ -98,5 +98,48 @@
   </div>
 
   <script src="<?= BASE_URL ?>public/js/auth.js?v=<?= time() ?>"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <?php
+    $flash = getFlashMessage();
+    if ($flash) {
+        $icon = $flash['type'] === 'success' ? 'success' : 'error';
+        $title = $flash['type'] === 'success' ? 'Berhasil' : 'Gagal';
+        echo "<script>
+            Swal.fire({
+                icon: '{$icon}',
+                title: '{$title}',
+                text: '" . addslashes($flash['message']) . "',
+                background: '#1a2744',
+                color: '#e8edf2',
+                confirmButtonColor: '#2ecad0',
+                customClass: { popup: 'swal-custom' },
+                heightAuto: false
+            });
+        </script>";
+    }
+    if (isset($_SESSION['errors_messages']) && !empty($_SESSION['errors_messages'])) {
+        $errs = $_SESSION['errors_messages'];
+        $errStr = is_array($errs) ? implode("\\n", $errs) : $errs;
+        echo "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '" . addslashes($errStr) . "',
+                background: '#1a2744',
+                color: '#e8edf2',
+                confirmButtonColor: '#2ecad0',
+                customClass: { popup: 'swal-custom' },
+                heightAuto: false
+            });
+        </script>";
+        unset($_SESSION['errors_messages']);
+    }
+  ?>
+  <style>
+      .swal-custom {
+          border: 1px solid rgba(255,255,255,0.1);
+          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      }
+  </style>
 </body>
 </html>

@@ -27,6 +27,7 @@ $route = new Route();
 startSession();
 
 $route->middleware(['guest'])->group(function ($childClass) {
+    $childClass->get('/', [LandingController::class, 'index']);
     $childClass->get('/landing', [LandingController::class, 'index']);
     $childClass->get('/aboutus', [LandingController::class, 
         'aboutus']);
@@ -41,6 +42,7 @@ $route->middleware(['guest'])->group(function ($childClass) {
 });
 
 $route->middleware(['login'])->group(function ($childClass) {
+    $childClass->get('/', [LandingController::class, 'index']);
     $childClass->get('/landing', [LandingController::class, 
         'index']);
     $childClass->get('/aboutus', [LandingController::class, 

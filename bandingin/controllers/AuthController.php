@@ -71,6 +71,20 @@ class AuthController
             $user = $this->userModel->authenticate($username, $password);
 
             if ($user) {
+                $loginRole = $_POST['role'] ?? 'user';
+
+                if ($loginRole === 'seller' && $user['role'] !== 'seller') {
+                    setFlashMessage('error', 'Gagal: Akun ini bukan akun Seller.');
+                    redirect(\BASE_URL . 'login');
+                    return;
+                }
+                
+                if ($loginRole === 'user' && $user['role'] === 'seller') {
+                    setFlashMessage('error', 'Gagal: Akun ini adalah akun Seller.');
+                    redirect(\BASE_URL . 'login');
+                    return;
+                }
+
                 // Set session
                 setUserSession($user);
 
@@ -81,10 +95,9 @@ class AuthController
                     setRememberCookie($token);
                 }
 
-                setFlashMessage('success', 'Selamat datang, ' . $user['nama'] . '!');
                 redirect(\BASE_URL . 'landing');
             } else {
-                $_SESSION['errors_messages'] = 'Username atau password salah.';
+                setFlashMessage('error', 'Username atau password salah.');
                 redirect(\BASE_URL . 'login');
             }
         } else {

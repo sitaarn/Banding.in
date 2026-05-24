@@ -98,6 +98,15 @@ input:focus{
   border-color:#2ecad0;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #0d1b2a inset !important;
+    -webkit-text-fill-color: #e8edf2 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .primary-btn{
   width:100%;
   background:#2d5a9e;

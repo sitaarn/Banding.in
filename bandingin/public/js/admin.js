@@ -10,7 +10,6 @@ let deleteTargetId = null;
 
 const PLATFORM_COLORS = {
   tokopedia: '#42b549',
-  shopee: '#ee4d2d',
   lazada: '#0f146b',
   blibli: '#0095d9',
 };
@@ -43,7 +42,7 @@ function loadInitialData() {
       {
         id: 2,
         name: 'MacBook Air M2',
-        platform: 'shopee',
+        platform: 'lazada',
         category: 'laptop',
         price: 15999000,
         orig_price: 17999000,
@@ -148,7 +147,7 @@ function renderProductList() {
 
 function updateStatsAndSidebar() {
   const total = products.length;
-  const counts = { tokopedia: 0, shopee: 0, lazada: 0, blibli: 0 };
+  const counts = { tokopedia: 0, lazada: 0, blibli: 0 };
   let totalPrice = 0;
   products.forEach((p) => {
     counts[p.platform]++;
@@ -164,7 +163,6 @@ function updateStatsAndSidebar() {
   const statBli = document.getElementById('statBli');
   if (statTotal) statTotal.innerText = total;
   if (statTok) statTok.innerText = counts.tokopedia;
-  if (statShop) statShop.innerText = counts.shopee;
   if (statLaz) statLaz.innerText = counts.lazada;
   if (statBli) statBli.innerText = counts.blibli;
 
@@ -174,7 +172,6 @@ function updateStatsAndSidebar() {
     statsGrid.innerHTML = `
       <div class="adm-stat-card"><div>📦</div><div style="font-size:1.8rem">${total}</div><div>Total Produk</div></div>
       <div class="adm-stat-card"><div>🟢</div><div style="font-size:1.6rem">${counts.tokopedia}</div><div>Tokopedia</div></div>
-      <div class="adm-stat-card"><div>🔴</div><div>${counts.shopee}</div><div>Shopee</div></div>
       <div class="adm-stat-card"><div>🔵</div><div>${counts.lazada}</div><div>Lazada</div></div>
       <div class="adm-stat-card"><div>💙</div><div>${counts.blibli}</div><div>Blibli</div></div>
       <div class="adm-stat-card"><div>💰</div><div>Rp ${Math.round(avgPrice).toLocaleString()}</div><div>Rata Harga</div></div>
@@ -184,7 +181,7 @@ function updateStatsAndSidebar() {
   // bar chart container
   const barDiv = document.getElementById('barChartContainer');
   if (barDiv) {
-    const platformList = ['tokopedia', 'shopee', 'lazada', 'blibli'];
+    const platformList = ['tokopedia', 'lazada', 'blibli'];
     const totalProd = total || 1;
     barDiv.innerHTML =
       `<div class="ls-panel-title">Distribusi Platform</div>` +

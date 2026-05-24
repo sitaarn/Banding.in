@@ -39,7 +39,6 @@ class SellerController {
         
         // E-commerce names corresponding to platform_id
         $platforms = [
-            1 => 'shopee',
             2 => 'tokopedia',
             3 => 'lazada',
             4 => 'blibli'

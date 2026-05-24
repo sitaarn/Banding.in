@@ -22,10 +22,10 @@
               <div class="dropdown-info-name">${userName}</div>
               <div class="dropdown-info-label">${userEmail}</div>
             </div>
-            <a class="dropdown-item" href="http://localhost/bandingin/profile">
+            <a class="dropdown-item" href="/bandingin/profile">
               <span class="dropdown-icon">👤</span> Profil Saya
             </a>
-            <a class="dropdown-item" href="http://localhost/bandingin/search">
+            <a class="dropdown-item" href="/bandingin/search">
               <span class="dropdown-icon">🔍</span> Cari Produk
             </a>
             <div class="dropdown-item logout" onclick="doLogout()">
@@ -33,12 +33,12 @@
             </div>
           </div>
         </div>
-        <button class="nav-btn" onclick="window.location.href='http://localhost/bandingin/landing'">Home</button>
+        <button class="nav-btn" onclick="window.location.href='/bandingin/landing'">Home</button>
       `;
     } else {
       navButtons.innerHTML = `
         <button class="nav-btn" onclick="window.location.href='login.html'">Login</button>
-        <button class="nav-btn" onclick="window.location.href='http://localhost/bandingin/landing'">Home</button>
+        <button class="nav-btn" onclick="window.location.href='/bandingin/landing'">Home</button>
       `;
     }
   }

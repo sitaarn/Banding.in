@@ -1,10 +1,10 @@
 function goToSearch() {
-  window.location.href = 'http://localhost/bandingin/list';
+  window.location.href = '/bandingin/list';
 }
 
 function goToLogin() {
   localStorage.setItem('redirectAfterLogin', window.location.href);
-  window.location.href = 'http://localhost/bandingin/login';
+  window.location.href = '/bandingin/login';
 }
 
 function toggleDropdown() {
@@ -16,7 +16,7 @@ function doLogout() {
   localStorage.removeItem('loggedIn');
   localStorage.removeItem('userName');
   localStorage.removeItem('userEmail');
-  window.location.href = 'http://localhost/bandingin/logout';
+  window.location.href = '/bandingin/logout';
 }
 
 

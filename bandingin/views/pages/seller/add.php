@@ -63,6 +63,9 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     .alert { padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 0.95rem; font-family: system-ui, -apple-system, sans-serif; font-weight: 500; text-align: center; }
     .alert-success { background: rgba(46,202,208,0.15); color: #2ecad0; border: 1px solid rgba(46,202,208,0.3); }
     .alert-error { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); }
+    
+    body { overflow-y: auto !important; }
+    .main-card { margin-bottom: 60px; }
   </style>
 </head>
 <body>
@@ -84,10 +87,10 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
         <?php 
           $currentLang = $_SESSION['lang'] ?? 'en';
           $nextLang = $currentLang === 'en' ? 'id' : 'en';
-          $flag = $currentLang === 'en' ? '🇺🇸' : '🇮🇩';
+          $flagImg = $currentLang === 'en' ? 'https://flagcdn.com/w40/us.png' : 'https://flagcdn.com/w40/id.png';
         ?>
-        <button class="nav-btn" style="border-radius: 50%; padding: 5px 10px; font-size: 1.2rem;" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
-          <?= $flag ?>
+        <button class="nav-btn" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+          <img src="<?= $flagImg ?>" alt="flag" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
         </button>
     </div>
   </nav>
@@ -120,7 +123,6 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
                   <label for="platform_id"><?= __('ecommerce_choice') ?></label>
                   <select class="form-select" id="platform_id" name="platform_id" required>
                       <option value="" disabled selected><?= __('choose_ecommerce') ?></option>
-                      <option value="1" data-domain="shopee">Shopee</option>
                       <option value="2" data-domain="tokopedia">Tokopedia</option>
                       <option value="3" data-domain="lazada">Lazada</option>
                       <option value="4" data-domain="blibli">Blibli</option>

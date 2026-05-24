@@ -34,7 +34,6 @@
     <div class="landing-center">
       <div class="platform-pills">
         <span class="pill">Tokopedia</span>
-        <span class="pill">Shopee</span>
         <span class="pill">Lazada</span>
         <span class="pill">Blibli</span>
       </div>

@@ -29,7 +29,7 @@
 
   <!-- Navigation (identik) -->
   <nav>
-    <span class="nav-brand" onclick="window.location.href='http://localhost/bandingin/landing'">
+    <span class="nav-brand" onclick="window.location.href='<?= (defined('BASE_URL') ? BASE_URL : '/') . 'landing' ?>'">
       Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
     </span>
     <div class="nav-links">
@@ -98,7 +98,6 @@
                   <select class="adm-input adm-select" id="fPlatform" name="platform">
                     <option value="">— Pilih Platform —</option>
                     <option value="tokopedia">Tokopedia</option>
-                    <option value="shopee">Shopee</option>
                     <option value="lazada">Lazada</option>
                     <option value="blibli">Blibli</option>
                   </select>
@@ -243,11 +242,6 @@
               <div class="adm-stat-card-lbl">Tokopedia</div>
             </div>
             <div class="adm-stat-card">
-              <div class="adm-stat-card-icon" style="background:rgba(238,77,45,.15)">🔴</div>
-              <div class="adm-stat-card-val"><?= $countByPlatform['shopee'] ?? 0 ?></div>
-              <div class="adm-stat-card-lbl">Shopee</div>
-            </div>
-            <div class="adm-stat-card">
               <div class="adm-stat-card-icon" style="background:rgba(15,20,107,.12)">🔵</div>
               <div class="adm-stat-card-val"><?= $countByPlatform['lazada'] ?? 0 ?></div>
               <div class="adm-stat-card-lbl">Lazada</div>
@@ -268,7 +262,7 @@
           <div class="adm-form-card" style="margin-top:0">
             <div class="ls-panel-title" style="margin-bottom:16px">Distribusi Platform</div>
             <?php
-              $platforms = ['tokopedia'=>['#42b549','Tokopedia'], 'shopee'=>['#ee4d2d','Shopee'], 'lazada'=>['#0f146b','Lazada'], 'blibli'=>['#0095d9','Blibli']];
+              $platforms = ['tokopedia'=>['#42b549','Tokopedia'], 'lazada'=>['#0f146b','Lazada'], 'blibli'=>['#0095d9','Blibli']];
               $total = max(1, $totalProducts ?? 1);
               foreach($platforms as $key => [$color, $label]):
                 $count = $countByPlatform[$key] ?? 0;
@@ -417,8 +411,8 @@
 
     const rows  = wrap.querySelectorAll('.adm-product-row');
     const num   = rows.length + 1;
-    const pfColors = { tokopedia:'#42b549', shopee:'#ee4d2d', lazada:'#0f146b', blibli:'#0095d9' };
-    const pfAbbr   = { tokopedia:'T', shopee:'S', lazada:'L', blibli:'B' };
+    const pfColors = { tokopedia:'#42b549', lazada:'#0f146b', blibli:'#0095d9' };
+    const pfAbbr   = { tokopedia:'T', lazada:'L', blibli:'B' };
     const color = pfColors[p.platform] || '#888';
     const abbr  = pfAbbr[p.platform]  || '?';
 

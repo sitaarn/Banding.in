@@ -32,11 +32,21 @@
     </span>
     <div class="nav-links">
       <?php if(isLoggedIn()) : ?>
-
-        <!-- Tombol Cari Produk -->
         <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>list'">Cari Produk</button>
+        
+        <?php if(isSeller()) : ?>
+        <button class="nav-btn"
+                style="background: linear-gradient(135deg, #2ecad0, #2d5a9e) !important; color: white !important; border: none !important;"
+                onclick="window.location.href='<?= BASE_URL ?>seller/add'">
+          <i class="fa-solid fa-plus-circle"></i> Add Product
+        </button>
+        <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
+        <button class="nav-btn favorite-nav-btn"
+                onclick="window.location.href='<?= BASE_URL ?>favorit'">
+          ❤️ Favorite
+        </button>
+        <?php endif; ?>
 
-        <!-- User Chip dengan Dropdown -->
         <div class="user-chip-wrap" id="userChipWrap">
           <div class="user-chip" onclick="toggleDropdown()">
             <div class="user-avatar" id="userAvatar" data-avatar="<?= $_SESSION['nama_lengkap'] ?>"></div>
@@ -62,7 +72,17 @@
             </div>
           </div>
         </div>
+
         <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>aboutus'">About Us</button>
+
+        <?php 
+          $currentLang = $_SESSION['lang'] ?? 'en';
+          $nextLang = $currentLang === 'en' ? 'id' : 'en';
+          $flagImg = $currentLang === 'en' ? 'https://flagcdn.com/w40/us.png' : 'https://flagcdn.com/w40/id.png';
+        ?>
+        <button class="nav-btn" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+          <img src="<?= $flagImg ?>" alt="flag" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+        </button>
 
       <?php else: ?>
         <!-- Redirect ke login jika belum login -->

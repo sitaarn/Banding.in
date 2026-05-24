@@ -22,10 +22,23 @@
 
 <!-- Navigation -->
 <nav id="mainNav">
-  <a class="nav-brand" href="<?= BASE_URL ?>list">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></a>
-  <div class="nav-links">
+  <a class="nav-brand" href="<?= BASE_URL ?>list">banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></a>
+  <div class="nav-links" id="navLinks">
     <a class="nav-btn" href="<?= BASE_URL ?>list">Cari Produk</a>
-    <a class="nav-btn" href="<?= BASE_URL ?>aboutus">About Us</a>
+    
+    <?php if(isSeller()) : ?>
+    <button class="nav-btn"
+            style="background: linear-gradient(135deg, #2ecad0, #2d5a9e) !important; color: white !important; border: none !important;"
+            onclick="window.location.href='<?= BASE_URL ?>seller/add'">
+      <i class="fa-solid fa-plus-circle"></i> Add Product
+    </button>
+    <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
+    <button class="nav-btn favorite-nav-btn"
+            onclick="window.location.href='<?= BASE_URL ?>favorit'">
+      ❤️ Favorite
+    </button>
+    <?php endif; ?>
+
     <div class="user-chip-wrap" id="userChipWrap">
       <div class="user-chip" onclick="toggleDropdown()">
         <div class="user-avatar" id="navAvatar"><?= strtoupper(substr($user['nama_lengkap'] ?? '', 0, 2)) ?></div>
@@ -35,13 +48,29 @@
       </div>
       <div class="user-dropdown">
         <div class="dropdown-info">
-          <div class="dropdown-info-name" id="dropName"><?= htmlspecialchars($user['nama_lengkap'] ?? '') ?></div>
-          <div class="dropdown-info-label" id="dropEmail"><?= htmlspecialchars($user['email'] ?? '') ?></div>
+          <div class="dropdown-info-name" id="dropName"><?= htmlspecialchars($user['username'] ?? '') ?></div>
+          <div class="dropdown-info-label">Sedang login ✓</div>
         </div>
         <a class="dropdown-item active" href="<?= BASE_URL ?>profile"><span class="dropdown-icon">👤</span> Profil Saya</a>
+        <?php if(isSuperAdmin()): ?>
+        <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
+          <span class="dropdown-icon">🛡️</span> Panel Admin
+        </a>
+        <?php endif; ?>
         <a class="dropdown-item logout" href="<?= BASE_URL ?>logout"><span class="dropdown-icon">↩</span> Keluar</a>
       </div>
     </div>
+
+    <a class="nav-btn" href="<?= BASE_URL ?>aboutus">About Us</a>
+
+    <?php 
+      $currentLang = $_SESSION['lang'] ?? 'en';
+      $nextLang = $currentLang === 'en' ? 'id' : 'en';
+      $flagImg = $currentLang === 'en' ? 'https://flagcdn.com/w40/us.png' : 'https://flagcdn.com/w40/id.png';
+    ?>
+    <button class="nav-btn" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+      <img src="<?= $flagImg ?>" alt="flag" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+    </button>
   </div>
 </nav>
 

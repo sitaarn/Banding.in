@@ -114,10 +114,10 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       <?php 
         $currentLang = $_SESSION['lang'] ?? 'en';
         $nextLang = $currentLang === 'en' ? 'id' : 'en';
-        $flag = $currentLang === 'en' ? '🇺🇸' : '🇮🇩';
+        $flagImg = $currentLang === 'en' ? 'https://flagcdn.com/w40/us.png' : 'https://flagcdn.com/w40/id.png';
       ?>
-      <button class="nav-btn" style="border-radius: 50%; padding: 5px 10px; font-size: 1.2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= $base ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
-        <?= $flag ?>
+      <button class="nav-btn" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= $base ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+        <img src="<?= $flagImg ?>" alt="flag" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
       </button>
 
     </div>

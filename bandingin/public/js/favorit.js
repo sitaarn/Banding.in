@@ -1,9 +1,9 @@
 /* favorite.js — Banding.in Favorite Page (Final dengan Platform) */
 
-const PF_COLORS = { tokopedia: '#42b549', shopee: '#ee4d2d', lazada: '#0f146b', blibli: '#0095d9' };
-const PF_LABELS = { tokopedia: 'Tokopedia', shopee: 'Shopee', lazada: 'Lazada', blibli: 'Blibli' };
+const PF_COLORS = { tokopedia: '#42b549', lazada: '#0f146b', blibli: '#0095d9' };
+const PF_LABELS = { tokopedia: 'Tokopedia', lazada: 'Lazada', blibli: 'Blibli' };
 
-let favActivePf = ['tokopedia', 'shopee', 'lazada', 'blibli'];
+let favActivePf = ['tokopedia', 'lazada', 'blibli'];
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -27,7 +27,7 @@ function showToast(msg, isError = false) {
 
 async function loadFavoritesFromDB() {
     try {
-        const res = await fetch('http://localhost/bandingin/favorites');
+        const res = await fetch('/bandingin/favorites');
         const result = await res.json();
         if (result.success && result.data) {
             const favorites = result.data.map(item => ({
@@ -52,7 +52,7 @@ async function loadFavoritesFromDB() {
 
 async function removeFromDatabase(productId, platform, productName) {
     try {
-        const res = await fetch('http://localhost/bandingin/favorit/toggle', {
+        const res = await fetch('/bandingin/favorit/toggle', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ product_id: productId, platform: platform })
@@ -84,7 +84,7 @@ async function favHapusSemua() {
     if (!confirm('Hapus semua favorit?')) return;
     let berhasil = 0;
     for (const fav of favs) {
-        const res = await fetch('http://localhost/bandingin/favorit/toggle', {
+        const res = await fetch('/bandingin/favorit/toggle', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ product_id: fav.id, platform: fav.platform })
@@ -108,7 +108,7 @@ function favTogglePf(btn) {
     const pf = btn.dataset.pf;
     if (pf === 'semua') {
         document.querySelectorAll('.fav-pf-btn').forEach(b => b.classList.add('active'));
-        favActivePf = ['tokopedia', 'shopee', 'lazada', 'blibli'];
+        favActivePf = ['tokopedia', 'lazada', 'blibli'];
     } else {
         btn.classList.toggle('active');
         const allPfBtns = [...document.querySelectorAll('.fav-pf-btn[data-pf!="semua"]')];
@@ -147,7 +147,7 @@ async function favRender() {
     }
 
     if (!favs.length) {
-        listEl.innerHTML = `<div class="fav-empty"><div class="fav-empty-icon">❤️</div><div class="fav-empty-title">Belum Ada Favorit</div><div class="fav-empty-sub">${allFavs.length && favActivePf.length < 4 ? 'Tidak ada favorit di platform yang dipilih.<br>Coba ubah filter platform.' : 'Mulai bandingkan harga dan simpan produk yang kamu suka ke sini.'}</div><button class="fav-empty-btn" onclick="window.location.href='http://localhost/bandingin/list'">Cari Produk →</button></div>`;
+        listEl.innerHTML = `<div class="fav-empty"><div class="fav-empty-icon">❤️</div><div class="fav-empty-title">Belum Ada Favorit</div><div class="fav-empty-sub">${allFavs.length && favActivePf.length < 4 ? 'Tidak ada favorit di platform yang dipilih.<br>Coba ubah filter platform.' : 'Mulai bandingkan harga dan simpan produk yang kamu suka ke sini.'}</div><button class="fav-empty-btn" onclick="window.location.href='/bandingin/list'">Cari Produk →</button></div>`;
         return;
     }
 
@@ -187,7 +187,7 @@ document.addEventListener('click', function(e) {
 });
 function doLogout() {
     localStorage.removeItem('loggedIn');
-    window.location.href = 'http://localhost/bandingin/logout';
+    window.location.href = '/bandingin/logout';
 }
 function initAvatar() {
     const el = document.getElementById('userAvatar');
