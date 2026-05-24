@@ -27,7 +27,7 @@ class ProductReport {
     }
 
     public function getAll($limit = 100, $offset = 0) {
-        $sql = "SELECT pr.*, p.name AS product_name, u.username AS reporter_username,
+        $sql = "SELECT pr.*, COALESCE(p.name, pr.product_name_snapshot, '(Barang Telah Dihapus)') AS product_name, u.username AS reporter_username,
                        pf.name AS platform_name
                 FROM {$this->table} pr
                 LEFT JOIN products p ON pr.product_id = p.id
@@ -64,5 +64,11 @@ class ProductReport {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch();
+    }
+
+    public function markAsReviewedAndSnapshot($productId, $productName) {
+        $sql = "UPDATE {$this->table} SET status = 'reviewed', product_name_snapshot = ? WHERE product_id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$productName, $productId]);
     }
 }

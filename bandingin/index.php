@@ -99,6 +99,7 @@ $route->middleware(['login', 'super_admin'])->group(function ($childClass) {
     // Product Verification
     $childClass->get('/admin/products', [AdminController::class, 'products']);
     $childClass->post('/admin/products/verify', [AdminController::class, 'verifyProduct']);
+    $childClass->post('/admin/products/delete', [AdminController::class, 'deleteProduct']);
     $childClass->post('/admin/products/bulk-delete', [AdminController::class, 'bulkDelete']);
 });
 

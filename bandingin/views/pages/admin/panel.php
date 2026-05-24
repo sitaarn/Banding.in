@@ -387,8 +387,9 @@ $currentTab = $tab ?? 'dashboard';
             <td>
               <?php if($r['status'] === 'open'): ?>
               <div class="admin-btn-group">
-                <button class="admin-btn success" onclick="updateReport(<?= $r['id'] ?>, 'reviewed')"><i class="fa-solid fa-check"></i></button>
-                <button class="admin-btn" onclick="updateReport(<?= $r['id'] ?>, 'dismissed')"><i class="fa-solid fa-times"></i></button>
+                <button class="admin-btn success" onclick="updateReport(<?= $r['id'] ?>, 'reviewed')" title="Tandai Selesai"><i class="fa-solid fa-check"></i></button>
+                <button class="admin-btn" onclick="updateReport(<?= $r['id'] ?>, 'dismissed')" title="Abaikan"><i class="fa-solid fa-times"></i></button>
+                <button class="admin-btn danger" onclick="deleteProductFromReport(<?= $r['product_id'] ?>)" title="Hapus Barang"><i class="fa-solid fa-trash"></i></button>
               </div>
               <?php else: ?>
               <span class="text-soft">—</span>
@@ -575,6 +576,14 @@ $currentTab = $tab ?? 'dashboard';
     const r = await apiPost('admin/reports/update', {report_id: id, status});
     if(r.success) { showToast('Report updated!'); setTimeout(()=>location.reload(), 800); } 
     else { showToast(r.error || 'Failed', true); }
+  }
+  
+  function deleteProductFromReport(productId) {
+    showConfirm('Hapus Barang', 'Apakah Anda yakin ingin menghapus barang ini secara permanen dari database?', async () => {
+      const r = await apiPost('admin/products/delete', {product_id: productId});
+      if(r.success) { showToast('Barang berhasil dihapus!'); setTimeout(()=>location.reload(), 800); } 
+      else { showToast(r.error || 'Failed', true); }
+    });
   }
   </script>
 </body>

@@ -337,12 +337,12 @@ class AdminController {
 
         $this->reportModel->updateStatus($reportId, $status);
 
-        // Auto take-down if too many open reports (threshold = 5)
+        // Auto delete if too many open reports (threshold = 5)
         if ($status === 'reviewed') {
             $openCount = $this->reportModel->countByProduct($report['product_id']);
             if ($openCount >= 5) {
-                $this->productModel->updateStatus($report['product_id'], 'taken_down');
-                logActivity('product_takedown', "Product #{$report['product_id']} auto taken-down (5+ reports)");
+                $this->productModel->delete($report['product_id']);
+                logActivity('product_delete', "Product #{$report['product_id']} auto deleted (5+ reports)");
             }
         }
 
@@ -374,6 +374,26 @@ class AdminController {
         if ($productId) {
             $this->productModel->updateStatus($productId, $status);
             logActivity('product_verify', "Product #{$productId} set to {$status}");
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid product ID.']);
+        }
+        exit;
+    }
+
+    public function deleteProduct() {
+        header('Content-Type: application/json');
+        $data = json_decode(file_get_contents("php://input"), true);
+        $productId = (int)($data['product_id'] ?? 0);
+
+        if ($productId) {
+            $product = $this->productModel->getById($productId);
+            if ($product) {
+                // Update open reports to 'reviewed' and save product name snapshot
+                $this->reportModel->markAsReviewedAndSnapshot($productId, $product['name']);
+            }
+            $this->productModel->delete($productId);
+            logActivity('product_delete', "Deleted product #{$productId}");
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid product ID.']);
@@ -418,11 +438,11 @@ class AdminController {
         ]);
 
         if ($id) {
-            // Check auto take-down
+            // Check auto delete
             $openCount = $this->reportModel->countByProduct($productId);
             if ($openCount >= 5) {
-                $this->productModel->updateStatus($productId, 'taken_down');
-                logActivity('product_takedown', "Product #{$productId} auto taken-down (5+ reports)");
+                $this->productModel->delete($productId);
+                logActivity('product_delete', "Product #{$productId} auto deleted (5+ reports)");
             }
             logActivity('product_report', "User reported product #{$productId}");
             echo json_encode(['success' => true, 'message' => 'Report submitted. Thank you!']);

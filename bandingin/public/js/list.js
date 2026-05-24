@@ -54,6 +54,21 @@ fetch('http://localhost/bandingin/models/get_products.php')
   })
   .catch(err => console.error("Error fetching data:", err));
 
+// Menyimpan list favorit user
+let userFavorites = [];
+
+// Jika user login, ambil data favorit
+if (typeof APP_IS_LOGGED_IN !== 'undefined' && APP_IS_LOGGED_IN) {
+  fetch('http://localhost/bandingin/favorites')
+    .then(res => res.json())
+    .then(result => {
+      if (result.success && result.data) {
+        userFavorites = result.data.map(f => ({ product_id: f.product_id, platform: f.platform }));
+      }
+    })
+    .catch(err => console.error("Error fetching favorites:", err));
+}
+
 const PF_COLORS = { tokopedia: '#42b549', shopee: '#ee4d2d', lazada: '#0f146b', blibli: '#0095d9' };
 const PF_LABELS = { tokopedia: 'Tokopedia', shopee: 'Shopee', lazada: 'Lazada', blibli: 'Blibli' };
 const PF_RATINGS = {
@@ -262,6 +277,14 @@ async function toggleSave(btn, e, id, platform) {
     if (result.success) {
       btn.classList.toggle('saved');
       btn.textContent = btn.classList.contains('saved') ? '♥' : '♡';
+      
+      // Update state userFavorites
+      if (btn.classList.contains('saved')) {
+        userFavorites.push({ product_id: id, platform: platform });
+      } else {
+        userFavorites = userFavorites.filter(f => !(f.product_id == id && f.platform == platform));
+      }
+
       showToast(result.message);
     } else {
       showToast(result.error || 'Gagal', true);
@@ -341,7 +364,8 @@ function renderListing() {
     const visitTarget = visitLink !== '#' ? 'target="_blank"' : '';
     const visitOnclick = visitLink === '#' ? 'return false' : '';
 
-    const favButton = !IS_SELLER ? `<button class="ls-btn-save" onclick="toggleSave(this, event, ${item.id}, '${item.platform}')" title="Save">\u2661</button>` : '';
+    const isFav = userFavorites.some(f => f.product_id == item.id && f.platform == item.platform);
+    const favButton = (!IS_SELLER && (typeof IS_SUPERADMIN === 'undefined' || !IS_SUPERADMIN)) ? `<button class="ls-btn-save ${isFav ? 'saved' : ''}" onclick="toggleSave(this, event, ${item.id}, '${item.platform}')" title="Save">${isFav ? '♥' : '♡'}</button>` : '';
 
     return `
       <div class="ls-card">
@@ -415,6 +439,16 @@ function mockLogin() {
 let currentReportProduct = null;
 let currentReportPlatform = null;
 
+function toggleReportReason(radio) {
+  const textInput = document.getElementById('reportReasonText');
+  if (radio.value === 'other') {
+    textInput.style.display = 'block';
+    textInput.focus();
+  } else {
+    textInput.style.display = 'none';
+  }
+}
+
 function openReportModal(e, productId, platform) {
   e.stopPropagation();
   if (typeof APP_IS_LOGGED_IN !== 'undefined' && !APP_IS_LOGGED_IN) {
@@ -423,7 +457,13 @@ function openReportModal(e, productId, platform) {
   }
   currentReportProduct = productId;
   currentReportPlatform = platform;
-  document.getElementById('reportReason').value = '';
+  
+  // Reset form
+  document.getElementById('reportReasonText').value = '';
+  document.getElementById('reportReasonText').style.display = 'none';
+  const radios = document.querySelectorAll('input[name="report_reason_radio"]');
+  radios.forEach(r => r.checked = false);
+  
   document.getElementById('reportModal').classList.add('visible');
 }
 
@@ -434,21 +474,41 @@ function closeReportModal() {
 }
 
 async function submitReport() {
-  const reason = document.getElementById('reportReason').value.trim();
-  if (!reason) {
-    showToast('Harap isi alasan pelaporan.', true);
+  let reason = '';
+  const selectedRadio = document.querySelector('input[name="report_reason_radio"]:checked');
+  
+  if (!selectedRadio) {
+    showToast('Harap pilih alasan pelaporan.', true);
     return;
+  }
+  
+  if (selectedRadio.value === 'other') {
+    reason = document.getElementById('reportReasonText').value.trim();
+    if (!reason) {
+      showToast('Harap isi alasan pelaporan.', true);
+      return;
+    }
+  } else {
+    reason = selectedRadio.value;
   }
   
   const btn = document.getElementById('btnSubmitReport');
   btn.disabled = true;
   btn.textContent = '⏳';
   
+  const platformMap = {
+    'shopee': 1,
+    'tokopedia': 2,
+    'lazada': 3,
+    'blibli': 4
+  };
+  const mappedPlatformId = platformMap[currentReportPlatform] || 1;
+
   try {
     const response = await fetch('http://localhost/bandingin/product/report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product_id: currentReportProduct, platform_id: 1 /* Mocked platform ID since items might use names */, reason: reason })
+      body: JSON.stringify({ product_id: currentReportProduct, platform_id: mappedPlatformId, reason: reason })
     });
     const result = await response.json();
     if (result.success) {
@@ -461,7 +521,7 @@ async function submitReport() {
     showToast('Terjadi kesalahan.', true);
   } finally {
     btn.disabled = false;
-    btn.textContent = LANG.submit_report;
+    btn.textContent = LANG.submit_report || 'Ajukan Laporan';
   }
 }
 

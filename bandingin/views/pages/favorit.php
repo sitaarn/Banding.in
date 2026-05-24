@@ -103,7 +103,6 @@
           <span class="fav-filter-label">Platform:</span>
           <button class="fav-pf-btn active" data-pf="semua"     onclick="favTogglePf(this)">Semua</button>
           <button class="fav-pf-btn active" data-pf="tokopedia" onclick="favTogglePf(this)">Tokopedia</button>
-          <button class="fav-pf-btn active" data-pf="shopee"    onclick="favTogglePf(this)">Shopee</button>
           <button class="fav-pf-btn active" data-pf="lazada"    onclick="favTogglePf(this)">Lazada</button>
           <button class="fav-pf-btn active" data-pf="blibli"    onclick="favTogglePf(this)">Blibli</button>
         </div>

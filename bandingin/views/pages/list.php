@@ -68,16 +68,16 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <div class="nav-links" id="navLinks">
       
       <?php if($is_logged_in) : ?> 
-        <?php if(!isSeller()) : ?>
-        <button class="nav-btn favorite-nav-btn"
-                onclick="window.location.href='<?= $base ?>favorit'">
-          ❤️ <?= __('favorite') ?>
-        </button>
-        <?php else : ?>
+        <?php if(isSeller()) : ?>
         <button class="nav-btn"
                 style="background: linear-gradient(135deg, #2ecad0, #2d5a9e) !important; color: white !important; border: none !important;"
                 onclick="window.location.href='<?= $base ?>seller/add'">
           <i class="fa-solid fa-plus-circle"></i> <?= __('add_product') ?>
+        </button>
+        <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
+        <button class="nav-btn favorite-nav-btn"
+                onclick="window.location.href='<?= $base ?>favorit'">
+          ❤️ <?= __('favorite') ?>
         </button>
         <?php endif; ?>
 
@@ -216,11 +216,44 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     </div>
   </div>
 
+  <!-- Report Modal -->
+  <div class="modal-overlay" id="reportModal" onclick="if(event.target===this) closeReportModal()">
+    <div class="modal-box">
+      <button class="modal-close-x" onclick="closeReportModal()">✕</button>
+      <div class="modal-icon">🚩</div>
+      <div class="modal-title">Laporkan Produk</div>
+      <div class="modal-sub">Pilih alasan pelaporan produk ini:</div>
+      <div class="report-options" style="text-align: left; margin-bottom: 15px; color: var(--text-light); font-size: 0.9rem;">
+        <div style="margin-bottom: 8px;">
+            <input type="radio" id="reason1" name="report_reason_radio" value="Barang tidak relevan" onchange="toggleReportReason(this)">
+            <label for="reason1" style="cursor: pointer; padding-left: 5px;">Barang tidak relevan</label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <input type="radio" id="reason2" name="report_reason_radio" value="Harga barang tidak sesuai" onchange="toggleReportReason(this)">
+            <label for="reason2" style="cursor: pointer; padding-left: 5px;">Harga barang tidak sesuai</label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <input type="radio" id="reason3" name="report_reason_radio" value="Barang sudah habis" onchange="toggleReportReason(this)">
+            <label for="reason3" style="cursor: pointer; padding-left: 5px;">Barang sudah habis</label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <input type="radio" id="reason4" name="report_reason_radio" value="other" onchange="toggleReportReason(this)">
+            <label for="reason4" style="cursor: pointer; padding-left: 5px;">Lainnya (Isi sendiri)</label>
+        </div>
+        <textarea id="reportReasonText" style="width: 100%; display: none; margin-top: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: white; font-family: 'Lora', serif;" rows="3" placeholder="Tulis alasan Anda..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn-login" id="btnSubmitReport" onclick="submitReport()" style="background: linear-gradient(135deg, #e87d3e, #dc3545);">Ajukan Laporan</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
     const APP_IS_LOGGED_IN = <?= $is_logged_in ? 'true' : 'false' ?>;
     const IS_SELLER = <?= (isset($_SESSION['role']) && $_SESSION['role'] === 'seller') ? 'true' : 'false' ?>;
+    const IS_SUPERADMIN = <?= (isset($_SESSION['role']) && $_SESSION['role'] === 'super_admin') ? 'true' : 'false' ?>;
     
     // Translations for JS
     const LANG = {
@@ -232,7 +265,9 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
         no_products_price: "<?= __('no_products_price') ?>",
         no_products_price_hint: "<?= __('no_products_price_hint') ?>",
         visit: "<?= __('visit') ?>",
-        cheapest: "<?= __('cheapest') ?>"
+        cheapest: "<?= __('cheapest') ?>",
+        report: "Laporkan",
+        submit_report: "Ajukan Laporan"
     };
   </script>
   <script src="<?= $base ?>public/js/list.js?v=<?= time(); ?>"></script>

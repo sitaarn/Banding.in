@@ -35,6 +35,7 @@ class SellerController {
         $platform_id = sanitize($_POST['platform_id'] ?? '');
         $link = sanitize($_POST['link'] ?? '');
         $price = sanitize($_POST['price'] ?? 0);
+        $category = sanitize($_POST['category'] ?? 'Lainnya');
         
         // E-commerce names corresponding to platform_id
         $platforms = [
@@ -67,7 +68,7 @@ class SellerController {
         $productId = $this->ProductModel->create([
             'name' => $name,
             'image' => null,
-            'category' => 'Lainnya',
+            'category' => $category,
             'seller_id' => $_SESSION['user_id'] ?? null,
             'status' => 'pending'
         ]);

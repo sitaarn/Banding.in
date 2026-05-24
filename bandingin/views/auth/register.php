@@ -7,8 +7,60 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="public/css/style.css" rel="stylesheet">
+    <link href="public/css/list.css" rel="stylesheet">
+    <style>
+        /* Override specific list.css to make sure register form is centered and works well */
+        body {
+            display: block;
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            color: white;
+        }
+        .text-muted { color: rgba(255,255,255,0.6) !important; }
+        h2 { color: white; font-family: 'DM Serif Display', serif; }
+        .form-control, .form-check-input {
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            color: white;
+        }
+        .form-control:focus, .form-check-input:focus {
+            background: rgba(255,255,255,0.1);
+            border-color: #2ecad0;
+            color: white;
+            box-shadow: 0 0 0 4px rgba(46,202,208,0.15);
+        }
+        .form-label { color: rgba(255,255,255,0.85); font-weight: 500; }
+        .btn-outline-secondary { border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+        .btn-outline-secondary:hover { background: rgba(255,255,255,0.1); color: white; }
+        .btn-primary { background: linear-gradient(135deg, #2ecad0, #2d5a9e); border: none; border-radius: 999px; padding: 12px 24px; font-weight: 600; letter-spacing: 0.03em; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(46,202,208,0.4); background: linear-gradient(135deg, #2ecad0, #2d5a9e); }
+        .form-control::placeholder { color: rgba(255,255,255,0.4); }
+        .form-check-input:checked { background-color: #2ecad0; border-color: #2ecad0; }
+    </style>
 </head>
-<body class="bg-light">
+<body>
+    <div class="bg"></div>
+    <div class="blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="orbs">
+        <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+        <div class="orb orb-4"></div><div class="orb orb-5"></div><div class="orb orb-6"></div>
+        <div class="orb orb-7"></div>
+    </div>
+    <div class="grid-overlay"></div>
     <div class="container">
         <div class="row justify-content-center align-items-center min-vh-100 py-5">
             <div class="col-md-6 col-lg-5">

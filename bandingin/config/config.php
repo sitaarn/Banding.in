@@ -22,7 +22,7 @@ if (ENVIRONMENT === 'development') {
 
 // Base URL Aplikasi
 if (ENVIRONMENT === 'development') {
-    define('BASE_URL', 'http://localhost/bandingin/');
+    define('BASE_URL', 'https://retrial-blaspheme-juice.ngrok-free.dev/bandingin/');
     define('FIRSTSECTION_URI', '/bandingin');
 } else {
     define('BASE_URL', 'https://yourdomain.com/');

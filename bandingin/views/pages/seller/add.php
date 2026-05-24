@@ -31,28 +31,38 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       content: '' !important;
     }
     .form-control, .form-select { 
-      width: 100%; padding: 12px 15px; margin-top: 8px; margin-bottom: 20px; 
-      border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); 
-      background: rgba(0,0,0,0.2); color: white;
-      font-family: 'Lora', serif;
+      width: 100%; padding: 14px 18px; margin-top: 8px; margin-bottom: 22px; 
+      border-radius: 14px; border: 1.5px solid rgba(255,255,255,0.12); 
+      background: rgba(255,255,255,0.06); color: white;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
     }
-    .form-control::placeholder { color: rgba(255,255,255,0.5); }
+    .form-control::placeholder { color: rgba(255,255,255,0.4); font-style: italic; }
     .form-control:focus, .form-select:focus {
-      outline: none; border-color: var(--accent-cyan);
-      box-shadow: 0 0 0 2px rgba(46,202,208,0.2);
+      outline: none; 
+      border-color: var(--accent-cyan);
+      background: rgba(255,255,255,0.1);
+      box-shadow: 0 0 0 4px rgba(46,202,208,0.15);
     }
-    .form-select option { background: var(--bg-deep); color: white; }
-    label { color: var(--text-light); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em; }
+    .form-select option { background: #1a2235; color: white; }
+    label { color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em; font-family: system-ui, -apple-system, sans-serif; }
     .btn-primary { 
-      background: linear-gradient(135deg, var(--accent-cyan), var(--primary)); 
-      color: white; padding: 12px 24px; border: none; border-radius: 999px; 
-      cursor: pointer; width: 100%; font-family: 'Lora', serif; font-size: 1rem;
-      font-weight: 600; letter-spacing: 0.03em; transition: all 0.3s;
+      background: linear-gradient(135deg, #2ecad0, #2d5a9e); 
+      color: white; padding: 14px 24px; border: none; border-radius: 999px; 
+      cursor: pointer; width: 100%; font-family: system-ui, -apple-system, sans-serif; font-size: 1.05rem;
+      font-weight: 600; letter-spacing: 0.03em; transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(46,202,208,0.2);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(46,202,208,0.3); }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(46,202,208,0.4); }
     .text-danger { color: #ff6b6b; font-size: 0.85em; margin-top: -10px; margin-bottom: 15px; display: block; }
     .d-none { display: none !important; }
     h2 { text-align: center; margin-bottom: 30px; color: white; font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -0.01em;}
+    
+    .alert { padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 0.95rem; font-family: system-ui, -apple-system, sans-serif; font-weight: 500; text-align: center; }
+    .alert-success { background: rgba(46,202,208,0.15); color: #2ecad0; border: 1px solid rgba(46,202,208,0.3); }
+    .alert-error { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); }
   </style>
 </head>
 <body>
@@ -94,12 +104,26 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
               </div>
 
               <div>
+                  <label for="category">Kategori Produk</label>
+                  <select class="form-select" id="category" name="category" required>
+                      <option value="" disabled selected>Pilih Kategori</option>
+                      <option value="Elektronik">Elektronik</option>
+                      <option value="Pakaian">Pakaian</option>
+                      <option value="Kecantikan">Kecantikan</option>
+                      <option value="Peralatan Rumah">Peralatan Rumah</option>
+                      <option value="Otomotif">Otomotif</option>
+                      <option value="Lainnya">Lainnya</option>
+                  </select>
+              </div>
+
+              <div>
                   <label for="platform_id"><?= __('ecommerce_choice') ?></label>
                   <select class="form-select" id="platform_id" name="platform_id" required>
                       <option value="" disabled selected><?= __('choose_ecommerce') ?></option>
-                      <option value="1" data-domain="tokopedia">Tokopedia</option>
-                      <option value="2" data-domain="lazada">Lazada</option>
-                      <option value="3" data-domain="blibli">Blibli</option>
+                      <option value="1" data-domain="shopee">Shopee</option>
+                      <option value="2" data-domain="tokopedia">Tokopedia</option>
+                      <option value="3" data-domain="lazada">Lazada</option>
+                      <option value="4" data-domain="blibli">Blibli</option>
                   </select>
               </div>
 
