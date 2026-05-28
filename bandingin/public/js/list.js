@@ -104,17 +104,30 @@ let lsSort = 'cheapest';
 let lsActivePf = ['tokopedia', 'lazada', 'blibli'];
 let lsPriceMin = 0;
 let lsPriceMax = 25000000;
+let lsCurrentPage = 1;
+const lsItemsPerPage = 12;
 let isLoggedIn = false;
 
 /* NAVIGASI */
-function goToListing(query) {
+function goToListing(query, activePlatforms = null) {
   lsCurrentQuery = query;
-  lsActivePf = ['tokopedia', 'lazada', 'blibli'];
+  if (activePlatforms && activePlatforms.length > 0) {
+    lsActivePf = activePlatforms;
+  } else {
+    lsActivePf = ['tokopedia', 'lazada', 'blibli'];
+  }
   lsSort = 'cheapest';
   lsPriceMin = 0;
   lsPriceMax = 25000000;
+  lsCurrentPage = 1;
 
-  document.querySelectorAll('.ls-platform-row').forEach(r => r.classList.add('on'));
+  document.querySelectorAll('.ls-platform-row').forEach(r => {
+    if (lsActivePf.includes(r.dataset.pf)) {
+      r.classList.add('on');
+    } else {
+      r.classList.remove('on');
+    }
+  });
   document.querySelectorAll('.ls-sort-row').forEach(r => r.classList.remove('on'));
 
   const sortCheapest = document.querySelector('.ls-sort-row[data-sort="cheapest"]');
@@ -218,7 +231,7 @@ function doSearch() {
             </div>
           </div>`).join('')}
         <div style="text-align:right;padding-top:8px;">
-          <button onclick="goToListing('${query.replace(/'/g, "\\'")}')" style="padding:8px 20px;border-radius:999px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--blue)'" onmouseout="this.style.background='var(--text-dark)'">Lihat Semua ${entries.length} Hasil →</button>
+          <button onclick="goToListing('${query.replace(/'/g, "\\'")}', ['${ap.join("','")}'])" style="padding:8px 20px;border-radius:999px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--blue)'" onmouseout="this.style.background='var(--text-dark)'">Lihat Semua ${entries.length} Hasil →</button>
         </div>
       </div>`;
   }, 900);
@@ -356,7 +369,12 @@ function renderListing() {
 
   const globalMin = Math.min(...items.map(i => i.price));
 
-  const cards = items.map((item, idx) => {
+  const totalPages = Math.ceil(items.length / lsItemsPerPage);
+  if (lsCurrentPage > totalPages) lsCurrentPage = totalPages || 1;
+  const startIndex = (lsCurrentPage - 1) * lsItemsPerPage;
+  const paginatedItems = items.slice(startIndex, startIndex + lsItemsPerPage);
+
+  const cards = paginatedItems.map((item, idx) => {
     const isCheapest = item.price === globalMin && globalMin > 0;
     const visitLink = item.link && item.link !== '#' ? item.link : '#';
     const visitTarget = visitLink !== '#' ? 'target="_blank"' : '';
@@ -365,9 +383,12 @@ function renderListing() {
     const isFav = userFavorites.some(f => f.product_id == item.id && f.platform == item.platform);
     const favButton = (!IS_SELLER && (typeof IS_SUPERADMIN === 'undefined' || !IS_SUPERADMIN)) ? `<button class="ls-btn-save ${isFav ? 'saved' : ''}" onclick="toggleSave(this, event, ${item.id}, '${item.platform}')" title="Save">${isFav ? '♥' : '♡'}</button>` : '';
 
+    // Calculate actual rank across pages
+    const rank = startIndex + idx + 1;
+
     return `
       <div class="ls-card">
-        <div class="ls-card-rank ${isCheapest ? 'gold' : ''}">${idx + 1}</div>
+        <div class="ls-card-rank ${isCheapest ? 'gold' : ''}">${rank}</div>
         <div class="ls-card-body">
           <div class="ls-card-top">
             <div>
@@ -396,6 +417,25 @@ function renderListing() {
       </div>`;
   }).join('');
 
+  let paginationHTML = '';
+  if (totalPages > 1) {
+    paginationHTML = '<div class="ls-pagination" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">';
+    if (lsCurrentPage > 1) {
+      paginationHTML += `<button onclick="lsChangePage(${lsCurrentPage - 1})" style="padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">Prev</button>`;
+    }
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === lsCurrentPage) {
+        paginationHTML += `<button style="padding: 5px 10px; border: 1px solid #2ecad0; background: #2ecad0; color: #fff; font-weight: bold;">${i}</button>`;
+      } else {
+        paginationHTML += `<button onclick="lsChangePage(${i})" style="padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">${i}</button>`;
+      }
+    }
+    if (lsCurrentPage < totalPages) {
+      paginationHTML += `<button onclick="lsChangePage(${lsCurrentPage + 1})" style="padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">Next</button>`;
+    }
+    paginationHTML += '</div>';
+  }
+
   main.innerHTML = `
     <div class="ls-topbar">
       <div class="ls-query-info">
@@ -406,7 +446,14 @@ function renderListing() {
       </div>
       <button class="ls-back-btn" onclick="backToSearch()">\u2190 ${LANG.search_again}</button>
     </div>
-    ${cards}`;
+    ${cards}
+    ${paginationHTML}`;
+}
+
+function lsChangePage(page) {
+  lsCurrentPage = page;
+  renderListing();
+  document.querySelector('.ls-main-col').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* SIDEBAR CONTROLS */
@@ -414,12 +461,14 @@ function lsTogglePf(row) {
   const pf = row.dataset.pf;
   row.classList.toggle('on');
   lsActivePf = row.classList.contains('on') ? [...lsActivePf, pf] : lsActivePf.filter(p => p !== pf);
+  lsCurrentPage = 1;
   renderListing();
 }
 function lsSetSort(row) {
   document.querySelectorAll('.ls-sort-row').forEach(r => r.classList.remove('on'));
   row.classList.add('on');
   lsSort = row.dataset.sort;
+  lsCurrentPage = 1;
   renderListing();
 }
 
@@ -459,8 +508,8 @@ function openReportModal(e, productId, platform) {
   // Reset form
   document.getElementById('reportReasonText').value = '';
   document.getElementById('reportReasonText').style.display = 'none';
-  const radios = document.querySelectorAll('input[name="report_reason_radio"]');
-  radios.forEach(r => r.checked = false);
+  const checkboxes = document.querySelectorAll('input[name="report_reason_check"]');
+  checkboxes.forEach(cb => cb.checked = false);
   
   document.getElementById('reportModal').classList.add('visible');
 }
@@ -472,23 +521,31 @@ function closeReportModal() {
 }
 
 async function submitReport() {
-  let reason = '';
-  const selectedRadio = document.querySelector('input[name="report_reason_radio"]:checked');
+  let reasons = [];
+  const selectedCheckboxes = document.querySelectorAll('input[name="report_reason_check"]:checked');
   
-  if (!selectedRadio) {
+  if (selectedCheckboxes.length === 0) {
     showToast('Harap pilih alasan pelaporan.', true);
     return;
   }
   
-  if (selectedRadio.value === 'other') {
-    reason = document.getElementById('reportReasonText').value.trim();
-    if (!reason) {
-      showToast('Harap isi alasan pelaporan.', true);
-      return;
+  selectedCheckboxes.forEach(cb => {
+    if (cb.value === 'other') {
+      const otherReason = document.getElementById('reportReasonText').value.trim();
+      if (otherReason) {
+        reasons.push(otherReason);
+      }
+    } else {
+      reasons.push(cb.value);
     }
-  } else {
-    reason = selectedRadio.value;
+  });
+
+  if (reasons.length === 0) {
+    showToast('Harap isi alasan pelaporan lainnya.', true);
+    return;
   }
+
+  let reason = reasons.join(', ');
   
   const btn = document.getElementById('btnSubmitReport');
   btn.disabled = true;
@@ -553,6 +610,7 @@ function updateSlider() {
 function lsApplyPrice() {
   lsPriceMin = +document.getElementById('sliderMin').value;
   lsPriceMax = +document.getElementById('sliderMax').value;
+  lsCurrentPage = 1;
   renderListing();
 }
 

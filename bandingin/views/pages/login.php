@@ -47,6 +47,7 @@
           placeholder="Enter password"
           required>
 
+          <a href="<?= BASE_URL . 'forgot-password' ?>" style="font-size: 14px; margin-bottom: 15px; color: #666; text-decoration: none;">Forgot your password?</a>
           <button type="submit" class="primary-btn">SIGN IN</button>
         </form>
       </div>

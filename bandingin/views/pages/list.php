@@ -225,19 +225,19 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       <div class="modal-sub">Pilih alasan pelaporan produk ini:</div>
       <div class="report-options" style="text-align: left; margin-bottom: 15px; color: var(--text-light); font-size: 0.9rem;">
         <div style="margin-bottom: 8px;">
-            <input type="radio" id="reason1" name="report_reason_radio" value="Barang tidak relevan" onchange="toggleReportReason(this)">
+            <input type="checkbox" id="reason1" name="report_reason_check" value="Barang tidak relevan">
             <label for="reason1" style="cursor: pointer; padding-left: 5px;">Barang tidak relevan</label>
         </div>
         <div style="margin-bottom: 8px;">
-            <input type="radio" id="reason2" name="report_reason_radio" value="Harga barang tidak sesuai" onchange="toggleReportReason(this)">
+            <input type="checkbox" id="reason2" name="report_reason_check" value="Harga barang tidak sesuai">
             <label for="reason2" style="cursor: pointer; padding-left: 5px;">Harga barang tidak sesuai</label>
         </div>
         <div style="margin-bottom: 8px;">
-            <input type="radio" id="reason3" name="report_reason_radio" value="Barang sudah habis" onchange="toggleReportReason(this)">
+            <input type="checkbox" id="reason3" name="report_reason_check" value="Barang sudah habis">
             <label for="reason3" style="cursor: pointer; padding-left: 5px;">Barang sudah habis</label>
         </div>
         <div style="margin-bottom: 8px;">
-            <input type="radio" id="reason4" name="report_reason_radio" value="other" onchange="toggleReportReason(this)">
+            <input type="checkbox" id="reason4" name="report_reason_check" value="other" onchange="toggleReportReason(this)">
             <label for="reason4" style="cursor: pointer; padding-left: 5px;">Lainnya (Isi sendiri)</label>
         </div>
         <textarea id="reportReasonText" style="width: 100%; display: none; margin-top: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: white; font-family: 'Lora', serif;" rows="3" placeholder="Tulis alasan Anda..."></textarea>

@@ -59,6 +59,13 @@ class ProductReport {
         return $stmt->fetchColumn();
     }
 
+    public function hasUserReported($productId, $userId) {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE product_id = ? AND reporter_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$productId, $userId]);
+        return $stmt->fetchColumn() > 0;
+    }
+
     public function getById($id) {
         $sql = "SELECT * FROM {$this->table} WHERE id = ?";
         $stmt = $this->db->prepare($sql);

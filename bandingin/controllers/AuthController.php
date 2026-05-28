@@ -95,6 +95,11 @@ class AuthController
                     setRememberCookie($token);
                 }
 
+                if ($user['role'] === 'super_admin' || $user['role'] === 'admin') {
+                    redirect(\BASE_URL . 'admin/dashboard');
+                    return;
+                }
+
                 redirect(\BASE_URL . 'landing');
             } else {
                 setFlashMessage('error', 'Username atau password salah.');
@@ -152,7 +157,7 @@ class AuthController
             ->required('nama_lengkap', 'Nama lengkap wajib diisi.')
             ->minLength('nama_lengkap', 3, 'Nama lengkap minimal 3 karakter.')
             ->required('password', 'Password wajib diisi.')
-            ->minLength('password', 6, 'Password minimal 6 karakter.')
+            ->minLength('password', 8, 'Password minimal 8 karakter.')
             ->required('confirm_password', 'Konfirmasi password wajib diisi.')
             ->matches('confirm_password', 'password', 'Konfirmasi password tidak cocok.');
 
@@ -168,20 +173,31 @@ class AuthController
             }
 
             if (empty($errors)) {
+                if ($_POST['password'] === $old['username']) {
+                    $errors['password'] = 'Password tidak boleh sama dengan username.';
+                }
+            }
+
+            if (empty($errors)) {
                 $role = isset($_POST['role']) && $_POST['role'] === 'seller' ? 'seller' : 'user';
                 // Buat user baru
-                $userId = $this->userModel->create([
-                    'username' => $old['username'],
-                    'email' => $old['email'],
-                    'nama_lengkap' => $old['nama_lengkap'],  
-                    'password' => $_POST['password'],
-                    'role' => $role
-                ]);
+                try {
+                    $userId = $this->userModel->create([
+                        'username' => $old['username'],
+                        'email' => $old['email'],
+                        'nama_lengkap' => $old['nama_lengkap'],  
+                        'password' => $_POST['password'],
+                        'role' => $role
+                    ]);
+                } catch (\PDOException $e) {
+                    $errors['general'] = 'Gagal mendaftar, mungkin terjadi kesalahan pada database (misal: duplikat).';
+                    $userId = false;
+                }
 
                 if ($userId) {
                     setFlashMessage('success', 'Registrasi berhasil! Silakan login.');
                     redirect(\BASE_URL . 'login');
-                } else {
+                } else if (empty($errors['general'])) {
                     $errors['general'] = 'Terjadi kesalahan saat registrasi.';
                 }
             }
@@ -235,7 +251,6 @@ class AuthController
     /**
      * Update Profil
      */
-
     public function updateProfil()
     {
         $user = $this->userModel->getById($_SESSION['user_id']);
@@ -244,6 +259,7 @@ class AuthController
 
         $nama_lengkap = sanitize($_POST['nama_lengkap'] ?? '');
         $email = sanitize($_POST['email'] ?? '');
+        $new_password = $_POST['new_password'] ?? '';
 
         // Validasi
         $validator = validate($_POST);
@@ -251,17 +267,28 @@ class AuthController
             ->required('email', 'Email wajib diisi.')
             ->email('email', 'Format email tidak valid.');
 
-        if ($validator->isValid()) {
+        if (!empty($new_password)) {
+            $validator->minLength('new_password', 8, 'Password baru minimal 8 karakter.');
+            if ($new_password === $user['username']) {
+                $errors['new_password'] = 'Password tidak boleh sama dengan username.';
+            }
+        }
+
+        if ($validator->isValid() && empty($errors['new_password'])) {
             // Cek email sudah ada
             if ($this->userModel->emailExists($email, $user['id'])) {
                 $errors['email'] = 'Email sudah digunakan.';
             } else {
-                $this->userModel->update($user['id'], [
+                $dataToUpdate = [
                     'nama_lengkap' => $nama_lengkap,
                     'email' => $email
-                ]);
+                ];
+                
+                if (!empty($new_password)) {
+                    $dataToUpdate['password'] = $new_password;
+                }
 
-                $_SESSION['nama_lengkap'] = $nama_lengkap;
+                $this->userModel->update($user['id'], $dataToUpdate);
 
                 $_SESSION['nama_lengkap'] = $nama_lengkap;
                 $_SESSION['email'] = $email;
@@ -277,10 +304,10 @@ class AuthController
         $_SESSION['success_messages'] = $success;
         redirect(\BASE_URL . 'profile');
     }
+
     /**
      * Ganti Password Profil
      */
-
     public function changePassword()
     {
         $user = $this->userModel->getById($_SESSION['user_id']);
@@ -295,7 +322,7 @@ class AuthController
         $validator = validate($_POST);
         $validator->required('current_password', 'Password saat ini wajib diisi.')
             ->required('new_password', 'Password baru wajib diisi.')
-            ->minLength('new_password', 6, 'Password baru minimal 6 karakter.')
+            ->minLength('new_password', 8, 'Password baru minimal 8 karakter.')
             ->required('confirm_password', 'Konfirmasi password wajib diisi.')
             ->matches('confirm_password', 'new_password', 'Konfirmasi password tidak cocok.');
 
@@ -317,5 +344,105 @@ class AuthController
         $_SESSION['errors_messages'] = $errors;
         $_SESSION['success_messages'] = $success;
         redirect(\BASE_URL . 'profile');
+    }
+
+    /**
+     * Halaman Lupa Password
+     */
+    public function forgotPassword()
+    {
+        $pageTitle = 'Lupa Password';
+        \view('pages/forgot_password', [
+            'pageTitle' => $pageTitle
+        ]);
+    }
+
+    /**
+     * Proses pengiriman link reset password
+     */
+    public function sendResetLink()
+    {
+        $email = sanitize($_POST['email'] ?? '');
+        $user = $this->userModel->getByEmail($email);
+
+        if ($user) {
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+            $this->userModel->setResetToken($email, $token, $expires);
+            
+            $resetLink = \BASE_URL . 'reset-password?token=' . $token;
+            
+            // Simulasi pengiriman email
+            $simulatedMessage = "Pesan simulasi (email terkirim ke $email).<br><br>Silakan klik tautan ini untuk mereset password Anda:<br><a href='$resetLink' style='color:#2ecad0; text-decoration:underline;'>$resetLink</a>";
+            setFlashMessage('success', $simulatedMessage);
+        } else {
+            setFlashMessage('success', 'Jika email Anda terdaftar, Anda akan menerima tautan reset password beserta instruksinya.');
+        }
+        
+        redirect(\BASE_URL . 'forgot-password');
+    }
+
+    /**
+     * Halaman Reset Password (dari link email)
+     */
+    public function resetPasswordForm()
+    {
+        $token = $_GET['token'] ?? '';
+        $user = $this->userModel->getByResetToken($token);
+
+        if (!$user) {
+            setFlashMessage('error', 'Token reset password tidak valid atau sudah kedaluwarsa.');
+            redirect(\BASE_URL . 'login');
+            return;
+        }
+
+        $pageTitle = 'Reset Password';
+        \view('pages/reset_password', [
+            'pageTitle' => $pageTitle,
+            'token' => $token
+        ]);
+    }
+
+    /**
+     * Proses reset password (submit password baru)
+     */
+    public function updatePassword()
+    {
+        $token = $_POST['token'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
+
+        $user = $this->userModel->getByResetToken($token);
+
+        if (!$user) {
+            setFlashMessage('error', 'Token tidak valid atau sudah kedaluwarsa.');
+            redirect(\BASE_URL . 'login');
+            return;
+        }
+
+        if (strlen($password) < 8) {
+            setFlashMessage('error', 'Password minimal 8 karakter.');
+            redirect(\BASE_URL . 'reset-password?token=' . $token);
+            return;
+        }
+
+        if ($password === $user['username']) {
+            setFlashMessage('error', 'Password tidak boleh sama dengan username.');
+            redirect(\BASE_URL . 'reset-password?token=' . $token);
+            return;
+        }
+
+        if ($password !== $confirm_password) {
+            setFlashMessage('error', 'Konfirmasi password tidak cocok.');
+            redirect(\BASE_URL . 'reset-password?token=' . $token);
+            return;
+        }
+
+        // Update password
+        $this->userModel->update($user['id'], ['password' => $password]);
+        $this->userModel->clearResetToken($user['id']);
+
+        setFlashMessage('success', 'Password berhasil direset! Silakan login.');
+        redirect(\BASE_URL . 'login');
     }
 }

@@ -157,43 +157,7 @@ class AdminController {
         exit;
     }
 
-    public function createAdmin() {
-        header('Content-Type: application/json');
-        $data = json_decode(file_get_contents("php://input"), true);
-        $username = sanitize($data['username'] ?? '');
-        $email = sanitize($data['email'] ?? '');
-        $namaLengkap = sanitize($data['nama_lengkap'] ?? '');
-        $password = $data['password'] ?? 'admin123';
 
-        if (empty($username) || empty($email) || empty($namaLengkap)) {
-            echo json_encode(['success' => false, 'error' => 'All fields are required.']);
-            exit;
-        }
-        if ($this->userModel->usernameExists($username)) {
-            echo json_encode(['success' => false, 'error' => 'Username already exists.']);
-            exit;
-        }
-        if ($this->userModel->emailExists($email)) {
-            echo json_encode(['success' => false, 'error' => 'Email already exists.']);
-            exit;
-        }
-
-        $userId = $this->userModel->create([
-            'username' => $username,
-            'email' => $email,
-            'nama_lengkap' => $namaLengkap,
-            'password' => $password,
-            'role' => 'admin'
-        ]);
-
-        if ($userId) {
-            logActivity('admin_create', "Created new admin: {$username}");
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to create admin.']);
-        }
-        exit;
-    }
 
     // ─── Platforms ────────────────────────────
     public function platforms() {
@@ -427,6 +391,11 @@ class AdminController {
 
         if (!$productId || !$userId) {
             echo json_encode(['success' => false, 'error' => 'Invalid data.']);
+            exit;
+        }
+
+        if ($this->reportModel->hasUserReported($productId, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Anda sudah pernah melaporkan produk ini.']);
             exit;
         }
 

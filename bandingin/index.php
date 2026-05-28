@@ -39,6 +39,12 @@ $route->middleware(['guest'])->group(function ($childClass) {
         'authenticaton']);
     $childClass->post('/register', [AuthController::class, 
         'storeUser']);
+    
+    // Forgot Password Routes
+    $childClass->get('/forgot-password', [AuthController::class, 'forgotPassword']);
+    $childClass->post('/forgot-password', [AuthController::class, 'sendResetLink']);
+    $childClass->get('/reset-password', [AuthController::class, 'resetPasswordForm']);
+    $childClass->post('/reset-password', [AuthController::class, 'updatePassword']);
 });
 
 $route->middleware(['login'])->group(function ($childClass) {
@@ -80,7 +86,6 @@ $route->middleware(['login', 'super_admin'])->group(function ($childClass) {
     $childClass->post('/admin/users/toggle-active', [AdminController::class, 'toggleActive']);
     $childClass->post('/admin/users/delete', [AdminController::class, 'deleteUser']);
     $childClass->post('/admin/users/reset-password', [AdminController::class, 'resetPassword']);
-    $childClass->post('/admin/users/create', [AdminController::class, 'createAdmin']);
     
     // Platform Management
     $childClass->get('/admin/platforms', [AdminController::class, 'platforms']);

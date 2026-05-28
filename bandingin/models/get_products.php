@@ -24,6 +24,7 @@ try {
             FROM products p
             INNER JOIN product_prices pp ON p.id = pp.product_id
             INNER JOIN platforms pl ON pp.platform_id = pl.id
+            WHERE pl.is_active = 1
             ORDER BY p.id DESC"; // Menggunakan DESC agar hasil scraping terbaru muncul duluan
 
     $stmt = $pdo->prepare($sql);

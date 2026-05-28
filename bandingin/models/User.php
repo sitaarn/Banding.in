@@ -242,4 +242,23 @@ class User {
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
+
+    public function setResetToken($email, $token, $expires) {
+        $sql = "UPDATE {$this->table} SET reset_token = ?, reset_token_expires = ? WHERE email = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$token, $expires, $email]);
+    }
+
+    public function getByResetToken($token) {
+        $sql = "SELECT * FROM {$this->table} WHERE reset_token = ? AND reset_token_expires > NOW()";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$token]);
+        return $stmt->fetch();
+    }
+
+    public function clearResetToken($id) {
+        $sql = "UPDATE {$this->table} SET reset_token = NULL, reset_token_expires = NULL WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }
 }

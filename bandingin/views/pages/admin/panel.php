@@ -137,13 +137,12 @@ $currentTab = $tab ?? 'dashboard';
     <div class="admin-header">
       <div>
         <h1 class="admin-title">User Management</h1>
-        <p class="admin-subtitle">Manage all registered users, change roles, and create admins.</p>
+        <p class="admin-subtitle">Manage all registered users and change roles.</p>
       </div>
-      <button class="admin-btn primary" onclick="showCreateAdminModal()"><i class="fa-solid fa-plus"></i> Create Admin</button>
     </div>
 
     <div class="admin-panel">
-      <table class="admin-table">
+      <table class="admin-table" id="usersTable">
         <thead><tr><th>ID</th><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Products</th><th>Actions</th></tr></thead>
         <tbody>
         <?php if(!empty($users)): foreach($users as $u): ?>
@@ -154,7 +153,7 @@ $currentTab = $tab ?? 'dashboard';
             <td class="text-soft"><?= e($u['email']) ?></td>
             <td>
               <?php if($u['role'] !== 'super_admin'): ?>
-              <select class="admin-select" style="width:auto;padding:4px 8px;font-size:0.72rem;" onchange="updateRole(<?= $u['id'] ?>, this.value)">
+              <select class="admin-select" style="width:auto;padding:4px 8px;font-size:0.72rem;" onchange="updateRole(<?= $u['id'] ?>, this.value, this)" data-original="<?= $u['role'] ?>">
                 <option value="user" <?= $u['role']==='user'?'selected':'' ?>>User</option>
                 <option value="seller" <?= $u['role']==='seller'?'selected':'' ?>>Seller</option>
                 <option value="admin" <?= $u['role']==='admin'?'selected':'' ?>>Admin</option>
@@ -204,7 +203,7 @@ $currentTab = $tab ?? 'dashboard';
 
     <div class="admin-panel">
       <div class="admin-panel-title"><i class="fa-solid fa-store text-cyan"></i> All Platforms</div>
-      <table class="admin-table">
+      <table class="admin-table" id="platformsTable">
         <thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
         <?php if(!empty($platforms)): foreach($platforms as $p): ?>
@@ -251,8 +250,11 @@ $currentTab = $tab ?? 'dashboard';
     </div>
 
     <div class="admin-panel">
-      <div class="admin-panel-title"><i class="fa-solid fa-box-open text-cyan"></i> All Products</div>
-      <table class="admin-table">
+      <div class="admin-panel-title" style="display:flex; justify-content:space-between; align-items:center;">
+        <div><i class="fa-solid fa-box-open text-cyan"></i> All Products</div>
+        <input type="text" id="productSearch" oninput="filterAdminProducts()" placeholder="Cari nama barang..." class="admin-input" style="width:250px; padding:6px 12px; font-size:0.85rem;">
+      </div>
+      <table class="admin-table" id="productsTable">
         <thead><tr><th>ID</th><th>Product</th><th>Seller</th><th>Platform</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
         <?php if(!empty($products)): foreach($products as $p): ?>
@@ -313,7 +315,7 @@ $currentTab = $tab ?? 'dashboard';
 
     <div class="admin-panel">
       <div class="admin-panel-title"><i class="fa-solid fa-list text-cyan"></i> Scraper Logs</div>
-      <table class="admin-table">
+      <table class="admin-table" id="scraperTable">
         <thead><tr><th>ID</th><th>Platform</th><th>Keyword</th><th>Status</th><th>Items</th><th>Triggered By</th><th>Started</th><th>Finished</th></tr></thead>
         <tbody>
         <?php if(!empty($scraperLogs)): foreach($scraperLogs as $sl): ?>
@@ -344,8 +346,8 @@ $currentTab = $tab ?? 'dashboard';
     </div>
 
     <div class="admin-panel">
-      <table class="admin-table">
-        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Description</th><th>IP</th></tr></thead>
+      <table class="admin-table" id="logsTable">
+        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Description</th></tr></thead>
         <tbody>
         <?php if(!empty($activityLogs)): foreach($activityLogs as $al): ?>
           <tr>
@@ -353,10 +355,9 @@ $currentTab = $tab ?? 'dashboard';
             <td style="color:var(--text-light);"><?= e($al['username'] ?? 'System') ?></td>
             <td><span class="status-badge active"><?= e($al['action']) ?></span></td>
             <td><?= e($al['description'] ?? '-') ?></td>
-            <td class="text-soft"><?= e($al['ip_address'] ?? '-') ?></td>
           </tr>
         <?php endforeach; else: ?>
-          <tr><td colspan="5" class="text-soft" style="text-align:center;">No activity logs yet.</td></tr>
+          <tr><td colspan="4" class="text-soft" style="text-align:center;">No activity logs yet.</td></tr>
         <?php endif; ?>
         </tbody>
       </table>
@@ -372,7 +373,7 @@ $currentTab = $tab ?? 'dashboard';
     </div>
 
     <div class="admin-panel">
-      <table class="admin-table">
+      <table class="admin-table" id="reportsTable">
         <thead><tr><th>ID</th><th>Product</th><th>Platform</th><th>Reporter</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody>
         <?php if(!empty($reports)): foreach($reports as $r): ?>
@@ -408,32 +409,6 @@ $currentTab = $tab ?? 'dashboard';
     </main>
   </div>
 
-  <!-- Create Admin Modal -->
-  <div class="admin-modal-overlay" id="createAdminModal">
-    <div class="admin-modal">
-      <div class="admin-modal-title"><i class="fa-solid fa-user-plus text-cyan"></i> Create New Admin</div>
-      <div class="admin-form-group" style="margin-bottom:12px;">
-        <label class="admin-form-label">Username</label>
-        <input type="text" class="admin-input" id="newAdminUsername" placeholder="admin_username">
-      </div>
-      <div class="admin-form-group" style="margin-bottom:12px;">
-        <label class="admin-form-label">Full Name</label>
-        <input type="text" class="admin-input" id="newAdminName" placeholder="Full Name">
-      </div>
-      <div class="admin-form-group" style="margin-bottom:12px;">
-        <label class="admin-form-label">Email</label>
-        <input type="email" class="admin-input" id="newAdminEmail" placeholder="email@example.com">
-      </div>
-      <div class="admin-form-group" style="margin-bottom:12px;">
-        <label class="admin-form-label">Password</label>
-        <input type="password" class="admin-input" id="newAdminPassword" placeholder="Default: admin123" value="admin123">
-      </div>
-      <div class="admin-modal-actions">
-        <button class="admin-btn primary" onclick="createAdmin()" style="flex:1;justify-content:center;"><i class="fa-solid fa-check"></i> Create Admin</button>
-        <button class="admin-btn" onclick="hideCreateAdminModal()" style="flex:1;justify-content:center;">Cancel</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Confirm Modal -->
   <div class="admin-modal-overlay" id="confirmModal">
@@ -472,9 +447,7 @@ $currentTab = $tab ?? 'dashboard';
   }
   function hideConfirm() { document.getElementById('confirmModal').classList.remove('visible'); }
 
-  // ── Create Admin Modal ──
-  function showCreateAdminModal() { document.getElementById('createAdminModal').classList.add('visible'); }
-  function hideCreateAdminModal() { document.getElementById('createAdminModal').classList.remove('visible'); }
+
 
   // ── API Helper ──
   async function apiPost(url, data) {
@@ -485,9 +458,27 @@ $currentTab = $tab ?? 'dashboard';
   }
 
   // ── User Management ──
-  async function updateRole(userId, role) {
-    const r = await apiPost('admin/users/update-role', {user_id: userId, role});
-    if(r.success) { showToast('Role updated!'); } else { showToast(r.error || 'Failed', true); }
+  function updateRole(userId, role, selectEl) {
+    const originalRole = selectEl.getAttribute('data-original');
+    showConfirm('Konfirmasi Role', `Apakah Anda yakin merubah role user ini ke ${role}?`, async () => {
+      const r = await apiPost('admin/users/update-role', {user_id: userId, role});
+      if(r.success) { 
+        showToast('Role updated!'); 
+        selectEl.setAttribute('data-original', role);
+      } else { 
+        showToast(r.error || 'Failed', true); 
+        selectEl.value = originalRole;
+      }
+    });
+    
+    // Override the cancel button for this modal session
+    const cancelBtn = document.querySelector('#confirmModal .admin-btn:not(.danger)');
+    if (cancelBtn) {
+      cancelBtn.onclick = () => {
+        hideConfirm();
+        selectEl.value = originalRole;
+      };
+    }
   }
   function toggleActive(userId) {
     showConfirm('Toggle Status', 'Toggle this user\'s active status?', async () => {
@@ -510,17 +501,7 @@ $currentTab = $tab ?? 'dashboard';
       else { showToast(r.error || 'Failed', true); }
     });
   }
-  async function createAdmin() {
-    const data = {
-      username: document.getElementById('newAdminUsername').value,
-      nama_lengkap: document.getElementById('newAdminName').value,
-      email: document.getElementById('newAdminEmail').value,
-      password: document.getElementById('newAdminPassword').value
-    };
-    const r = await apiPost('admin/users/create', data);
-    if(r.success) { showToast('Admin created!'); hideCreateAdminModal(); setTimeout(()=>location.reload(), 800); } 
-    else { showToast(r.error || 'Failed', true); }
-  }
+
 
   // ── Platform Management ──
   function togglePlatform(id) {
@@ -539,10 +520,42 @@ $currentTab = $tab ?? 'dashboard';
   }
 
   // ── Product Verification ──
-  async function verifyProduct(id, status) {
-    const r = await apiPost('admin/products/verify', {product_id: id, status});
-    if(r.success) { showToast('Product ' + status + '!'); setTimeout(()=>location.reload(), 800); } 
-    else { showToast(r.error || 'Failed', true); }
+  function verifyProduct(id, status) {
+    if (status === 'taken_down') {
+      showConfirm('Take Down Produk', 'Apakah Anda yakin ingin men-take down produk ini?', async () => {
+        const r = await apiPost('admin/products/verify', {product_id: id, status});
+        if(r.success) { showToast('Product ' + status + '!'); setTimeout(()=>location.reload(), 800); } 
+        else { showToast(r.error || 'Failed', true); }
+      });
+    } else {
+      (async () => {
+        const r = await apiPost('admin/products/verify', {product_id: id, status});
+        if(r.success) { showToast('Product ' + status + '!'); setTimeout(()=>location.reload(), 800); } 
+        else { showToast(r.error || 'Failed', true); }
+      })();
+    }
+  }
+
+  function filterAdminProducts() {
+    const query = document.getElementById('productSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#productsTable tbody tr');
+    rows.forEach(row => {
+      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      if (name.includes(query)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    const pagination = document.getElementById('productsTablePagination');
+    if (pagination) {
+       pagination.style.display = query.length > 0 ? 'none' : 'flex';
+    }
+    
+    if (query.length === 0) {
+       if (window.renderPageProducts) window.renderPageProducts(1);
+    }
   }
   function bulkDelete() {
     const pid = document.getElementById('bulkDeletePlatform').value;
@@ -585,6 +598,84 @@ $currentTab = $tab ?? 'dashboard';
       else { showToast(r.error || 'Failed', true); }
     });
   }
+
+  // ── Pagination ──
+  window.renderPageProducts = null;
+  function paginateTable(tableId, rowsPerPage = 10) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    if (rows.length === 1 && rows[0].querySelector('td[colspan]')) return;
+
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    if (totalPages <= 1) return;
+
+    let currentPage = 1;
+    const paginationContainer = document.createElement('div');
+    paginationContainer.className = 'admin-pagination';
+    paginationContainer.id = tableId + 'Pagination';
+    paginationContainer.style.cssText = 'margin-top: 15px; display: flex; justify-content: flex-end; gap: 8px;';
+    table.parentNode.insertBefore(paginationContainer, table.nextSibling);
+
+    function renderPage(page) {
+      currentPage = page;
+      rows.forEach((row, index) => {
+        row.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? '' : 'none';
+      });
+
+      paginationContainer.innerHTML = '';
+      
+      const prevBtn = document.createElement('button');
+      prevBtn.textContent = 'Prev';
+      prevBtn.className = 'admin-btn' + (page === 1 ? ' disabled' : '');
+      prevBtn.style.padding = '4px 10px';
+      if(page > 1) prevBtn.onclick = () => renderPage(page - 1);
+      paginationContainer.appendChild(prevBtn);
+
+      for (let i = 1; i <= totalPages; i++) {
+        // limit pagination buttons displayed
+        if (i !== 1 && i !== totalPages && Math.abs(i - page) > 2) {
+            if (Math.abs(i - page) === 3) {
+                const dot = document.createElement('span');
+                dot.textContent = '...';
+                dot.style.padding = '4px';
+                paginationContainer.appendChild(dot);
+            }
+            continue;
+        }
+
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i;
+        pageBtn.className = 'admin-btn' + (i === page ? ' primary' : '');
+        pageBtn.style.padding = '4px 10px';
+        if(i !== page) pageBtn.onclick = () => renderPage(i);
+        paginationContainer.appendChild(pageBtn);
+      }
+
+      const nextBtn = document.createElement('button');
+      nextBtn.textContent = 'Next';
+      nextBtn.className = 'admin-btn' + (page === totalPages ? ' disabled' : '');
+      nextBtn.style.padding = '4px 10px';
+      if(page < totalPages) nextBtn.onclick = () => renderPage(page + 1);
+      paginationContainer.appendChild(nextBtn);
+    }
+
+    renderPage(1);
+
+    if (tableId === 'productsTable') {
+      window.renderPageProducts = renderPage;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    paginateTable('usersTable', 10);
+    paginateTable('platformsTable', 10);
+    paginateTable('productsTable', 10);
+    paginateTable('scraperTable', 10);
+    paginateTable('logsTable', 10);
+    paginateTable('reportsTable', 10);
+  });
   </script>
 </body>
 </html>

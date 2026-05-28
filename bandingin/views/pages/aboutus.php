@@ -54,7 +54,6 @@
 
   <div class="cta-group">
     <button class="btn-primary" onclick="window.location.href='/bandingin/list'">Coba Sekarang!</button>
-    <button class="btn-secondary" onclick="window.location.href='https://wa.me/qr/5KDJCWFAN3IUO1'">Hubungi Kami</button>
   </div>
 </main>
 
