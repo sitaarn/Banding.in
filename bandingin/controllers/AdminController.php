@@ -183,25 +183,7 @@ class AdminController {
         exit;
     }
 
-    public function createPlatform() {
-        header('Content-Type: application/json');
-        $data = json_decode(file_get_contents("php://input"), true);
-        $name = sanitize($data['name'] ?? '');
 
-        if (empty($name)) {
-            echo json_encode(['success' => false, 'error' => 'Platform name is required.']);
-            exit;
-        }
-
-        $id = $this->platformModel->create(['name' => $name]);
-        if ($id) {
-            logActivity('platform_create', "Created platform: {$name}");
-            echo json_encode(['success' => true, 'id' => $id]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to create platform.']);
-        }
-        exit;
-    }
 
     // ─── Scraper ─────────────────────────────
     public function scraper() {
@@ -240,18 +222,19 @@ class AdminController {
 
             if (isset($scriptMap[$platformName]) && $scriptMap[$platformName] && file_exists($scriptMap[$platformName])) {
                 $scriptPath = $scriptMap[$platformName];
+                $scriptDir = dirname($scriptPath);
+                $logFile = $scriptDir . DIRECTORY_SEPARATOR . 'scraper_output_' . $logId . '.log';
                 
-                // Execute Python script asynchronously
+                // Execute Python script asynchronously with correct working directory
                 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    $cmd = "start /B python " . escapeshellarg($scriptPath) . " " . escapeshellarg($keyword) . " > NUL 2>&1";
-                    pclose(popen($cmd, "r"));
+                    // Use cmd /c with cd to set working directory, then run python
+                    $cmd = 'cmd /c "cd /d ' . escapeshellarg($scriptDir) . ' && python ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($keyword) . ' ' . escapeshellarg($logId) . ' > ' . escapeshellarg($logFile) . ' 2>&1"';
+                    pclose(popen("start /B " . $cmd, "r"));
                 } else {
-                    $cmd = "python3 " . escapeshellarg($scriptPath) . " " . escapeshellarg($keyword) . " > /dev/null 2>&1 &";
+                    $cmd = "cd " . escapeshellarg($scriptDir) . " && python3 " . escapeshellarg($scriptPath) . " " . escapeshellarg($keyword) . " " . escapeshellarg($logId) . " > " . escapeshellarg($logFile) . " 2>&1 &";
                     shell_exec($cmd);
                 }
 
-                // Simulate success update for log since python script doesn't update it currently
-                $this->scraperLogModel->updateStatus($logId, 'success', rand(10, 50));
             } else {
                 $this->scraperLogModel->updateStatus($logId, 'failed', 0, 'Scraper script not found for platform: ' . $platformName);
             }

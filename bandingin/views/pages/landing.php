@@ -32,7 +32,7 @@
       <?php if(isLoggedIn()) : ?>
         <div class="user-chip-wrap" id="userChipWrap">
           <div class="user-chip" onclick="toggleDropdown()">
-            <div class="user-avatar" id="userAvatar" data-avatar="<?= $_SESSION['nama_lengkap'] ?>"></div>
+            <div class="user-avatar" id="userAvatar" data-avatar="<?= $_SESSION['nama_lengkap'] ?>"><?= strtoupper(substr($_SESSION['nama_lengkap'] ?? '', 0, 2)) ?></div>
             <span class="user-name"><?= $_SESSION['nama_lengkap'] ?></span>
             <div class="user-online"></div>
             <span class="user-chevron">▼</span>

@@ -9,12 +9,17 @@ Cara Pakai:
   python scraper_tokopedia.py "ps5 slim" --pages 3
 """
 import sys
+import os
 import time
 import random
 from urllib.parse import quote_plus
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 
-from db_helper import is_valid_product, parse_price, save_to_mysql
+# Pastikan db_helper bisa ditemukan meskipun working directory berbeda
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+from db_helper import is_valid_product, parse_price, save_to_mysql, update_scraper_log
+
 
 
 EXTRACT_JS = r"""
@@ -111,11 +116,12 @@ EXTRACT_JS = r"""
 }
 """
 
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/126.0.0.0 Safari/537.36"
-)
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+]
 
 
 def scrape_tokopedia(keyword: str, max_pages: int = 2) -> list:
@@ -128,13 +134,13 @@ def scrape_tokopedia(keyword: str, max_pages: int = 2) -> list:
     seen_links = set()
 
     with sync_playwright() as pw:
+        # headless=False agar browser terbuka visible (seperti Chrome biasa, tidak di-blokir)
         browser = pw.chromium.launch(
             headless=False,
             args=["--disable-blink-features=AutomationControlled", "--no-sandbox"]
         )
         context = browser.new_context(
             viewport={"width": 1920, "height": 1080},
-            user_agent=USER_AGENT,
             locale="id-ID",
             timezone_id="Asia/Jakarta"
         )
@@ -154,6 +160,9 @@ def scrape_tokopedia(keyword: str, max_pages: int = 2) -> list:
                 page.goto(url, wait_until="domcontentloaded", timeout=30000)
             except PWTimeout:
                 print(f"  [!] Timeout halaman {page_num}, lewati...")
+                continue
+            except Exception as e:
+                print(f"  [!] Error navigasi: {e}")
                 continue
 
             # Tunggu container produk
@@ -222,16 +231,26 @@ def scrape_tokopedia(keyword: str, max_pages: int = 2) -> list:
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print('Penggunaan: python scraper_tokopedia.py "kata kunci"')
-        print('            python scraper_tokopedia.py "kata kunci" --pages 3')
+        print('            python scraper_tokopedia.py "kata kunci" [log_id]')
         sys.exit(1)
 
     KEYWORD = sys.argv[1]
+    LOG_ID = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2].isdigit() else None
+    
     MAX_PAGES = 2
     if "--pages" in sys.argv:
         idx = sys.argv.index("--pages")
         if idx + 1 < len(sys.argv):
             MAX_PAGES = int(sys.argv[idx + 1])
 
-    products = scrape_tokopedia(KEYWORD, max_pages=MAX_PAGES)
-    save_to_mysql(products, "Tokopedia")
-    print("\nSelesai!")
+    try:
+        products = scrape_tokopedia(KEYWORD, max_pages=MAX_PAGES)
+        save_to_mysql(products, "Tokopedia")
+        if LOG_ID:
+            update_scraper_log(LOG_ID, 'success', len(products))
+        print("\nSelesai!")
+    except Exception as e:
+        print(f"\n[!] Error: {e}")
+        if LOG_ID:
+            update_scraper_log(LOG_ID, 'failed', 0, str(e))
+        sys.exit(1)

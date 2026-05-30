@@ -209,10 +209,14 @@ class User {
     }
 
     public function countByRole($role) {
-        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE role = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$role]);
-        return $stmt->fetchColumn();
+        try {
+            $sql = "SELECT COUNT(*) FROM {$this->table} WHERE role = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$role]);
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
     public function updateRole($id, $role) {
@@ -234,13 +238,26 @@ class User {
     }
 
     public function getAllWithStats() {
-        $sql = "SELECT u.id, u.username, u.nama_lengkap, u.email, u.role, u.is_active, u.created_at,
-                (SELECT COUNT(*) FROM products p WHERE p.seller_id = u.id) AS product_count,
-                (SELECT COUNT(*) FROM favorites f WHERE f.user_id = u.id) AS favorite_count
-                FROM {$this->table} u
-                ORDER BY u.created_at DESC";
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
+        try {
+            $sql = "SELECT u.id, u.username, u.nama_lengkap, u.email, u.role, u.is_active, u.created_at,
+                    (SELECT COUNT(*) FROM products p WHERE p.seller_id = u.id) AS product_count,
+                    (SELECT COUNT(*) FROM favorites f WHERE f.user_id = u.id) AS favorite_count
+                    FROM {$this->table} u
+                    ORDER BY u.created_at DESC";
+            $stmt = $this->db->query($sql);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            // Fallback without role/is_active/seller_id
+            try {
+                $sql = "SELECT u.id, u.username, u.nama_lengkap, u.email, u.created_at
+                        FROM {$this->table} u
+                        ORDER BY u.id DESC";
+                $stmt = $this->db->query($sql);
+                return $stmt->fetchAll();
+            } catch (\Exception $e2) {
+                return [];
+            }
+        }
     }
 
     public function setResetToken($email, $token, $expires) {

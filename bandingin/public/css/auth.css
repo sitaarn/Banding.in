@@ -6,11 +6,13 @@
 }
 
 body{
-  height:100vh;
+  min-height:100vh;
+  height:auto;
   display:flex;
   justify-content:center;
-  align-items:center;
-  overflow:hidden;
+  align-items:flex-start;
+  overflow-y:auto;
+  overflow-x:hidden;
   background:linear-gradient(135deg, #0d1b2a, #1b3a5c, #1a2744);
   position:relative;
 }
@@ -437,6 +439,8 @@ body::after{
   align-items: center;
   position: relative;
   z-index: 10;
+  margin: auto;
+  padding: 40px 0;
 }
 
 /* ROLE TOGGLE */

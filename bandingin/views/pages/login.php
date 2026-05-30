@@ -25,12 +25,14 @@
 
       <!-- LOGIN FORM -->
       <div class="form-container login-container" >
-        <form id="loginForm" action="<?= BASE_URL . 'login' ?>" method="post">
+        <form id="loginForm">
           <input type="hidden" name="role" class="roleInput" value="user">
           <div class="icon-circle" id="loginIconCircle">
             <i class="fa-solid fa-user" id="loginIcon"></i>
           </div>
           <h2 id="loginTitle">MY ACCOUNT</h2>
+
+          <div id="loginError" style="display:none; background:rgba(224,82,82,0.15); border:1px solid rgba(224,82,82,0.3); color:#ff6b6b; padding:10px 14px; border-radius:10px; font-size:0.82rem; margin-bottom:12px; text-align:center;"></div>
 
           <input type="text"
           class="form-control"
@@ -48,7 +50,7 @@
           required>
 
           <a href="<?= BASE_URL . 'forgot-password' ?>" style="font-size: 14px; margin-bottom: 15px; color: #666; text-decoration: none;">Forgot your password?</a>
-          <button type="submit" class="primary-btn">SIGN IN</button>
+          <button type="submit" class="primary-btn" id="loginSubmitBtn">SIGN IN</button>
         </form>
       </div>
 
@@ -136,10 +138,119 @@
         unset($_SESSION['errors_messages']);
     }
   ?>
+
+  <script>
+  // AJAX Login - No page refresh on error
+  const loginForm = document.getElementById('loginForm');
+  const loginError = document.getElementById('loginError');
+  const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+
+  loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const role = loginForm.querySelector('.roleInput').value;
+
+    // Client-side validation
+    if (!username) {
+      showLoginError('Username wajib diisi.');
+      return;
+    }
+    if (!password) {
+      showLoginError('Password wajib diisi.');
+      return;
+    }
+
+    // Show loading state
+    loginSubmitBtn.disabled = true;
+    loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+    loginError.style.display = 'none';
+
+    try {
+      const formData = new FormData();
+      formData.append('username', username);
+      formData.append('password', password);
+      formData.append('role', role);
+
+      const response = await fetch('<?= BASE_URL ?>login', {
+        method: 'POST',
+        body: formData
+      });
+
+      // If response redirects (302), fetch follows it automatically
+      // Check if the final URL is still the login page (error) or a different page (success)
+      const responseUrl = response.url;
+      const responseText = await response.text();
+
+      // Check if we got redirected back to login page (contains login form)
+      const isLoginPage = responseText.includes('id="loginForm"') || responseText.includes('id="loginTitle"');
+
+      if (isLoginPage) {
+        // Extract error from the response HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(responseText, 'text/html');
+        
+        // Look for SweetAlert script with error
+        const scripts = doc.querySelectorAll('script');
+        let errorMsg = 'Username atau password salah.';
+        scripts.forEach(script => {
+          const content = script.textContent;
+          if (content.includes("Swal.fire") && content.includes("error")) {
+            const textMatch = content.match(/text:\s*'([^']+)'/);
+            if (textMatch) errorMsg = textMatch[1];
+          }
+        });
+
+        showLoginError(errorMsg);
+      } else {
+        // Success - redirect to the final URL
+        window.location.href = responseUrl;
+      }
+    } catch (error) {
+      showLoginError('Terjadi kesalahan. Coba lagi.');
+    } finally {
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.innerHTML = 'SIGN IN';
+    }
+  });
+
+  function showLoginError(msg) {
+    loginError.textContent = msg;
+    loginError.style.display = 'block';
+    
+    // Shake animation
+    loginError.style.animation = 'none';
+    loginError.offsetHeight; // trigger reflow
+    loginError.style.animation = 'shakeError 0.4s ease';
+    
+    // Also show SweetAlert for prominence
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal',
+      text: msg,
+      background: '#1a2744',
+      color: '#e8edf2',
+      confirmButtonColor: '#2ecad0',
+      customClass: { popup: 'swal-custom' },
+      heightAuto: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  }
+  </script>
+
   <style>
       .swal-custom {
           border: 1px solid rgba(255,255,255,0.1);
           box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      }
+      @keyframes shakeError {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-8px); }
+        40% { transform: translateX(8px); }
+        60% { transform: translateX(-5px); }
+        80% { transform: translateX(5px); }
       }
   </style>
 </body>

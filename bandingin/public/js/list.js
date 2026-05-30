@@ -369,6 +369,15 @@ function renderListing() {
 
   const globalMin = Math.min(...items.map(i => i.price));
 
+  let showLoginPrompt = false;
+  let originalLength = items.length;
+  if (typeof APP_IS_LOGGED_IN !== 'undefined' && !APP_IS_LOGGED_IN) {
+    if (items.length > 5) {
+      items = items.slice(0, 5);
+      showLoginPrompt = true;
+    }
+  }
+
   const totalPages = Math.ceil(items.length / lsItemsPerPage);
   if (lsCurrentPage > totalPages) lsCurrentPage = totalPages || 1;
   const startIndex = (lsCurrentPage - 1) * lsItemsPerPage;
@@ -418,22 +427,33 @@ function renderListing() {
   }).join('');
 
   let paginationHTML = '';
-  if (totalPages > 1) {
-    paginationHTML = '<div class="ls-pagination" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">';
+  if (totalPages > 1 && !showLoginPrompt) {
+    paginationHTML = '<div class="ls-pagination">';
     if (lsCurrentPage > 1) {
-      paginationHTML += `<button onclick="lsChangePage(${lsCurrentPage - 1})" style="padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">Prev</button>`;
+      paginationHTML += `<button class="ls-page-btn" onclick="lsChangePage(${lsCurrentPage - 1})">Prev</button>`;
     }
     for (let i = 1; i <= totalPages; i++) {
       if (i === lsCurrentPage) {
-        paginationHTML += `<button style="padding: 5px 10px; border: 1px solid #2ecad0; background: #2ecad0; color: #fff; font-weight: bold;">${i}</button>`;
+        paginationHTML += `<button class="ls-page-btn active">${i}</button>`;
       } else {
-        paginationHTML += `<button onclick="lsChangePage(${i})" style="padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">${i}</button>`;
+        paginationHTML += `<button class="ls-page-btn" onclick="lsChangePage(${i})">${i}</button>`;
       }
     }
     if (lsCurrentPage < totalPages) {
-      paginationHTML += `<button onclick="lsChangePage(${lsCurrentPage + 1})" style="padding: 5px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">Next</button>`;
+      paginationHTML += `<button class="ls-page-btn" onclick="lsChangePage(${lsCurrentPage + 1})">Next</button>`;
     }
     paginationHTML += '</div>';
+  }
+
+  let loginPromptHTML = '';
+  if (showLoginPrompt) {
+    loginPromptHTML = `
+      <div class="ls-login-prompt">
+        <div class="ls-login-icon">🔒</div>
+        <div class="ls-login-text">Masuk atau daftar untuk melihat ${originalLength - 5} produk lainnya!</div>
+        <button class="ls-login-btn" onclick="goToLogin()">Login / Register</button>
+      </div>
+    `;
   }
 
   main.innerHTML = `
@@ -441,13 +461,14 @@ function renderListing() {
       <div class="ls-query-info">
         <div class="ls-query-title">${lsCurrentQuery}</div>
         <div class="ls-query-meta">
-          <strong>${items.length} ${LANG.results_found}</strong> \u00B7 ${LANG.updated_just_now}
+          <strong>${showLoginPrompt ? originalLength : items.length} ${LANG.results_found}</strong> \u00B7 ${LANG.updated_just_now}
         </div>
       </div>
       <button class="ls-back-btn" onclick="backToSearch()">\u2190 ${LANG.search_again}</button>
     </div>
     ${cards}
-    ${paginationHTML}`;
+    ${paginationHTML}
+    ${loginPromptHTML}`;
 }
 
 function lsChangePage(page) {

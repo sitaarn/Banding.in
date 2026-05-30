@@ -17,9 +17,16 @@ class Platform {
     }
 
     public function getAll() {
-        $sql = "SELECT * FROM {$this->table} WHERE is_active = 1 ORDER BY name";
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE is_active = 1 ORDER BY name";
+            $stmt = $this->db->query($sql);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            // Fallback: no is_active column
+            $sql = "SELECT * FROM {$this->table} ORDER BY name";
+            $stmt = $this->db->query($sql);
+            return $stmt->fetchAll();
+        }
     }
 
     public function getAllIncludingInactive() {

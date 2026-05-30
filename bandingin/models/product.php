@@ -86,26 +86,45 @@ class Product {
     }
 
     public function getPending() {
-        $sql = "SELECT p.*, u.username AS seller_name, pp.price, pp.link, pf.name AS platform_name
-                FROM {$this->table} p
-                LEFT JOIN users u ON p.seller_id = u.id
-                LEFT JOIN product_prices pp ON pp.product_id = p.id
-                LEFT JOIN platforms pf ON pp.platform_id = pf.id
-                WHERE p.status = 'pending'
-                ORDER BY p.created_at DESC";
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
+        try {
+            $sql = "SELECT p.*, u.username AS seller_name, pp.price, pp.link, pf.name AS platform_name
+                    FROM {$this->table} p
+                    LEFT JOIN users u ON p.seller_id = u.id
+                    LEFT JOIN product_prices pp ON pp.product_id = p.id
+                    LEFT JOIN platforms pf ON pp.platform_id = pf.id
+                    WHERE p.status = 'pending'
+                    ORDER BY p.created_at DESC";
+            $stmt = $this->db->query($sql);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     public function getAllWithStatus() {
-        $sql = "SELECT p.*, u.username AS seller_name, pp.price, pp.link, pf.name AS platform_name
-                FROM {$this->table} p
-                LEFT JOIN users u ON p.seller_id = u.id
-                LEFT JOIN product_prices pp ON pp.product_id = p.id
-                LEFT JOIN platforms pf ON pp.platform_id = pf.id
-                ORDER BY p.created_at DESC";
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
+        try {
+            $sql = "SELECT p.*, u.username AS seller_name, pp.price, pp.link, pf.name AS platform_name
+                    FROM {$this->table} p
+                    LEFT JOIN users u ON p.seller_id = u.id
+                    LEFT JOIN product_prices pp ON pp.product_id = p.id
+                    LEFT JOIN platforms pf ON pp.platform_id = pf.id
+                    ORDER BY p.created_at DESC";
+            $stmt = $this->db->query($sql);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            // Fallback: simpler query without seller_id/status/created_at
+            try {
+                $sql = "SELECT p.*, pp.price, pp.link, pf.name AS platform_name
+                        FROM {$this->table} p
+                        LEFT JOIN product_prices pp ON pp.product_id = p.id
+                        LEFT JOIN platforms pf ON pp.platform_id = pf.id
+                        ORDER BY p.id DESC";
+                $stmt = $this->db->query($sql);
+                return $stmt->fetchAll();
+            } catch (\Exception $e2) {
+                return [];
+            }
+        }
     }
 
     public function updateStatus($id, $status) {
@@ -127,10 +146,14 @@ class Product {
     }
 
     public function countByStatus($status) {
-        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE status = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$status]);
-        return $stmt->fetchColumn();
+        try {
+            $sql = "SELECT COUNT(*) FROM {$this->table} WHERE status = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$status]);
+            return $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
     public function count() {

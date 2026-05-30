@@ -32,7 +32,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
   <link rel="icon" href="<?= $base ?>public/images/logo-b.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   
-  <link rel="stylesheet" href="<?= $base ?>public/css/list.css"/>
+  <link rel="stylesheet" href="<?= $base ?>public/css/list.css?v=<?= time(); ?>"/>
   
   <style>
     .favorite-nav-btn {
@@ -83,7 +83,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
         <div class="user-chip-wrap" id="userChipWrap">
           <div class="user-chip" onclick="toggleDropdown()">
-            <div class="user-avatar" id="userAvatar" data-avatar="<?= htmlspecialchars($user_nama) ?>"></div>
+            <div class="user-avatar" id="userAvatar" data-avatar="<?= htmlspecialchars($user_nama) ?>"><?= strtoupper(substr($user_nama, 0, 2)) ?></div>
             <span class="user-name"><?= htmlspecialchars($user_nama) ?></span>
             <div class="user-online"></div>
             <span class="user-chevron">▼</span>

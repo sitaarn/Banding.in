@@ -45,6 +45,34 @@ body {
   overflow: hidden;
 }
 
+/* ── Custom Scrollbar (Global) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(13, 27, 42, 0.3);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(46, 202, 208, 0.25);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(46, 202, 208, 0.45);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(46, 202, 208, 0.25) rgba(13, 27, 42, 0.3);
+}
+
 .bg {
   position: fixed;
   inset: 0;

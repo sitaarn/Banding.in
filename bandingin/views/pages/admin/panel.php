@@ -186,20 +186,11 @@ $currentTab = $tab ?? 'dashboard';
     <div class="admin-header">
       <div>
         <h1 class="admin-title">Platform Management</h1>
-        <p class="admin-subtitle">Add, enable, or disable marketplace platforms.</p>
+        <p class="admin-subtitle">Enable or disable marketplace platforms.</p>
       </div>
     </div>
 
-    <div class="admin-panel">
-      <div class="admin-panel-title"><i class="fa-solid fa-plus-circle text-cyan"></i> Add New Platform</div>
-      <div class="admin-form-row">
-        <div class="admin-form-group">
-          <label class="admin-form-label">Platform Name</label>
-          <input type="text" class="admin-input" id="newPlatformName" placeholder="e.g. Bukalapak">
-        </div>
-        <button class="admin-btn primary" onclick="createPlatform()" style="height:42px;"><i class="fa-solid fa-plus"></i> Add</button>
-      </div>
-    </div>
+
 
     <div class="admin-panel">
       <div class="admin-panel-title"><i class="fa-solid fa-store text-cyan"></i> All Platforms</div>
@@ -356,7 +347,7 @@ $currentTab = $tab ?? 'dashboard';
             <td><span class="status-badge active"><?= e($al['action']) ?></span></td>
             <td><?= e($al['description'] ?? '-') ?></td>
           </tr>
-        <?php endforeach; else: ?>
+        <?php endforeach; else: ?>q
           <tr><td colspan="4" class="text-soft" style="text-align:center;">No activity logs yet.</td></tr>
         <?php endif; ?>
         </tbody>
@@ -511,13 +502,7 @@ $currentTab = $tab ?? 'dashboard';
       else { showToast(r.error || 'Failed', true); }
     });
   }
-  async function createPlatform() {
-    const name = document.getElementById('newPlatformName').value;
-    if(!name) { showToast('Enter platform name', true); return; }
-    const r = await apiPost('admin/platforms/create', {name});
-    if(r.success) { showToast('Platform added!'); setTimeout(()=>location.reload(), 800); } 
-    else { showToast(r.error || 'Failed', true); }
-  }
+
 
   // ── Product Verification ──
   function verifyProduct(id, status) {

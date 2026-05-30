@@ -11,16 +11,21 @@ Cara Pakai:
 import sys
 import os
 import time
+import random
+
+# Pastikan db_helper bisa ditemukan meskipun working directory berbeda
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from playwright.sync_api import sync_playwright
 
-from db_helper import is_valid_product, parse_price, save_to_mysql
+from db_helper import is_valid_product, parse_price, save_to_mysql, update_scraper_log
 
 
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/126.0.0.0 Safari/537.36"
-)
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+]
 
 EXTRACT_JS = r"""
 () => {
@@ -96,12 +101,12 @@ def scrape_blibli(keyword: str, debug: bool = False) -> list:
     products = []
 
     with sync_playwright() as pw:
+        # headless=False agar browser terbuka visible (tidak di-blokir anti-bot)
         browser = pw.chromium.launch(
             headless=False,
             args=['--disable-blink-features=AutomationControlled', '--no-sandbox']
         )
         context = browser.new_context(
-            user_agent=USER_AGENT,
             viewport={'width': 1366, 'height': 768},
             locale='id-ID'
         )
@@ -116,6 +121,13 @@ def scrape_blibli(keyword: str, debug: bool = False) -> list:
         try:
             page.goto(url, timeout=60000)
             page.wait_for_timeout(5000)
+
+            # Deteksi apakah halaman di-block oleh anti-bot
+            page_text = page.evaluate("document.body.innerText || ''")
+            if "aktivitas yang tidak biasa" in page_text.lower() or "tidak biasa" in page_text.lower():
+                print("  [!] Blibli mendeteksi bot — IP ter-block sementara.")
+                print("  [!] Coba lagi nanti atau gunakan koneksi internet berbeda.")
+                raise Exception("Blibli anti-bot: IP blocked sementara")
 
             # Scroll
             page.evaluate("window.scrollTo(0, 0)")
@@ -160,12 +172,21 @@ def scrape_blibli(keyword: str, debug: bool = False) -> list:
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print('Penggunaan: python scraper_blibli.py "kata kunci"')
-        print('            python scraper_blibli.py "kata kunci" --debug')
+        print('            python scraper_blibli.py "kata kunci" [log_id]')
         sys.exit(1)
 
     KEYWORD = sys.argv[1]
+    LOG_ID = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2].isdigit() else None
+    
     DEBUG = '--debug' in sys.argv
-
-    products = scrape_blibli(KEYWORD, debug=DEBUG)
-    save_to_mysql(products, "Blibli")
-    print("\nSelesai!")
+    try:
+        products = scrape_blibli(KEYWORD, debug=DEBUG)
+        save_to_mysql(products, "Blibli")
+        if LOG_ID:
+            update_scraper_log(LOG_ID, 'success', len(products))
+        print("\nSelesai!")
+    except Exception as e:
+        print(f"\n[!] Error: {e}")
+        if LOG_ID:
+            update_scraper_log(LOG_ID, 'failed', 0, str(e))
+        sys.exit(1)

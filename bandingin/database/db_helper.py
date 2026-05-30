@@ -125,3 +125,20 @@ def save_to_mysql(products: list, platform_name: str):
         if 'conn' in locals() and conn.is_connected():
             cursor.close()
             conn.close()
+
+def update_scraper_log(log_id: int, status: str, items_scraped: int = 0, error_message: str = None):
+    """Update status scraper_logs."""
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE scraper_logs SET status = %s, items_scraped = %s, error_message = %s, finished_at = NOW() WHERE id = %s",
+            (status, items_scraped, error_message, log_id)
+        )
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"  [DB Error] {err}")
+    finally:
+        if 'conn' in locals() and conn.is_connected():
+            cursor.close()
+            conn.close()

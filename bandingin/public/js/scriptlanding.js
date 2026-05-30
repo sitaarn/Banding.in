@@ -24,9 +24,12 @@ function getInitials(name) {
   return name.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('');
 }
 
-document.getElementById('userAvatar').addEventListener("DOMContentLoaded", function (e) {
-  let avatar = e.getAttribute('data-avatar');
-  avatar = getInitials(avatar);
-
-  document.getElementById('userAvatar').innerHTML = avatar;
+document.addEventListener("DOMContentLoaded", function () {
+  const avatarEl = document.getElementById('userAvatar');
+  if (avatarEl) {
+    let name = avatarEl.getAttribute('data-avatar');
+    if (name) {
+      avatarEl.innerHTML = getInitials(name);
+    }
+  }
 });

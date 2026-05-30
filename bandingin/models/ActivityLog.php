@@ -25,14 +25,18 @@ class ActivityLog {
     }
 
     public function getAll($limit = 100, $offset = 0) {
-        $sql = "SELECT al.*, u.username, u.nama_lengkap 
-                FROM {$this->table} al 
-                LEFT JOIN users u ON al.user_id = u.id 
-                ORDER BY al.created_at DESC 
-                LIMIT ? OFFSET ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$limit, $offset]);
-        return $stmt->fetchAll();
+        try {
+            $sql = "SELECT al.*, u.username, u.nama_lengkap 
+                    FROM {$this->table} al 
+                    LEFT JOIN users u ON al.user_id = u.id 
+                    ORDER BY al.created_at DESC 
+                    LIMIT ? OFFSET ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$limit, $offset]);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     public function getRecent($limit = 10) {

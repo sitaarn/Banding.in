@@ -19,6 +19,14 @@
 }
 html, body { height: 100%; font-family: 'Lora', serif; overflow: hidden; }
 
+/* ── Custom Scrollbar (Global) ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(13,27,42,0.3); }
+::-webkit-scrollbar-thumb { background: rgba(46,202,208,0.25); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(46,202,208,0.45); border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }
+* { scrollbar-width: thin; scrollbar-color: rgba(46,202,208,0.25) rgba(13,27,42,0.3); }
+
 /* ── Background ── */
 .bg { position: fixed; inset: 0; z-index: 0; background: linear-gradient(135deg, #0d1b2a 0%, #132d4a 30%, #1b3a5c 60%, #1a2744 100%); }
 .bg::before {
@@ -76,6 +84,12 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .page { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; transition: opacity .45s ease, transform .45s ease; }
 .page.hidden { opacity: 0; pointer-events: none; transform: scale(.97); }
 
+#search {
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -94,7 +108,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 }
 
 /* SEARCH PAGE */
-.search-wrapper { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; max-width: 680px; padding: 0 24px; animation: fadeUp .6s ease both; }
+.search-wrapper { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; max-width: 680px; margin: auto; padding: 100px 24px 60px; animation: fadeUp .6s ease both; }
 
 .search-logo {
   width: 120px;
@@ -154,9 +168,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
   overflow-x: hidden;
   padding-top: 72px;
 }
-#listing::-webkit-scrollbar       { width: 6px; }
-#listing::-webkit-scrollbar-track { background: transparent; }
-#listing::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 999px; }
+#listing::-webkit-scrollbar       { width: 8px; }
+#listing::-webkit-scrollbar-track { background: rgba(13,27,42,0.3); }
+#listing::-webkit-scrollbar-thumb { background: rgba(46,202,208,0.25); border-radius: 999px; }
+#listing::-webkit-scrollbar-thumb:hover { background: rgba(46,202,208,0.45); }
 
 .listing-shell { display: flex; gap: 18px; width: 100%; max-width: 1200px; padding: 0 28px 60px; margin: 0 auto; animation: fadeUp .5s ease both; }
 
@@ -299,6 +314,19 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .ls-card-disc {
     display: none;
 }
+
+/* Pagination */
+.ls-pagination { display: flex; justify-content: center; gap: 8px; margin-top: 24px; padding-bottom: 20px; flex-wrap: wrap; }
+.ls-page-btn { padding: 8px 16px; background: rgba(255,255,255,.05); border: 1.5px solid rgba(255,255,255,.1); border-radius: 999px; color: var(--text-mid); font-family: 'Lora', serif; font-size: .85rem; font-weight: 500; cursor: pointer; transition: all .2s; backdrop-filter: blur(8px); letter-spacing: .03em; }
+.ls-page-btn:hover { background: rgba(255,255,255,.12); color: var(--text-light); border-color: rgba(255,255,255,.2); box-shadow: 0 4px 16px rgba(0,0,0,.2); transform: translateY(-2px); }
+.ls-page-btn.active { background: var(--primary); border-color: var(--primary-light); color: white; font-weight: 700; box-shadow: 0 4px 16px rgba(45,90,158,.4); pointer-events: none; }
+
+/* Login Prompt */
+.ls-login-prompt { background: rgba(255,255,255,.05); border: 1.5px dashed rgba(255,255,255,.15); border-radius: 18px; backdrop-filter: blur(16px); padding: 32px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-top: 24px; text-align: center; animation: fadeUp .5s ease both; animation-delay: 0.25s; }
+.ls-login-icon { font-size: 2.2rem; filter: drop-shadow(0 4px 12px rgba(0,0,0,.2)); }
+.ls-login-text { font-family: 'Lora', serif; font-size: .95rem; color: var(--text-light); font-weight: 500; max-width: 320px; line-height: 1.5; }
+.ls-login-btn { padding: 10px 24px; background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); color: #fff; border: none; border-radius: 999px; font-family: 'Lora', serif; font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .25s; letter-spacing: .02em; margin-top: 6px; box-shadow: 0 4px 16px rgba(46,202,208,.25); }
+.ls-login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46,202,208,.4); }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
