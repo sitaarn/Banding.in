@@ -10,7 +10,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?= __('add_new_product') ?> — Banding.in</title>
-  <link rel="icon" href="<?= $base ?>public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="<?= $base ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="<?= $base ?>public/css/stylelanding.css">
@@ -79,7 +79,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
   <div class="grid-overlay"></div>
 
   <nav>
-    <span class="nav-brand" onclick="window.location.href='<?= $base ?>landing'" style="font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-weight: normal; color: var(--text-light); opacity: 0.7; cursor: pointer; text-decoration: none; pointer-events: all;">
+    <span class="nav-brand" onclick="window.location.href='<?= $base ?>landing'" style="font-family:'DM Serif Display',serif; cursor:pointer; pointer-events:all;">
       banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
     </span>
     <div class="nav-links" id="navLinks">

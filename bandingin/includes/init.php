@@ -17,3 +17,14 @@ spl_autoload_register(function ($class) {
 
 });
 
+
+
+function get_initials($name) {
+    $words = explode(' ', trim($name));
+    $initials = '';
+    foreach($words as $w) {
+        if(!empty($w)) $initials .= strtoupper($w[0]);
+        if(strlen($initials) >= 2) break;
+    }
+    return $initials ? $initials : '?';
+}

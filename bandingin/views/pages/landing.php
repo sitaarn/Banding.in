@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banding.in — Find Your Best Prices</title>
-  <link rel="icon" href="./public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="./public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="./public/css/stylelanding.css">
 </head>
@@ -24,7 +24,6 @@
     <div class="orb orb-6"></div>
     <div class="orb orb-7"></div>
   </div>
-  <div class="grid-overlay"></div>
 
   <nav>
     <span class="nav-brand"></span>
@@ -32,7 +31,7 @@
       <?php if(isLoggedIn()) : ?>
         <div class="user-chip-wrap" id="userChipWrap">
           <div class="user-chip" onclick="toggleDropdown()">
-            <div class="user-avatar" id="userAvatar" data-avatar="<?= $_SESSION['nama_lengkap'] ?>"><?= strtoupper(substr($_SESSION['nama_lengkap'] ?? '', 0, 2)) ?></div>
+            <div class="user-avatar" id="userAvatar" data-avatar="<?= $_SESSION['nama_lengkap'] ?>"><?= get_initials($_SESSION['nama_lengkap'] ?? '') ?></div>
             <span class="user-name"><?= $_SESSION['nama_lengkap'] ?></span>
             <div class="user-online"></div>
             <span class="user-chevron">▼</span>
@@ -52,7 +51,7 @@
             </a>
             <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> <?= __('logout') ?>
+              <span class="dropdown-icon"></span> <?= __('logout') ?>
             </div>
           </div>
         </div>

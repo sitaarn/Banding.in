@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Favorit Saya — Banding.in</title>
-  <link rel="icon" href="<?= BASE_URL ?>public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="<?= BASE_URL ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/list.css"/>
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/favorit.css"/>
@@ -28,7 +28,7 @@
   <!-- Navigation -->
   <nav>
     <span class="nav-brand" onclick="window.location.href='<?= BASE_URL ?>'">
-      Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
+      banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
     </span>
     <div class="nav-links">
       <?php if(isLoggedIn()) : ?>
@@ -68,7 +68,7 @@
             </a>
             <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> Logout
+              <span class="dropdown-icon"></span> Logout
             </div>
           </div>
         </div>

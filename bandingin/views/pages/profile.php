@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Banding.in — Profil Saya</title>
-  <link rel="icon" href="<?= BASE_URL ?>public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="<?= BASE_URL ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/profile.css?v=<?= time() ?>">
 </head>
@@ -41,7 +41,7 @@
 
     <div class="user-chip-wrap" id="userChipWrap">
       <div class="user-chip" onclick="toggleDropdown()">
-        <div class="user-avatar" id="navAvatar"><?= strtoupper(substr($user['nama_lengkap'] ?? '', 0, 2)) ?></div>
+        <div class="user-avatar" id="navAvatar"><?= get_initials($user['nama_lengkap'] ?? '') ?></div>
         <span class="user-name" id="navName"><?= htmlspecialchars($user['nama_lengkap'] ?? '') ?></span>
         <div class="user-online"></div>
         <span class="user-chevron">▾</span>
@@ -78,7 +78,7 @@
   <!-- Profile Hero -->
   <div class="profile-hero">
     <div class="hero-avatar-wrap">
-      <div class="hero-avatar" id="heroAvatar"><?= strtoupper(substr($user['nama_lengkap'] ?? '', 0, 2)) ?></div>
+      <div class="hero-avatar" id="heroAvatar"><?= get_initials($user['nama_lengkap'] ?? '') ?></div>
       <div class="hero-badge"></div>
     </div>
     <div class="hero-info">

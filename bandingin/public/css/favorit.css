@@ -25,8 +25,8 @@ html, body { overflow: hidden; }
 
 /* ── Header Card ── */
 .fav-header-card {
-  background: rgba(255,255,255,.06);
-  border: 1.5px solid rgba(255,255,255,.1);
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   backdrop-filter: blur(18px);
   padding: 22px 26px;
@@ -58,9 +58,9 @@ html, body { overflow: hidden; }
 
 .fav-header-info { display: flex; flex-direction: column; gap: 3px; }
 .fav-header-title {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 1.3rem;
-  color: var(--text-light);
+  color: var(--primary);
   letter-spacing: -.01em;
 }
 .fav-header-sub {
@@ -77,9 +77,9 @@ html, body { overflow: hidden; }
 }
 .fav-stat { text-align: center; }
 .fav-stat-num {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 1.6rem;
-  color: var(--text-light);
+  color: var(--primary);
   line-height: 1;
 }
 .fav-stat-lbl {
@@ -91,13 +91,13 @@ html, body { overflow: hidden; }
 .fav-stat-divider {
   width: 1px;
   height: 36px;
-  background: rgba(255,255,255,.1);
+  background: var(--bg-surface);
 }
 
 /* ── Filter Bar ── */
 .fav-filterbar {
-  background: rgba(255,255,255,.06);
-  border: 1.5px solid rgba(255,255,255,.1);
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   backdrop-filter: blur(14px);
   padding: 14px 18px;
@@ -126,24 +126,24 @@ html, body { overflow: hidden; }
 .fav-pf-btn {
   padding: 5px 14px;
   border-radius: 999px;
-  font-family: 'Lora', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: .74rem;
   font-weight: 500;
   cursor: pointer;
-  border: 1.5px solid rgba(255,255,255,.1);
-  background: rgba(255,255,255,.04);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-mid);
   color: var(--text-soft);
   backdrop-filter: blur(6px);
   transition: all .2s;
   letter-spacing: .02em;
 }
 .fav-pf-btn.active {
-  background: rgba(255,255,255,.1);
+  background: var(--bg-surface);
   border-color: rgba(255,255,255,.18);
-  color: var(--text-light);
+  color: var(--primary);
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-.fav-pf-btn:hover { background: rgba(255,255,255,.08); color: var(--text-light); }
+.fav-pf-btn:hover { background: var(--bg-mid); color: var(--primary); }
 
 .fav-filterbar-right {
   display: flex;
@@ -155,12 +155,12 @@ html, body { overflow: hidden; }
 .fav-sort-select {
   padding: 6px 28px 6px 12px;
   border-radius: 999px;
-  font-family: 'Lora', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: .75rem;
   font-weight: 500;
-  color: var(--text-light);
-  border: 1.5px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.08);
+  color: var(--primary);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-mid);
   backdrop-filter: blur(8px);
   outline: none;
   cursor: pointer;
@@ -174,13 +174,13 @@ html, body { overflow: hidden; }
 .fav-sort-select:hover { background-color: rgba(255,255,255,.12); }
 
 .fav-sort-select option {
-  background-color: #0d1b2a;
-  color: var(--text-light);
+  background-color: var(--bg-deep);
+  color: var(--primary);
 }
 .fav-hapus-semua-btn {
   padding: 6px 16px;
   border-radius: 999px;
-  font-family: 'Lora', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: .74rem;
   font-weight: 500;
   cursor: pointer;
@@ -206,8 +206,8 @@ html, body { overflow: hidden; }
 }
 
 .fav-item {
-  background: rgba(255,255,255,.06);
-  border: 1.5px solid rgba(255,255,255,.1);
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-border);
   border-radius: 18px;
   backdrop-filter: blur(16px);
   padding: 16px 20px;
@@ -228,7 +228,7 @@ html, body { overflow: hidden; }
   border-radius: inherit;
 }
 .fav-item:hover {
-  background: rgba(255,255,255,.1);
+  background: var(--bg-surface);
   border-color: rgba(46,202,208,.15);
   box-shadow: 0 8px 30px rgba(0,0,0,.2);
   transform: translateY(-2px);
@@ -241,9 +241,9 @@ html, body { overflow: hidden; }
 .fav-item:nth-child(6) { animation-delay: .24s; }
 
 .fav-item-rank {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 1.25rem;
-  color: rgba(155,176,196,.25);
+  color: var(--text-soft);
   width: 26px;
   text-align: center;
   flex-shrink: 0;
@@ -255,8 +255,8 @@ html, body { overflow: hidden; }
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.1);
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -275,7 +275,7 @@ html, body { overflow: hidden; }
 .fav-item-name {
   font-size: .88rem;
   font-weight: 500;
-  color: var(--text-light);
+  color: var(--primary);
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -287,9 +287,9 @@ html, body { overflow: hidden; }
   font-weight: 300;
 }
 .fav-item-price {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 1.05rem;
-  color: var(--text-light);
+  color: var(--primary);
   letter-spacing: -.01em;
   margin-top: 2px;
 }
@@ -320,12 +320,12 @@ html, body { overflow: hidden; }
 .fav-btn-hapus {
   padding: 7px 16px;
   border-radius: 9px;
-  font-family: 'Lora', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: .74rem;
   font-weight: 500;
   cursor: pointer;
-  border: 1.5px solid rgba(255,255,255,.1);
-  background: rgba(255,255,255,.05);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-mid);
   color: var(--text-mid);
   backdrop-filter: blur(6px);
   transition: all .2s;
@@ -343,11 +343,10 @@ html, body { overflow: hidden; }
   align-items: center;
   gap: 5px;
   padding: 7px 16px;
-  background: var(--primary);
-  color: white;
-  border: none;
+  background: var(--primary); box-shadow: rgba(255,255,255,0.2) 0px 0.5px 0px 0px inset, rgba(0,0,0,0.2) 0px 0px 0px 0.5px inset, rgba(0,0,0,0.05) 0px 1px 2px 0px;
+  color: var(--bg-mid); border: none;
   border-radius: 9px;
-  font-family: 'Lora', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: .74rem;
   font-weight: 500;
   cursor: pointer;
@@ -370,9 +369,9 @@ html, body { overflow: hidden; }
 }
 .fav-empty-icon { font-size: 3rem; opacity: .35; }
 .fav-empty-title {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 1.2rem;
-  color: var(--text-light);
+  color: var(--primary);
   letter-spacing: -.01em;
 }
 .fav-empty-sub {
@@ -384,11 +383,10 @@ html, body { overflow: hidden; }
 .fav-empty-btn {
   margin-top: 8px;
   padding: 10px 26px;
-  background: var(--primary);
-  color: white;
-  border: none;
+  background: var(--primary); box-shadow: rgba(255,255,255,0.2) 0px 0.5px 0px 0px inset, rgba(0,0,0,0.2) 0px 0px 0px 0.5px inset, rgba(0,0,0,0.05) 0px 1px 2px 0px;
+  color: var(--bg-mid); border: none;
   border-radius: 999px;
-  font-family: 'Lora', serif;
+  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: .8rem;
   font-weight: 500;
   cursor: pointer;

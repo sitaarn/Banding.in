@@ -26,7 +26,7 @@
   <div class="grid-overlay"></div>
 
   <nav>
-    <span class="nav-brand">Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
+    <span class="nav-brand">banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></span>
     <div class="nav-links" id="navLinks"></div>
   </nav>
 

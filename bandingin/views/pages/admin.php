@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banding.in — Admin Panel</title>
-  <link rel="icon" href="./public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="./public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="./public/css/list.css"/>
   <link rel="stylesheet" href="./public/css/admin.css"/>
@@ -30,7 +30,7 @@
   <!-- Navigation (identik) -->
   <nav>
     <span class="nav-brand" onclick="window.location.href='<?= (defined('BASE_URL') ? BASE_URL : '/') . 'landing' ?>'">
-      Banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
+      banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
     </span>
     <div class="nav-links">
       <?php if(isset($_SESSION['name'])) : ?>
@@ -53,7 +53,7 @@
               <span class="dropdown-icon">🔍</span> Ke Halaman Utama
             </a>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> Logout
+              <span class="dropdown-icon"></span> Logout
             </div>
           </div>
         </div>

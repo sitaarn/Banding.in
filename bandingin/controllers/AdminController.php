@@ -223,15 +223,13 @@ class AdminController {
             if (isset($scriptMap[$platformName]) && $scriptMap[$platformName] && file_exists($scriptMap[$platformName])) {
                 $scriptPath = $scriptMap[$platformName];
                 $scriptDir = dirname($scriptPath);
-                $logFile = $scriptDir . DIRECTORY_SEPARATOR . 'scraper_output_' . $logId . '.log';
-                
                 // Execute Python script asynchronously with correct working directory
                 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                     // Use cmd /c with cd to set working directory, then run python
-                    $cmd = 'cmd /c "cd /d ' . escapeshellarg($scriptDir) . ' && python ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($keyword) . ' ' . escapeshellarg($logId) . ' > ' . escapeshellarg($logFile) . ' 2>&1"';
+                    $cmd = 'cmd /c "cd /d ' . escapeshellarg($scriptDir) . ' && python ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($keyword) . ' ' . escapeshellarg($logId) . ' > NUL 2>&1"';
                     pclose(popen("start /B " . $cmd, "r"));
                 } else {
-                    $cmd = "cd " . escapeshellarg($scriptDir) . " && python3 " . escapeshellarg($scriptPath) . " " . escapeshellarg($keyword) . " " . escapeshellarg($logId) . " > " . escapeshellarg($logFile) . " 2>&1 &";
+                    $cmd = "cd " . escapeshellarg($scriptDir) . " && python3 " . escapeshellarg($scriptPath) . " " . escapeshellarg($keyword) . " " . escapeshellarg($logId) . " > /dev/null 2>&1 &";
                     shell_exec($cmd);
                 }
 

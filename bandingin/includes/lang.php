@@ -8,9 +8,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Set default language to English if not set
+// Set default language to Indonesia if not set
 if (!isset($_SESSION['lang'])) {
-    $_SESSION['lang'] = 'en';
+    $_SESSION['lang'] = 'id';
 }
 
 function __($key) {

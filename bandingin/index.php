@@ -40,11 +40,6 @@ $route->middleware(['guest'])->group(function ($childClass) {
     $childClass->post('/register', [AuthController::class, 
         'storeUser']);
     
-    // Forgot Password Routes
-    $childClass->get('/forgot-password', [AuthController::class, 'forgotPassword']);
-    $childClass->post('/forgot-password', [AuthController::class, 'sendResetLink']);
-    $childClass->get('/reset-password', [AuthController::class, 'resetPasswordForm']);
-    $childClass->post('/reset-password', [AuthController::class, 'updatePassword']);
 });
 
 $route->middleware(['login'])->group(function ($childClass) {

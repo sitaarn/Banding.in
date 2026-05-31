@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Login - <?= APP_NAME ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="./public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="./public/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="auth.css">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -30,7 +30,7 @@
           <div class="icon-circle" id="loginIconCircle">
             <i class="fa-solid fa-user" id="loginIcon"></i>
           </div>
-          <h2 id="loginTitle">MY ACCOUNT</h2>
+          <h2 id="loginTitle">AKUN SAYA</h2>
 
           <div id="loginError" style="display:none; background:rgba(224,82,82,0.15); border:1px solid rgba(224,82,82,0.3); color:#ff6b6b; padding:10px 14px; border-radius:10px; font-size:0.82rem; margin-bottom:12px; text-align:center;"></div>
 
@@ -39,18 +39,17 @@
           id="username"
           name="username"
           value="<?= e($_POST['username'] ?? '') ?>"
-          placeholder="Enter username or email"
+          placeholder="Masukkan username atau email"
           required
           autofocus>
           <input type="password"
           class="form-control"
           id="password"
           name="password"
-          placeholder="Enter password"
+          placeholder="Masukkan password"
           required>
 
-          <a href="<?= BASE_URL . 'forgot-password' ?>" style="font-size: 14px; margin-bottom: 15px; color: #666; text-decoration: none;">Forgot your password?</a>
-          <button type="submit" class="primary-btn" id="loginSubmitBtn">SIGN IN</button>
+          <button type="submit" class="primary-btn" id="loginSubmitBtn" style="margin-top: 15px;">SIGN IN</button>
         </form>
       </div>
 
@@ -58,13 +57,13 @@
       <div class="form-container register-container" style="overflow-y: auto;">
         <form action="<?= BASE_URL . 'register' ?>" method="post">
           <input type="hidden" name="role" class="roleInput" value="user">
-          <h2 style="margin-top: 89px;" id="registerTitle">Create Account</h2>
+          <h2 style="margin-top: 89px;" id="registerTitle">Buat Akun</h2>
 
           <input type="text" name="username" placeholder="Username" required>
-          <input type="text" name="nama_lengkap" id="regFullName" placeholder="Full Name" required>
+          <input type="text" name="nama_lengkap" id="regFullName" placeholder="Nama Lengkap" required>
           <input type="email" name="email" id="regEmail" placeholder="Email" required>
           <input type="password" name="password" placeholder="Password" required>
-          <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+          <input type="password" name="confirm_password" placeholder="Konfirmasi Password" required>
 
           <button type="submit" class="primary-btn" id="registerBtnText">SIGN UP</button>
         </form>
@@ -75,22 +74,22 @@
         <div class="overlay">
 
           <div class="overlay-panel left-panel">
-            <h2 id="overlayLeftTitle">Welcome Back!</h2>
-            <p id="overlayLeftText">To keep connected with us please login with your personal info</p>
+            <h2 id="overlayLeftTitle">Selamat Datang Kembali!</h2>
+            <p id="overlayLeftText">Untuk tetap terhubung dengan kami, silakan masuk dengan info pribadi Anda</p>
             <div id="overlayLeftExtra" style="display: none; text-align: left; margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                <h4 style="margin-bottom: 10px;">Why join Banding.in?</h4>
+                <h4 style="margin-bottom: 10px;">Mengapa bergabung dengan Banding.in?</h4>
                 <ul style="list-style: none; padding: 0; font-size: 14px; text-align: left;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> Competitively priced products will stand out on our platform</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> Your store and products will be easily discoverable</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-chart-line" style="color: #2ecad0;"></i> Access detailed analytics to track your product link clicks</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> Produk dengan harga kompetitif akan menonjol di platform kami</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> Toko dan produk Anda akan mudah ditemukan</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-chart-line" style="color: #2ecad0;"></i> Akses analitik mendetail untuk melacak klik tautan produk Anda</li>
                 </ul>
             </div>
             <button class="ghost" id="login">Sign In</button>
           </div>
 
           <div class="overlay-panel right-panel">
-            <h2 id="overlayRightTitle">Hello, Friend!</h2>
-            <p id="overlayRightText">Enter your personal details and start your journey</p>
+            <h2 id="overlayRightTitle">Halo, Teman!</h2>
+            <p id="overlayRightText">Masukkan detail pribadi Anda dan mulai perjalanan Anda</p>
             <button class="ghost" id="register">Sign Up</button>
           </div>
 

@@ -29,7 +29,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banding.in — Cari & Bandingkan Harga</title>
-  <link rel="icon" href="<?= $base ?>public/images/logo-b.png" type="image/png">
+  <link rel="icon" href="<?= $base ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   
   <link rel="stylesheet" href="<?= $base ?>public/css/list.css?v=<?= time(); ?>"/>
@@ -83,7 +83,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
         <div class="user-chip-wrap" id="userChipWrap">
           <div class="user-chip" onclick="toggleDropdown()">
-            <div class="user-avatar" id="userAvatar" data-avatar="<?= htmlspecialchars($user_nama) ?>"><?= strtoupper(substr($user_nama, 0, 2)) ?></div>
+            <div class="user-avatar" id="userAvatar" data-avatar="<?= htmlspecialchars($user_nama) ?>"><?= get_initials($user_nama) ?></div>
             <span class="user-name"><?= htmlspecialchars($user_nama) ?></span>
             <div class="user-online"></div>
             <span class="user-chevron">▼</span>
@@ -102,7 +102,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
             </a>
             <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon">🚪</span> <?= __('logout') ?>
+              <span class="dropdown-icon"></span> <?= __('logout') ?>
             </div>
           </div>
         </div>
@@ -139,15 +139,15 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       </div>
 
       <div class="most-searched" id="mostSearched">
-        <div class="most-searched-label">🔥 <?= __('most_searched') ?></div>
+        <div class="most-searched-label"><?= __('most_searched') ?></div>
         <div class="most-searched-tags">
-          <span class="ms-tag" onclick="fillSearch('iPhone 15')"><span class="ms-tag-icon">📱</span> iPhone 15</span>
-          <span class="ms-tag" onclick="fillSearch('Samsung Galaxy S24')"><span class="ms-tag-icon">📱</span> Samsung Galaxy S24</span>
-          <span class="ms-tag" onclick="fillSearch('Nike Air Max')"><span class="ms-tag-icon">👟</span> Nike Air Max</span>
-          <span class="ms-tag" onclick="fillSearch('AirPods Pro')"><span class="ms-tag-icon">🎧</span> AirPods Pro</span>
-          <span class="ms-tag" onclick="fillSearch('Xiaomi Redmi')"><span class="ms-tag-icon">📱</span> Xiaomi Redmi</span>
-          <span class="ms-tag" onclick="fillSearch('Tas Ransel')"><span class="ms-tag-icon">🎒</span> Tas Ransel</span>
-          <span class="ms-tag" onclick="fillSearch('PS5')"><span class="ms-tag-icon">🎮</span> PS5 Slim</span>
+          <span class="ms-tag" onclick="fillSearch('iPhone 15')"><span class="ms-tag-icon"></span> iPhone 15</span>
+          <span class="ms-tag" onclick="fillSearch('Samsung Galaxy S24')"><span class="ms-tag-icon"></span> Samsung Galaxy S24</span>
+          <span class="ms-tag" onclick="fillSearch('Nike Air Max')"><span class="ms-tag-icon"></span> Nike Air Max</span>
+          <span class="ms-tag" onclick="fillSearch('AirPods Pro')"><span class="ms-tag-icon"></span> AirPods Pro</span>
+          <span class="ms-tag" onclick="fillSearch('Xiaomi Redmi')"><span class="ms-tag-icon"></span> Xiaomi Redmi</span>
+          <span class="ms-tag" onclick="fillSearch('Tas Ransel')"><span class="ms-tag-icon"></span> Tas Ransel</span>
+          <span class="ms-tag" onclick="fillSearch('PS5')"><span class="ms-tag-icon"></span> PS5 Slim</span>
         </div>
       </div>
 
@@ -206,9 +206,9 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
   <div class="modal-overlay" id="loginModal" onclick="if(event.target===this) closeLoginModal()">
     <div class="modal-box">
       <button class="modal-close-x" onclick="closeLoginModal()">✕</button>
-      <div class="modal-icon">❤️</div>
-      <div class="modal-title"><?= __('save_to_favorite') ?></div>
-      <div class="modal-sub"><?= __('favorite_login_hint') ?></div>
+      <div class="modal-icon" id="loginModalIcon">❤️</div>
+      <div class="modal-title" id="loginModalTitle"><?= __('save_to_favorite') ?></div>
+      <div class="modal-sub" id="loginModalSub"><?= __('favorite_login_hint') ?></div>
       <div class="modal-actions">
         <button class="modal-btn-login"    onclick="window.location.href='<?= $base ?>login'"><?= __('login') ?></button>
       </div>

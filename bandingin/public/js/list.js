@@ -231,7 +231,7 @@ function doSearch() {
             </div>
           </div>`).join('')}
         <div style="text-align:right;padding-top:8px;">
-          <button onclick="goToListing('${query.replace(/'/g, "\\'")}', ['${ap.join("','")}'])" style="padding:8px 20px;border-radius:999px;background:var(--text-dark);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--blue)'" onmouseout="this.style.background='var(--text-dark)'">Lihat Semua ${entries.length} Hasil →</button>
+          <button onclick="goToListing('${query.replace(/'/g, "\\'")}', ['${ap.join("','")}'])" style="padding:8px 20px;border-radius:999px;background:var(--primary);color:var(--bg-mid);border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='var(--primary)'">Lihat Semua ${entries.length} Hasil →</button>
         </div>
       </div>`;
   }, 900);
@@ -432,7 +432,14 @@ function renderListing() {
     if (lsCurrentPage > 1) {
       paginationHTML += `<button class="ls-page-btn" onclick="lsChangePage(${lsCurrentPage - 1})">Prev</button>`;
     }
-    for (let i = 1; i <= totalPages; i++) {
+    let maxPages = 5;
+    let startPage = Math.max(1, lsCurrentPage - Math.floor(maxPages / 2));
+    let endPage = startPage + maxPages - 1;
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxPages + 1);
+    }
+    for (let i = startPage; i <= endPage; i++) {
       if (i === lsCurrentPage) {
         paginationHTML += `<button class="ls-page-btn active">${i}</button>`;
       } else {
@@ -494,7 +501,15 @@ function lsSetSort(row) {
 }
 
 /* LOGIN MODAL */
-function showLoginModal() { document.getElementById('loginModal').classList.add('visible'); }
+function showLoginModal(title = 'Save to Favorites', icon = '❤️', sub = 'Log in or create a free account to continue.') {
+  const tEl = document.getElementById('loginModalTitle');
+  const iEl = document.getElementById('loginModalIcon');
+  const sEl = document.getElementById('loginModalSub');
+  if (tEl) tEl.innerText = title;
+  if (iEl) iEl.innerText = icon;
+  if (sEl) sEl.innerText = sub;
+  document.getElementById('loginModal').classList.add('visible');
+}
 function closeLoginModal() { document.getElementById('loginModal').classList.remove('visible'); }
 function mockLogin() {
   isLoggedIn = true;
@@ -520,7 +535,7 @@ function toggleReportReason(radio) {
 function openReportModal(e, productId, platform) {
   e.stopPropagation();
   if (typeof APP_IS_LOGGED_IN !== 'undefined' && !APP_IS_LOGGED_IN) {
-    showLoginModal();
+    showLoginModal('Report Product', '🚩', 'Log in to report a product.');
     return;
   }
   currentReportProduct = productId;

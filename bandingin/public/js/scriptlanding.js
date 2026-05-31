@@ -7,6 +7,23 @@ function goToLogin() {
   window.location.href = '/bandingin/login';
 }
 
+window.addEventListener('click', function(e) {
+  const wrap = document.getElementById('userChipWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    wrap.classList.remove('open');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const pfLabels = document.querySelectorAll('.landing-pf-label');
+  pfLabels.forEach(label => {
+    label.addEventListener('click', () => {
+      pfLabels.forEach(l => l.classList.remove('active'));
+      label.classList.add('active');
+    });
+  });
+});
+
 function toggleDropdown() {
   const wrap = document.getElementById('userChipWrap');
   if (wrap) wrap.classList.toggle('open');

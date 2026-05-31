@@ -47,24 +47,24 @@ function switchToSeller() {
     roleInputs.forEach(input => input.value = 'seller');
     
     // Update Login UI
-    loginTitle.textContent = 'SELLER LOGIN';
+    loginTitle.textContent = 'LOGIN SELLER';
     loginIcon.className = 'fa-solid fa-store';
-    loginIconCircle.style.background = 'linear-gradient(135deg, #1b3a5c, #0d1b2a)';
-    usernameInput.placeholder = 'Enter seller username or email';
-    passwordInput.placeholder = 'Seller password';
+    loginIconCircle.style.background = '#eceae4';
+    usernameInput.placeholder = 'Masukkan username atau email seller';
+    passwordInput.placeholder = 'Password seller';
     
     // Update Register UI
-    registerTitle.textContent = 'Register';
-    regFullName.placeholder = 'Store Name';
-    regEmail.placeholder = 'Business Email';
+    registerTitle.textContent = 'Daftar';
+    regFullName.placeholder = 'Nama Toko';
+    regEmail.placeholder = 'Email Bisnis';
     registerBtnText.textContent = 'REGISTER';
     
     // Update Overlay UI
-    overlayRightTitle.textContent = 'Start Selling!';
-    overlayRightText.textContent = 'Register your store and reach millions of buyers';
+    overlayRightTitle.textContent = 'Mulai Berjualan!';
+    overlayRightText.textContent = 'Daftarkan toko Anda dan jangkau jutaan pembeli';
     overlayRegisterBtn.textContent = 'Register';
     
-    overlayLeftTitle.textContent = 'Why join Banding.in?';
+    overlayLeftTitle.textContent = 'Mengapa bergabung dengan Banding.in?';
     overlayLeftText.style.display = 'none';
     overlayLeftExtra.style.display = 'block';
 }
@@ -79,24 +79,24 @@ function switchToUser() {
     roleInputs.forEach(input => input.value = 'user');
     
     // Revert Login UI
-    loginTitle.textContent = 'MY ACCOUNT';
+    loginTitle.textContent = 'AKUN SAYA';
     loginIcon.className = 'fa-solid fa-user';
-    loginIconCircle.style.background = 'linear-gradient(135deg, #2d5a9e, #1a2744)';
+    loginIconCircle.style.background = '#eceae4';
     usernameInput.placeholder = 'Masukkan username atau email';
     passwordInput.placeholder = 'Masukkan password';
     
     // Revert Register UI
-    registerTitle.textContent = 'Create Account';
+    registerTitle.textContent = 'Buat Akun';
     regFullName.placeholder = 'Nama Lengkap';
     regEmail.placeholder = 'Email';
     registerBtnText.textContent = 'SIGN UP';
     
     // Revert Overlay UI
-    overlayRightTitle.textContent = 'Hello, Friend!';
-    overlayRightText.textContent = 'Enter your personal details and start your journey';
+    overlayRightTitle.textContent = 'Halo, Teman!';
+    overlayRightText.textContent = 'Masukkan detail pribadi Anda dan mulai perjalanan Anda';
     overlayRegisterBtn.textContent = 'Sign Up';
     
-    overlayLeftTitle.textContent = 'Welcome Back!';
+    overlayLeftTitle.textContent = 'Selamat Datang Kembali!';
     overlayLeftText.style.display = 'block';
     overlayLeftExtra.style.display = 'none';
 }
