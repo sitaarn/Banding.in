@@ -16,7 +16,6 @@ try {
     $sql = "SELECT 
                 p.id, 
                 p.name AS product_name, 
-                p.image, 
                 p.category, 
                 pp.price, 
                 pp.link, 

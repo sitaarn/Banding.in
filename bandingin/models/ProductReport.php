@@ -27,7 +27,7 @@ class ProductReport {
                         `product_name_snapshot` varchar(255) DEFAULT NULL,
                         `platform_id` int(11) DEFAULT NULL,
                         `reporter_id` int(11) DEFAULT NULL,
-                        `reason` text DEFAULT NULL,
+                        `reason` varchar(255) DEFAULT NULL,
                         `status` enum('open','reviewed','dismissed') DEFAULT 'open',
                         `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
                         PRIMARY KEY (`id`),

@@ -56,12 +56,7 @@ $currentTab = $tab ?? 'dashboard';
       <a class="admin-nav-item <?= $currentTab==='logs'?'active':'' ?>" href="<?= $base ?>admin/logs">
         <span class="admin-nav-icon"><i class="fa-solid fa-clock-rotate-left"></i></span> Activity Logs
       </a>
-      <a class="admin-nav-item <?= $currentTab==='reports'?'active':'' ?>" href="<?= $base ?>admin/reports">
-        <span class="admin-nav-icon"><i class="fa-solid fa-flag"></i></span> Reports
-        <?php if(isset($stats) && ($stats['open_reports'] ?? 0) > 0): ?>
-          <span class="admin-nav-badge"><?= $stats['open_reports'] ?></span>
-        <?php endif; ?>
-      </a>
+
 
       <a class="admin-back-btn" href="<?= $base ?>landing">
         <i class="fa-solid fa-arrow-left"></i> Back to Site
@@ -106,11 +101,7 @@ $currentTab = $tab ?? 'dashboard';
         <div class="stat-card-value"><?= $stats['pending_products'] ?? 0 ?></div>
         <div class="stat-card-label">Pending Verification</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-card-icon">🚩</div>
-        <div class="stat-card-value"><?= $stats['open_reports'] ?? 0 ?></div>
-        <div class="stat-card-label">Open Reports</div>
-      </div>
+
     </div>
 
     <div class="admin-panel">
@@ -354,46 +345,7 @@ $currentTab = $tab ?? 'dashboard';
       </table>
     </div>
 
-    <?php elseif($currentTab === 'reports'): ?>
-    <!-- ═══════ REPORTS ═══════ -->
-    <div class="admin-header">
-      <div>
-        <h1 class="admin-title">Product Reports</h1>
-        <p class="admin-subtitle">Review price mismatch reports from buyers.</p>
-      </div>
-    </div>
 
-    <div class="admin-panel">
-      <table class="admin-table" id="reportsTable">
-        <thead><tr><th>ID</th><th>Product</th><th>Platform</th><th>Reporter</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
-        <tbody>
-        <?php if(!empty($reports)): foreach($reports as $r): ?>
-          <tr id="report-row-<?= $r['id'] ?>">
-            <td>#<?= $r['id'] ?></td>
-            <td style="color:var(--text-light);"><?= e($r['product_name'] ?? '-') ?></td>
-            <td><?= e($r['platform_name'] ?? '-') ?></td>
-            <td><?= e($r['reporter_username'] ?? '-') ?></td>
-            <td><?= e($r['reason'] ?? '-') ?></td>
-            <td><span class="status-badge <?= $r['status'] ?>"><?= ucfirst($r['status']) ?></span></td>
-            <td class="text-soft"><?= $r['created_at'] ?></td>
-            <td>
-              <?php if($r['status'] === 'open'): ?>
-              <div class="admin-btn-group">
-                <button class="admin-btn success" onclick="updateReport(<?= $r['id'] ?>, 'reviewed')" title="Tandai Selesai"><i class="fa-solid fa-check"></i></button>
-                <button class="admin-btn" onclick="updateReport(<?= $r['id'] ?>, 'dismissed')" title="Abaikan"><i class="fa-solid fa-times"></i></button>
-                <button class="admin-btn danger" onclick="deleteProductFromReport(<?= $r['product_id'] ?>)" title="Hapus Barang"><i class="fa-solid fa-trash"></i></button>
-              </div>
-              <?php else: ?>
-              <span class="text-soft">—</span>
-              <?php endif; ?>
-            </td>
-          </tr>
-        <?php endforeach; else: ?>
-          <tr><td colspan="8" class="text-soft" style="text-align:center;">No reports yet.</td></tr>
-        <?php endif; ?>
-        </tbody>
-      </table>
-    </div>
 
     <?php endif; ?>
 
@@ -569,20 +521,7 @@ $currentTab = $tab ?? 'dashboard';
     }
   }
 
-  // ── Reports ──
-  async function updateReport(id, status) {
-    const r = await apiPost('admin/reports/update', {report_id: id, status});
-    if(r.success) { showToast('Report updated!'); setTimeout(()=>location.reload(), 800); } 
-    else { showToast(r.error || 'Failed', true); }
-  }
-  
-  function deleteProductFromReport(productId) {
-    showConfirm('Hapus Barang', 'Apakah Anda yakin ingin menghapus barang ini secara permanen dari database?', async () => {
-      const r = await apiPost('admin/products/delete', {product_id: productId});
-      if(r.success) { showToast('Barang berhasil dihapus!'); setTimeout(()=>location.reload(), 800); } 
-      else { showToast(r.error || 'Failed', true); }
-    });
-  }
+
 
   // ── Pagination ──
   window.renderPageProducts = null;
@@ -659,7 +598,7 @@ $currentTab = $tab ?? 'dashboard';
     paginateTable('productsTable', 10);
     paginateTable('scraperTable', 10);
     paginateTable('logsTable', 10);
-    paginateTable('reportsTable', 10);
+
   });
   </script>
 </body>

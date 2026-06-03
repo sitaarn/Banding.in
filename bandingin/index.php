@@ -68,6 +68,8 @@ $route->middleware(['login', 'user'])->group(function ($childClass) {
 $route->middleware(['login', 'seller'])->group(function ($childClass) {
     $childClass->get('/seller/add', [SellerController::class, 'addProduct']);
     $childClass->post('/seller/store', [SellerController::class, 'storeProduct']);
+    $childClass->get('/seller/products', [SellerController::class, 'myProducts']);
+    $childClass->post('/seller/delete-product', [SellerController::class, 'deleteProduct']);
 });
 
 // ─── Super Admin Routes ────────────────────────
@@ -94,10 +96,7 @@ $route->middleware(['login', 'super_admin'])->group(function ($childClass) {
     // Activity Logs
     $childClass->get('/admin/logs', [AdminController::class, 'logs']);
     
-    // Reports
-    $childClass->get('/admin/reports', [AdminController::class, 'reports']);
-    $childClass->post('/admin/reports/update', [AdminController::class, 'updateReport']);
-    
+
     // Product Verification
     $childClass->get('/admin/products', [AdminController::class, 'products']);
     $childClass->post('/admin/products/verify', [AdminController::class, 'verifyProduct']);
@@ -105,10 +104,6 @@ $route->middleware(['login', 'super_admin'])->group(function ($childClass) {
     $childClass->post('/admin/products/bulk-delete', [AdminController::class, 'bulkDelete']);
 });
 
-// ─── Product Report (logged-in users) ──────────
-$route->middleware(['login'])->group(function ($childClass) {
-    $childClass->post('/product/report', [AdminController::class, 'submitReport']);
-});
 
 $route->middleware(['all'])->group(function ($childClass) {
     $prefix = 'api';

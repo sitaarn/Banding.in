@@ -87,12 +87,10 @@ def save_to_mysql(products: list, platform_name: str):
 
             if existing:
                 product_id = existing[0]
-                if image:
-                    cursor.execute("UPDATE products SET image = %s WHERE id = %s", (image, product_id))
             else:
                 cursor.execute(
-                    "INSERT INTO products (name, image, category) VALUES (%s, %s, %s)",
-                    (name, image, category)
+                    "INSERT INTO products (name, category) VALUES (%s, %s)",
+                    (name, category)
                 )
                 product_id = cursor.lastrowid
 

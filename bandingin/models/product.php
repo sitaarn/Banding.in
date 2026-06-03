@@ -23,6 +23,22 @@ class Product {
         return $stmt->fetch();
     }
 
+    public function getBySellerId($sellerId) {
+        try {
+            $sql = "SELECT p.*, pp.price, pp.link, pf.name AS platform_name, pf.id AS platform_id
+                    FROM {$this->table} p
+                    LEFT JOIN product_prices pp ON pp.product_id = p.id
+                    LEFT JOIN platforms pf ON pp.platform_id = pf.id
+                    WHERE p.seller_id = ?
+                    ORDER BY p.created_at DESC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$sellerId]);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
     public function search($keyword) {
         $sql = "SELECT * FROM {$this->table} WHERE name LIKE ? ORDER BY name";
         $stmt = $this->db->prepare($sql);
@@ -33,7 +49,6 @@ class Product {
     public function all() {
         $sql = "SELECT 
         p.name AS product_name,
-        p.image,
         p.id,
         p.category,
         pf.name AS platform_name,
@@ -48,11 +63,10 @@ class Product {
     }
 
     public function create($data) {
-        $sql = "INSERT INTO {$this->table} (name, image, category, seller_id, status) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO {$this->table} (name, category, seller_id, status) VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
             $data['name'], 
-            $data['image'] ?? null, 
             $data['category'] ?? null,
             $data['seller_id'] ?? null,
             $data['status'] ?? 'approved'

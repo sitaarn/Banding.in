@@ -1,9 +1,10 @@
 CREATE TABLE IF NOT EXISTS `product_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
+  `product_name_snapshot` varchar(255) DEFAULT NULL,
   `platform_id` int(11) DEFAULT NULL,
   `reporter_id` int(11) NOT NULL,
-  `reason` text NOT NULL,
+  `reason` varchar(255) NOT NULL,
   `status` enum('open','reviewed','dismissed') DEFAULT 'open',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),

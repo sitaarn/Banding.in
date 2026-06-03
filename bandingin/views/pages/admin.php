@@ -46,9 +46,6 @@
               <div class="dropdown-info-name"><?= htmlspecialchars($_SESSION['username'] ?? '') ?></div>
               <div class="dropdown-info-label">Admin ✓</div>
             </div>
-            <a class="dropdown-item" href="<?= (BASE_URL ?? '/') . 'profile' ?>">
-              <span class="dropdown-icon">👤</span> Profil Saya
-            </a>
             <a class="dropdown-item" href="<?= (BASE_URL ?? '/') . 'list' ?>">
               <span class="dropdown-icon">🔍</span> Ke Halaman Utama
             </a>

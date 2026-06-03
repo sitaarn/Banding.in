@@ -80,7 +80,6 @@ INSERT INTO `platforms` (`id`, `name`) VALUES
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(200) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
   `category` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -88,16 +87,16 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `image`, `category`) VALUES
-(1, 'Apple iPhone 15 128GB', 'iphone15.jpg', 'Smartphone'),
-(2, 'ASUS ROG Strix G15 Gaming Laptop', 'rog_g15.jpg', 'Laptop'),
-(3, 'Nike Air Max SC', 'nike_airmax.jpg', 'Sepatu'),
-(4, 'Meja Belajar Minimalis Kayu', 'meja_belajar.jpg', 'Furniture'),
-(5, 'Samsung Galaxy S24', 'samsung_s24.jpg', 'Smartphone'),
-(6, 'AirPods Pro', 'airpods_pro.jpg', 'Audio'),
-(7, 'Xiaomi Redmi Note 13', 'xiaomi_redmi.jpg', 'Smartphone'),
-(8, 'Tas Ransel 40L', 'tas_ransel.jpg', 'Fashion'),
-(9, 'PS5 Slim', 'ps5_slim.jpg', 'Gaming');
+INSERT INTO `products` (`id`, `name`, `category`) VALUES
+(1, 'Apple iPhone 15 128GB', 'Smartphone'),
+(2, 'ASUS ROG Strix G15 Gaming Laptop', 'Laptop'),
+(3, 'Nike Air Max SC', 'Sepatu'),
+(4, 'Meja Belajar Minimalis Kayu', 'Furniture'),
+(5, 'Samsung Galaxy S24', 'Smartphone'),
+(6, 'AirPods Pro', 'Audio'),
+(7, 'Xiaomi Redmi Note 13', 'Smartphone'),
+(8, 'Tas Ransel 40L', 'Fashion'),
+(9, 'PS5 Slim', 'Gaming');
 
 -- --------------------------------------------------------
 

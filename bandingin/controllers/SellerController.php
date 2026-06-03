@@ -66,7 +66,6 @@ class SellerController {
         // Insert Product
         $productId = $this->ProductModel->create([
             'name' => $name,
-            'image' => null,
             'category' => $category,
             'seller_id' => $_SESSION['user_id'] ?? null,
             'status' => 'pending'
@@ -88,5 +87,46 @@ class SellerController {
             setFlashMessage('error', 'Failed to add product.');
             redirect(\BASE_URL . 'seller/add');
         }
+    }
+    public function myProducts() {
+        $sellerId = $_SESSION['user_id'] ?? null;
+        $products = $this->ProductModel->getBySellerId($sellerId);
+        
+        \view('pages/seller/products', [
+            'pageTitle' => 'Kelola Produk Saya',
+            'products' => $products
+        ]);
+    }
+
+    public function deleteProduct() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $data = json_decode(file_get_contents('php://input'), true);
+        $productId = $data['product_id'] ?? null;
+        $sellerId = $_SESSION['user_id'] ?? null;
+        
+        if (!$productId) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Product ID required']);
+            return;
+        }
+        
+        // Verify the product belongs to this seller
+        $product = $this->ProductModel->getById($productId);
+        if (!$product || ($product['seller_id'] ?? null) != $sellerId) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Product not found or unauthorized']);
+            return;
+        }
+        
+        $result = $this->ProductModel->delete($productId);
+        logActivity('product_delete', "Seller deleted product: {$product['name']}");
+        
+        header('Content-Type: application/json');
+        echo json_encode(['success' => $result]);
     }
 }

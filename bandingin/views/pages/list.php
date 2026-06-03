@@ -96,6 +96,11 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
             <a class="dropdown-item" href="<?= $base ?>profile">
               <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
             </a>
+            <?php if(isSeller()): ?>
+            <a class="dropdown-item" href="<?= $base ?>seller/products">
+              <span class="dropdown-icon">📦</span> Kelola Produk
+            </a>
+            <?php endif; ?>
             <?php if(isSuperAdmin()): ?>
             <a class="dropdown-item" href="<?= $base ?>admin/dashboard">
               <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>

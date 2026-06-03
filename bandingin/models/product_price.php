@@ -35,7 +35,7 @@ class Product_Price {
 
     public function search($keyword, $platformIds = [], $minPrice = 0, $maxPrice = 999999999) {
         // Gabung dengan products dan platforms
-        $sql = "SELECT pp.*, p.id as product_id, p.name as product_name, p.image, p.category,
+        $sql = "SELECT pp.*, p.id as product_id, p.name as product_name, p.category,
                        pf.id as platform_id, pf.name as platform_name
                 FROM {$this->table} pp
                 JOIN products p ON pp.product_id = p.id
@@ -59,7 +59,7 @@ class Product_Price {
 
     public function all($keyword="", $platformIds = [], $minPrice = 0, $maxPrice = 999999999) {
         // Gabung dengan products dan platforms
-        $sql = "SELECT pp.*, p.id as product_id, p.name as product_name, p.image, p.category,
+        $sql = "SELECT pp.*, p.id as product_id, p.name as product_name, p.category,
                        pf.id as platform_id, pf.name as platform_name
                 FROM {$this->table} pp
                 JOIN products p ON pp.product_id = p.id

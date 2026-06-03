@@ -52,6 +52,11 @@
           <div class="dropdown-info-label">Sedang login ✓</div>
         </div>
         <a class="dropdown-item active" href="<?= BASE_URL ?>profile"><span class="dropdown-icon">👤</span> Profil Saya</a>
+        <?php if(isSeller()): ?>
+        <a class="dropdown-item" href="<?= BASE_URL ?>seller/products">
+          <span class="dropdown-icon">📦</span> Kelola Produk
+        </a>
+        <?php endif; ?>
         <?php if(isSuperAdmin()): ?>
         <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
           <span class="dropdown-icon">🛡️</span> Panel Admin
