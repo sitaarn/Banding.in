@@ -40,7 +40,7 @@ class Product {
     }
 
     public function search($keyword) {
-        $sql = "SELECT * FROM {$this->table} WHERE name LIKE ? ORDER BY name";
+        $sql = "SELECT * FROM {$this->table} WHERE name LIKE ? AND (status = 'approved' OR status IS NULL) ORDER BY name";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%{$keyword}%"]);
         return $stmt->fetchAll();
@@ -56,7 +56,8 @@ class Product {
         pp.link
         FROM product_prices pp
         JOIN products p ON pp.product_id = p.id
-        JOIN platforms pf ON pp.platform_id = pf.id";
+        JOIN platforms pf ON pp.platform_id = pf.id
+        WHERE (p.status = 'approved' OR p.status IS NULL)";
 
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll();

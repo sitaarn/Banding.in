@@ -56,6 +56,7 @@ $route->middleware(['login'])->group(function ($childClass) {
     $childClass->get('/admin', [LandingController::class, 
         'admin']);
     $childClass->post('/profile/update', [AuthController::class,'updateProfil']); 
+    $childClass->post('/product/report', [AdminController::class, 'submitReport']);
 });
 
 $route->middleware(['login', 'user'])->group(function ($childClass) {
@@ -96,6 +97,9 @@ $route->middleware(['login', 'super_admin'])->group(function ($childClass) {
     // Activity Logs
     $childClass->get('/admin/logs', [AdminController::class, 'logs']);
     
+    // Report Logs
+    $childClass->get('/admin/reports', [AdminController::class, 'reports']);
+    $childClass->post('/admin/reports/update', [AdminController::class, 'updateReport']);
 
     // Product Verification
     $childClass->get('/admin/products', [AdminController::class, 'products']);

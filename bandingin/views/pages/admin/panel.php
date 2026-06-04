@@ -56,6 +56,12 @@ $currentTab = $tab ?? 'dashboard';
       <a class="admin-nav-item <?= $currentTab==='logs'?'active':'' ?>" href="<?= $base ?>admin/logs">
         <span class="admin-nav-icon"><i class="fa-solid fa-clock-rotate-left"></i></span> Activity Logs
       </a>
+      <a class="admin-nav-item <?= $currentTab==='reports'?'active':'' ?>" href="<?= $base ?>admin/reports">
+        <span class="admin-nav-icon"><i class="fa-solid fa-flag"></i></span> Report Logs
+        <?php if(isset($stats) && ($stats['open_reports'] ?? 0) > 0): ?>
+          <span class="admin-nav-badge"><?= $stats['open_reports'] ?></span>
+        <?php endif; ?>
+      </a>
 
 
       <a class="admin-back-btn" href="<?= $base ?>landing">
@@ -345,7 +351,46 @@ $currentTab = $tab ?? 'dashboard';
       </table>
     </div>
 
+    <?php elseif($currentTab === 'reports'): ?>
+    <!-- ═══════ REPORT LOGS ═══════ -->
+    <div class="admin-header">
+      <div>
+        <h1 class="admin-title">Report Logs</h1>
+        <p class="admin-subtitle">View and manage product reports from users.</p>
+      </div>
+    </div>
 
+    <div class="admin-panel">
+      <div class="admin-panel-title"><i class="fa-solid fa-flag text-cyan"></i> Product Reports</div>
+      <table class="admin-table" id="reportsTable">
+        <thead><tr><th>ID</th><th>Product</th><th>Platform</th><th>Reporter</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+        <?php if(!empty($reports)): foreach($reports as $rp): ?>
+          <tr id="report-row-<?= $rp['id'] ?>">
+            <td>#<?= $rp['id'] ?></td>
+            <td style="color:var(--text-light);font-weight:500;"><?= e($rp['product_name'] ?? '-') ?></td>
+            <td><?= e($rp['platform_name'] ?? '-') ?></td>
+            <td><?= e($rp['reporter_username'] ?? 'Anonymous') ?></td>
+            <td style="max-width:200px;"><?= e($rp['reason'] ?? '-') ?></td>
+            <td><span class="status-badge <?= $rp['status'] ?? 'open' ?>"><?= ucfirst($rp['status'] ?? 'open') ?></span></td>
+            <td class="text-soft"><?= $rp['created_at'] ?></td>
+            <td>
+              <?php if(($rp['status'] ?? 'open') === 'open'): ?>
+              <div class="admin-btn-group">
+                <button class="admin-btn success" onclick="updateReportStatus(<?= $rp['id'] ?>, 'reviewed')" title="Mark as Reviewed"><i class="fa-solid fa-check"></i></button>
+                <button class="admin-btn warning" onclick="updateReportStatus(<?= $rp['id'] ?>, 'dismissed')" title="Dismiss"><i class="fa-solid fa-times"></i></button>
+              </div>
+              <?php else: ?>
+              <span class="text-soft">—</span>
+              <?php endif; ?>
+            </td>
+          </tr>
+        <?php endforeach; else: ?>
+          <tr><td colspan="8" class="text-soft" style="text-align:center;">No reports yet.</td></tr>
+        <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
 
     <?php endif; ?>
 
@@ -521,7 +566,15 @@ $currentTab = $tab ?? 'dashboard';
     }
   }
 
-
+  // ── Report Management ──
+  function updateReportStatus(reportId, status) {
+    const label = status === 'reviewed' ? 'Review' : 'Dismiss';
+    showConfirm(label + ' Report', `Mark this report as "${status}"?`, async () => {
+      const r = await apiPost('admin/reports/update', {report_id: reportId, status});
+      if(r.success) { showToast('Report updated!'); setTimeout(()=>location.reload(), 800); }
+      else { showToast(r.error || 'Failed', true); }
+    });
+  }
 
   // ── Pagination ──
   window.renderPageProducts = null;
@@ -598,7 +651,7 @@ $currentTab = $tab ?? 'dashboard';
     paginateTable('productsTable', 10);
     paginateTable('scraperTable', 10);
     paginateTable('logsTable', 10);
-
+    paginateTable('reportsTable', 10);
   });
   </script>
 </body>
