@@ -91,14 +91,14 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
           <div class="user-dropdown">
             <div class="dropdown-info">
               <div class="dropdown-info-name"><?= htmlspecialchars($user_uname) ?></div>
-              <div class="dropdown-info-label">Sedang login ✓</div>
+              <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
             </div>
             <a class="dropdown-item" href="<?= $base ?>profile">
               <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
             </a>
             <?php if(isSeller()): ?>
             <a class="dropdown-item" href="<?= $base ?>seller/products">
-              <span class="dropdown-icon">📦</span> Kelola Produk
+              <span class="dropdown-icon">📦</span> <?= __('manage_products') ?>
             </a>
             <?php endif; ?>
             <?php if(isSuperAdmin()): ?>
@@ -226,29 +226,29 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <div class="modal-box">
       <button class="modal-close-x" onclick="closeReportModal()">✕</button>
       <div class="modal-icon">🚩</div>
-      <div class="modal-title">Laporkan Produk</div>
-      <div class="modal-sub">Pilih alasan pelaporan produk ini:</div>
+      <div class="modal-title"><?= __('report_product') ?></div>
+      <div class="modal-sub"><?= __('report_choose_reason') ?></div>
       <div class="report-options" style="text-align: left; margin-bottom: 15px; color: var(--text-light); font-size: 0.9rem;">
         <div style="margin-bottom: 8px;">
             <input type="checkbox" id="reason1" name="report_reason_check" value="Barang tidak relevan">
-            <label for="reason1" style="cursor: pointer; padding-left: 5px;">Barang tidak relevan</label>
+            <label for="reason1" style="cursor: pointer; padding-left: 5px;"><?= __('report_irrelevant') ?></label>
         </div>
         <div style="margin-bottom: 8px;">
             <input type="checkbox" id="reason2" name="report_reason_check" value="Harga barang tidak sesuai">
-            <label for="reason2" style="cursor: pointer; padding-left: 5px;">Harga barang tidak sesuai</label>
+            <label for="reason2" style="cursor: pointer; padding-left: 5px;"><?= __('report_wrong_price') ?></label>
         </div>
         <div style="margin-bottom: 8px;">
             <input type="checkbox" id="reason3" name="report_reason_check" value="Barang sudah habis">
-            <label for="reason3" style="cursor: pointer; padding-left: 5px;">Barang sudah habis</label>
+            <label for="reason3" style="cursor: pointer; padding-left: 5px;"><?= __('report_out_of_stock') ?></label>
         </div>
         <div style="margin-bottom: 8px;">
             <input type="checkbox" id="reason4" name="report_reason_check" value="other" onchange="toggleReportReason(this)">
-            <label for="reason4" style="cursor: pointer; padding-left: 5px;">Lainnya (Isi sendiri)</label>
+            <label for="reason4" style="cursor: pointer; padding-left: 5px;"><?= __('report_other') ?></label>
         </div>
-        <textarea id="reportReasonText" style="width: 100%; display: none; margin-top: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: white; font-family: 'Lora', serif;" rows="3" placeholder="Tulis alasan Anda..."></textarea>
+        <textarea id="reportReasonText" style="width: 100%; display: none; margin-top: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: white; font-family: 'Lora', serif;" rows="3" placeholder="<?= __('report_write_reason') ?>"></textarea>
       </div>
       <div class="modal-actions">
-        <button class="modal-btn-login" id="btnSubmitReport" onclick="submitReport()" style="background: linear-gradient(135deg, #e87d3e, #dc3545);">Ajukan Laporan</button>
+        <button class="modal-btn-login" id="btnSubmitReport" onclick="submitReport()" style="background: linear-gradient(135deg, #e87d3e, #dc3545);"><?= __('submit_report_btn') ?></button>
       </div>
     </div>
   </div>
@@ -271,8 +271,11 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
         no_products_price_hint: "<?= __('no_products_price_hint') ?>",
         visit: "<?= __('visit') ?>",
         cheapest: "<?= __('cheapest') ?>",
-        report: "Laporkan",
-        submit_report: "Ajukan Laporan"
+        badge_cheapest: "<?= __('badge_cheapest') ?>",
+        see_all_results: "<?= __('see_all_results') ?>",
+        login_to_see_more: "<?= __('login_to_see_more') ?>",
+        report: "<?= __('report') ?>",
+        submit_report: "<?= __('submit_report_btn') ?>"
     };
   </script>
   <script src="<?= $base ?>public/js/list.js?v=<?= time(); ?>"></script>

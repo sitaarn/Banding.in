@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Favorit Saya — Banding.in</title>
+  <title><?= __('fav_my_favorites') ?> — Banding.in</title>
   <link rel="icon" href="<?= BASE_URL ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/list.css"/>
@@ -32,18 +32,18 @@
     </span>
     <div class="nav-links">
       <?php if(isLoggedIn()) : ?>
-        <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>list'">Cari Produk</button>
+        <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>list'"><?= __('search_products') ?></button>
         
         <?php if(isSeller()) : ?>
         <button class="nav-btn"
                 style="background: linear-gradient(135deg, #2ecad0, #2d5a9e) !important; color: white !important; border: none !important;"
                 onclick="window.location.href='<?= BASE_URL ?>seller/add'">
-          <i class="fa-solid fa-plus-circle"></i> Add Product
+          <i class="fa-solid fa-plus-circle"></i> <?= __('add_product') ?>
         </button>
         <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
         <button class="nav-btn favorite-nav-btn"
                 onclick="window.location.href='<?= BASE_URL ?>favorit'">
-          ❤️ Favorite
+          ❤️ <?= __('favorite') ?>
         </button>
         <?php endif; ?>
 
@@ -57,23 +57,23 @@
           <div class="user-dropdown">
             <div class="dropdown-info">
               <div class="dropdown-info-name"><?= $_SESSION['username'] ?></div>
-              <div class="dropdown-info-label">Sedang login ✓</div>
+              <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
             </div>
             <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
-              <span class="dropdown-icon">👤</span> Profil Saya
+              <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
             </a>
             <?php if(isSuperAdmin()): ?>
             <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
-              <span class="dropdown-icon">🛡️</span> Panel Admin
+              <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
             </a>
             <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon"></span> Logout
+              <span class="dropdown-icon"></span> <?= __('logout') ?>
             </div>
           </div>
         </div>
 
-        <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>aboutus'">About Us</button>
+        <button class="nav-btn" onclick="window.location.href='<?= BASE_URL ?>aboutus'"><?= __('about_us') ?></button>
 
         <?php 
           $currentLang = $_SESSION['lang'] ?? 'en';
@@ -100,19 +100,19 @@
         <div class="fav-header-left">
           <div class="fav-header-icon">🔖</div>
           <div class="fav-header-info">
-            <div class="fav-header-title">Favorit Saya</div>
-            <div class="fav-header-sub">Produk yang kamu simpan</div>
+            <div class="fav-header-title"><?= __('fav_my_favorites') ?></div>
+            <div class="fav-header-sub"><?= __('fav_saved_products') ?></div>
           </div>
         </div>
         <div class="fav-header-stats">
           <div class="fav-stat">
             <div class="fav-stat-num" id="statTersimpan">0</div>
-            <div class="fav-stat-lbl">Tersimpan</div>
+            <div class="fav-stat-lbl"><?= __('fav_saved') ?></div>
           </div>
           <div class="fav-stat-divider"></div>
           <div class="fav-stat">
             <div class="fav-stat-num" id="statTermurah">0</div>
-            <div class="fav-stat-lbl">Termurah</div>
+            <div class="fav-stat-lbl"><?= __('fav_cheapest') ?></div>
           </div>
         </div>
       </div>
@@ -121,19 +121,19 @@
       <div class="fav-filterbar">
         <div class="fav-platform-filters">
           <span class="fav-filter-label">Platform:</span>
-          <button class="fav-pf-btn active" data-pf="semua"     onclick="favTogglePf(this)">Semua</button>
+          <button class="fav-pf-btn active" data-pf="semua"     onclick="favTogglePf(this)"><?= __('fav_all') ?></button>
           <button class="fav-pf-btn active" data-pf="tokopedia" onclick="favTogglePf(this)">Tokopedia</button>
           <button class="fav-pf-btn active" data-pf="lazada"    onclick="favTogglePf(this)">Lazada</button>
           <button class="fav-pf-btn active" data-pf="blibli"    onclick="favTogglePf(this)">Blibli</button>
         </div>
         <div class="fav-filterbar-right">
           <select class="fav-sort-select" id="favSortSelect" onchange="favRender()">
-            <option value="newest">Terbaru</option>
-            <option value="cheapest">Termurah</option>
-            <option value="expensive">Termahal</option>
+            <option value="newest"><?= __('fav_newest') ?></option>
+            <option value="cheapest"><?= __('fav_cheapest') ?></option>
+            <option value="expensive"><?= __('fav_most_expensive') ?></option>
             <option value="az">A → Z</option>
           </select>
-          <button class="fav-hapus-semua-btn" onclick="favHapusSemua()">Hapus Semua</button>
+          <button class="fav-hapus-semua-btn" onclick="favHapusSemua()"><?= __('fav_delete_all') ?></button>
         </div>
       </div>
 

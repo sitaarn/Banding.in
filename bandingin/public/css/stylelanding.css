@@ -474,7 +474,7 @@ nav {
 }
 
 .main-card::after {
-  content: 'Klik untuk mulai';
+  content: attr(data-label);
   position: absolute;
   bottom: -28px;
   left: 50%;

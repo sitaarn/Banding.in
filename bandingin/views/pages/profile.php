@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Banding.in — Profil Saya</title>
+  <title>Banding.in — <?= __('my_profile') ?></title>
   <link rel="icon" href="<?= BASE_URL ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/profile.css?v=<?= time() ?>">
@@ -24,18 +24,18 @@
 <nav id="mainNav">
   <a class="nav-brand" href="<?= BASE_URL ?>list">banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></a>
   <div class="nav-links" id="navLinks">
-    <a class="nav-btn" href="<?= BASE_URL ?>list">Cari Produk</a>
+    <a class="nav-btn" href="<?= BASE_URL ?>list"><?= __('search_products') ?></a>
     
     <?php if(isSeller()) : ?>
     <button class="nav-btn"
             style="background: linear-gradient(135deg, #2ecad0, #2d5a9e) !important; color: white !important; border: none !important;"
             onclick="window.location.href='<?= BASE_URL ?>seller/add'">
-      <i class="fa-solid fa-plus-circle"></i> Add Product
+      <i class="fa-solid fa-plus-circle"></i> <?= __('add_product') ?>
     </button>
     <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
     <button class="nav-btn favorite-nav-btn"
             onclick="window.location.href='<?= BASE_URL ?>favorit'">
-      ❤️ Favorite
+      ❤️ <?= __('favorite') ?>
     </button>
     <?php endif; ?>
 
@@ -49,24 +49,24 @@
       <div class="user-dropdown">
         <div class="dropdown-info">
           <div class="dropdown-info-name" id="dropName"><?= htmlspecialchars($user['username'] ?? '') ?></div>
-          <div class="dropdown-info-label">Sedang login ✓</div>
+          <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
         </div>
-        <a class="dropdown-item active" href="<?= BASE_URL ?>profile"><span class="dropdown-icon">👤</span> Profil Saya</a>
+        <a class="dropdown-item active" href="<?= BASE_URL ?>profile"><span class="dropdown-icon">👤</span> <?= __('my_profile') ?></a>
         <?php if(isSeller()): ?>
         <a class="dropdown-item" href="<?= BASE_URL ?>seller/products">
-          <span class="dropdown-icon">📦</span> Kelola Produk
+          <span class="dropdown-icon">📦</span> <?= __('manage_products') ?>
         </a>
         <?php endif; ?>
         <?php if(isSuperAdmin()): ?>
         <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
-          <span class="dropdown-icon">🛡️</span> Panel Admin
+          <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
         </a>
         <?php endif; ?>
-        <a class="dropdown-item logout" href="<?= BASE_URL ?>logout"><span class="dropdown-icon">↩</span> Keluar</a>
+        <a class="dropdown-item logout" href="<?= BASE_URL ?>logout"><span class="dropdown-icon">↩</span> <?= __('logout') ?></a>
       </div>
     </div>
 
-    <a class="nav-btn" href="<?= BASE_URL ?>aboutus">About Us</a>
+    <a class="nav-btn" href="<?= BASE_URL ?>aboutus"><?= __('about_us') ?></a>
 
     <?php 
       $currentLang = $_SESSION['lang'] ?? 'en';
@@ -91,24 +91,24 @@
       <div class="hero-email" id="heroEmail"><?= htmlspecialchars($user['email'] ?? '') ?></div>
     </div>
     <div class="hero-actions">
-      <button class="btn-edit" onclick="openEdit()">Edit Profil</button>
-      <a class="btn-ghost" href="<?= BASE_URL ?>logout">Keluar ↩</a>
+      <button class="btn-edit" onclick="openEdit()"><?= __('edit_profile') ?></button>
+      <a class="btn-ghost" href="<?= BASE_URL ?>logout"><?= __('logout') ?> ↩</a>
     </div>
   </div>
 
   <!-- Informasi Akun -->
   <div class="profile-hero" style="flex-direction: column; align-items: flex-start;">
     <div class="panel-header" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-      <div class="panel-title">Informasi Akun</div>
+      <div class="panel-title"><?= __('account_info') ?></div>
       <span class="panel-action" onclick="openEdit()">Edit →</span>
     </div>
     <div class="info-row">
-      <div class="info-label">Nama Lengkap</div>
+      <div class="info-label"><?= __('full_name') ?></div>
       <div class="info-value" id="infoName"><?= htmlspecialchars($user['nama_lengkap'] ?? '') ?></div>
     </div>
     <div class="info-divider" style="width:100%"></div>
     <div class="info-row">
-      <div class="info-label">Alamat Email</div>
+      <div class="info-label"><?= __('email_address') ?></div>
       <div class="info-value" id="infoEmail"><?= htmlspecialchars($user['email'] ?? '') ?></div>
     </div>
   </div>
@@ -116,22 +116,22 @@
   <!-- Modal Edit -->
   <div class="modal-overlay" id="editModal" onclick="if(event.target===this) closeEdit()">
     <div class="modal-box">
-      <div class="modal-title">Edit Profil</div>
+      <div class="modal-title"><?= __('edit_profile') ?></div>
       <div class="form-group">
-        <div class="form-label">Nama Lengkap</div>
+        <div class="form-label"><?= __('full_name') ?></div>
         <input class="form-input" id="editName" type="text" value="<?= htmlspecialchars($user['nama_lengkap'] ?? '') ?>" />
       </div>
       <div class="form-group">
-        <div class="form-label">Alamat Email</div>
+        <div class="form-label"><?= __('email_address') ?></div>
         <input class="form-input" id="editEmail" type="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" />
       </div>
       <div class="form-group">
-        <div class="form-label">Password Baru (opsional)</div>
-        <input class="form-input" id="editPass" type="password" placeholder="Biarkan kosong jika tidak ganti" />
+        <div class="form-label"><?= __('new_password') ?></div>
+        <input class="form-input" id="editPass" type="password" placeholder="<?= __('new_password_ph') ?>" />
       </div>
       <div class="modal-actions">
-        <button class="btn-save" onclick="saveEdit()">Simpan Perubahan</button>
-        <button class="btn-cancel" onclick="closeEdit()">Batal</button>
+        <button class="btn-save" onclick="saveEdit()"><?= __('save_changes') ?></button>
+        <button class="btn-cancel" onclick="closeEdit()"><?= __('cancel') ?></button>
       </div>
     </div>
   </div>

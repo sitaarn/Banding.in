@@ -103,4 +103,17 @@ class LandingController {
         header("Location: " . $referer);
         exit;
     }
+
+    public function checkUsername() {
+        header('Content-Type: application/json');
+        $username = isset($_GET['username']) ? trim($_GET['username']) : '';
+        if (strlen($username) < 3) {
+            echo json_encode(['exists' => false]);
+            exit;
+        }
+        $userModel = new \Models\User();
+        $exists = $userModel->usernameExists($username);
+        echo json_encode(['exists' => $exists]);
+        exit;
+    }
 }

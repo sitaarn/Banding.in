@@ -227,11 +227,11 @@ function doSearch() {
             </div>
             <div style="display:flex;align-items:center">
               <span class="result-price ${e.price === minPrice ? 'cheapest' : ''}">Rp ${e.price.toLocaleString('id-ID')}</span>
-              ${e.price === minPrice ? '<span class="badge-cheapest">TERMURAH</span>' : ''}
+              ${e.price === minPrice ? `<span class="badge-cheapest">${LANG.badge_cheapest}</span>` : ''}
             </div>
           </div>`).join('')}
         <div style="text-align:right;padding-top:8px;">
-          <button onclick="goToListing('${query.replace(/'/g, "\\'")}', ['${ap.join("','")}'])" style="padding:8px 20px;border-radius:999px;background:var(--primary);color:var(--bg-mid);border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='var(--primary)'">Lihat Semua ${entries.length} Hasil →</button>
+          <button onclick="goToListing('${query.replace(/'/g, "\\'")}', ['${ap.join("','")}'])" style="padding:8px 20px;border-radius:999px;background:var(--primary);color:var(--bg-mid);border:none;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:all .2s;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='var(--primary)'">${LANG.see_all_results.replace('%d', entries.length)}</button>
         </div>
       </div>`;
   }, 900);
@@ -457,7 +457,7 @@ function renderListing() {
     loginPromptHTML = `
       <div class="ls-login-prompt">
         <div class="ls-login-icon">🔒</div>
-        <div class="ls-login-text">Masuk atau daftar untuk melihat ${originalLength - 5} produk lainnya!</div>
+        <div class="ls-login-text">${LANG.login_to_see_more.replace('%d', originalLength - 5)}</div>
         <button class="ls-login-btn" onclick="goToLogin()">Login / Register</button>
       </div>
     `;

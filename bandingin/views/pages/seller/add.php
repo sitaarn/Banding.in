@@ -295,7 +295,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       <div class="add-card-header">
         <div class="header-icon"><i class="fa-solid fa-plus"></i></div>
         <h2><?= __('add_new_product') ?></h2>
-        <p>Isi formulir di bawah untuk menambahkan produk baru</p>
+        <p><?= __('add_product_desc') ?></p>
       </div>
 
       <?php displayFlashMessage(); ?>
@@ -313,15 +313,15 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 
         <!-- Kategori -->
         <div class="form-group">
-          <label class="form-label">Kategori Produk <span class="required">*</span></label>
+          <label class="form-label"><?= __('product_category') ?> <span class="required">*</span></label>
           <select class="form-select" id="category" name="category" required>
-            <option value="" disabled selected>— Pilih Kategori —</option>
-            <option value="Elektronik">Elektronik</option>
-            <option value="Pakaian">Pakaian</option>
-            <option value="Kecantikan">Kecantikan</option>
-            <option value="Peralatan Rumah">Peralatan Rumah</option>
-            <option value="Otomotif">Otomotif</option>
-            <option value="Lainnya">Lainnya</option>
+            <option value="" disabled selected><?= __('choose_category') ?></option>
+            <option value="Elektronik"><?= __('cat_electronics') ?></option>
+            <option value="Pakaian"><?= __('cat_clothing') ?></option>
+            <option value="Kecantikan"><?= __('cat_beauty') ?></option>
+            <option value="Peralatan Rumah"><?= __('cat_household') ?></option>
+            <option value="Otomotif"><?= __('cat_automotive') ?></option>
+            <option value="Lainnya"><?= __('cat_others') ?></option>
           </select>
         </div>
 

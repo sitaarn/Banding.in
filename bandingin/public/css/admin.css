@@ -11,11 +11,11 @@
 }
 
 .admin-sidebar-brand {
-  font-family: 'Camera Plain Variable', ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 1.3rem; color: var(--primary);
+  font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--primary);
   padding: 0 8px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px;
-  cursor: pointer; text-decoration: none; display: block;
+  cursor: pointer; text-decoration: none; display: block; opacity: .7;
 }
-.admin-sidebar-brand em { font-style: italic; color: var(--accent-cyan); }
+.admin-sidebar-brand em { font-style: italic; }
 .admin-sidebar-label {
   font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
   color: rgba(28,28,28,0.5); padding: 0 8px; margin: 16px 0 8px;

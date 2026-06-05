@@ -102,7 +102,7 @@ class AuthController
 
                 redirect(\BASE_URL . 'landing');
             } else {
-                setFlashMessage('error', 'Username atau password salah.');
+                setFlashMessage('error', 'Username dan password salah.');
                 redirect(\BASE_URL . 'login');
             }
         } else {

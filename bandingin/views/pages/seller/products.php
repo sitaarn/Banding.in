@@ -9,7 +9,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kelola Produk Saya — Banding.in</title>
+  <title><?= __('manage_products') ?> — Banding.in</title>
   <link rel="icon" href="<?= $base ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -450,7 +450,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em>
     </span>
     <div class="nav-links" id="navLinks">
-      <button class="nav-btn" onclick="window.location.href='<?= $base ?>list'">Cari Produk</button>
+      <button class="nav-btn" onclick="window.location.href='<?= $base ?>list'"><?= __('search_products') ?></button>
 
       <?php 
         $user_nama = $_SESSION['nama_lengkap'] ?? 'User';
@@ -469,18 +469,18 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
             <div class="dropdown-info-label">Seller ✓</div>
           </div>
           <a class="dropdown-item" href="<?= $base ?>profile">
-            <span class="dropdown-icon">👤</span> Profil Saya
+            <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
           </a>
           <a class="dropdown-item active" href="<?= $base ?>seller/products">
-            <span class="dropdown-icon">📦</span> Kelola Produk
+            <span class="dropdown-icon">📦</span> <?= __('manage_products') ?>
           </a>
           <a class="dropdown-item logout" href="<?= $base ?>logout">
-            <span class="dropdown-icon">↩</span> Keluar
+            <span class="dropdown-icon">↩</span> <?= __('logout') ?>
           </a>
         </div>
       </div>
 
-      <button class="nav-btn" onclick="window.location.href='<?= $base ?>aboutus'">Tentang Kami</button>
+      <button class="nav-btn" onclick="window.location.href='<?= $base ?>aboutus'"><?= __('about_us') ?></button>
 
       <?php 
         $currentLang = $_SESSION['lang'] ?? 'en';
@@ -499,7 +499,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
     <!-- Header -->
     <div class="seller-header">
       <div class="seller-header-left">
-        <h1>Kelola Produk Saya</h1>
+        <h1><?= __('manage_products') ?></h1>
         <p>Lihat dan kelola semua produk yang kamu submit</p>
       </div>
       <div style="display: flex; align-items: center; gap: 16px;">
@@ -526,7 +526,7 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
           </div>
         </div>
         <a class="seller-btn-add" href="<?= $base ?>seller/add">
-          <i class="fa-solid fa-plus"></i> Tambah Produk
+          <i class="fa-solid fa-plus"></i> <?= __('add_product') ?>
         </a>
       </div>
     </div>

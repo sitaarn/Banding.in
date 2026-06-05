@@ -12,8 +12,8 @@ $currentTab = $tab ?? 'dashboard';
   <link rel="icon" href="<?= $base ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="<?= $base ?>public/css/stylelanding.css">
-  <link rel="stylesheet" href="<?= $base ?>public/css/admin.css">
+  <link rel="stylesheet" href="<?= $base ?>public/css/stylelanding.css?v=<?= time(); ?>">
+  <link rel="stylesheet" href="<?= $base ?>public/css/admin.css?v=<?= time(); ?>">
   <style>html,body{overflow:auto;}</style>
 </head>
 <body>
@@ -28,7 +28,7 @@ $currentTab = $tab ?? 'dashboard';
   <div class="admin-layout">
     <!-- SIDEBAR -->
     <aside class="admin-sidebar">
-      <a class="admin-sidebar-brand" href="<?= $base ?>landing">banding<em>.in</em></a>
+      <a class="admin-sidebar-brand" href="<?= $base ?>landing">banding<em style="font-family:'DM Serif Display',serif;font-style:italic">.in</em></a>
       
       <div class="admin-sidebar-label">Main</div>
       <a class="admin-nav-item <?= $currentTab==='dashboard'?'active':'' ?>" href="<?= $base ?>admin/dashboard">

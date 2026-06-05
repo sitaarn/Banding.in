@@ -497,3 +497,69 @@ body::after{ display: none;
 .toggle-btn i {
   margin-right: 5px;
 }
+
+/* ── Validation Styles ── */
+input.input-error {
+  border-bottom: 2px solid #e05252 !important;
+  animation: shakeField 0.35s ease;
+}
+
+input.input-valid {
+  border-bottom: 2px solid #4dd67a !important;
+}
+
+.field-error {
+  color: #e05252;
+  font-size: 0.72rem;
+  margin-top: 2px;
+  min-height: 16px;
+  text-align: left;
+  display: block;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.field-error.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes shakeField {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+}
+
+/* ── Password Toggle ── */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #5f5f5d;
+  font-size: 1rem;
+  padding: 4px 6px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-password:hover {
+  color: #1c1c1c;
+}

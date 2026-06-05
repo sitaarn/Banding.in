@@ -25,12 +25,12 @@
 
       <!-- LOGIN FORM -->
       <div class="form-container login-container" >
-        <form id="loginForm">
+        <form id="loginForm" novalidate>
           <input type="hidden" name="role" class="roleInput" value="user">
           <div class="icon-circle" id="loginIconCircle">
             <i class="fa-solid fa-user" id="loginIcon"></i>
           </div>
-          <h2 id="loginTitle">AKUN SAYA</h2>
+          <h2 id="loginTitle"><?= __('login_title_user') ?></h2>
 
           <div id="loginError" style="display:none; background:rgba(224,82,82,0.15); border:1px solid rgba(224,82,82,0.3); color:#ff6b6b; padding:10px 14px; border-radius:10px; font-size:0.82rem; margin-bottom:12px; text-align:center;"></div>
 
@@ -39,33 +39,60 @@
           id="username"
           name="username"
           value="<?= e($_POST['username'] ?? '') ?>"
-          placeholder="Masukkan username atau email"
+          placeholder="<?= __('ph_username') ?>"
           required
           autofocus>
-          <input type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          placeholder="Masukkan password"
-          required>
+          <span class="field-error" id="loginUsernameError"></span>
 
-          <button type="submit" class="primary-btn" id="loginSubmitBtn" style="margin-top: 15px;">SIGN IN</button>
+          <div class="input-wrapper">
+            <input type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="<?= __('ph_password') ?>"
+            required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <span class="field-error" id="loginPasswordError"></span>
+
+          <button type="submit" class="primary-btn" id="loginSubmitBtn" style="margin-top: 15px;"><?= __('sign_in') ?></button>
         </form>
       </div>
 
       <!-- REGISTER FORM -->
       <div class="form-container register-container" style="overflow-y: auto;">
-        <form action="<?= BASE_URL . 'register' ?>" method="post">
+        <form action="<?= BASE_URL . 'register' ?>" method="post" id="registerForm" novalidate>
           <input type="hidden" name="role" class="roleInput" value="user">
-          <h2 style="margin-top: 89px;" id="registerTitle">Buat Akun</h2>
+          <h2 style="margin-top: 89px;" id="registerTitle"><?= __('register_title_user') ?></h2>
 
-          <input type="text" name="username" placeholder="Username" required>
-          <input type="text" name="nama_lengkap" id="regFullName" placeholder="Nama Lengkap" required>
-          <input type="email" name="email" id="regEmail" placeholder="Email" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <input type="password" name="confirm_password" placeholder="Konfirmasi Password" required>
+          <input type="text" name="username" id="regUsername" placeholder="<?= __('ph_username_reg') ?>" required minlength="3">
+          <span class="field-error" id="regUsernameError"></span>
 
-          <button type="submit" class="primary-btn" id="registerBtnText">SIGN UP</button>
+          <input type="text" name="nama_lengkap" id="regFullName" placeholder="<?= __('ph_full_name') ?>" required minlength="3">
+          <span class="field-error" id="regFullNameError"></span>
+
+          <input type="email" name="email" id="regEmail" placeholder="<?= __('ph_email') ?>" required>
+          <span class="field-error" id="regEmailError"></span>
+
+          <div class="input-wrapper">
+            <input type="password" name="password" id="regPassword" placeholder="<?= __('ph_password_reg') ?>" required minlength="8">
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPassword', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <span class="field-error" id="regPasswordError"></span>
+
+          <div class="input-wrapper">
+            <input type="password" name="confirm_password" id="regConfirmPassword" placeholder="<?= __('ph_confirm_password') ?>" required minlength="8">
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regConfirmPassword', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <span class="field-error" id="regConfirmPasswordError"></span>
+
+          <button type="submit" class="primary-btn" id="registerBtnText"><?= __('sign_up') ?></button>
         </form>
       </div>
 
@@ -74,22 +101,22 @@
         <div class="overlay">
 
           <div class="overlay-panel left-panel">
-            <h2 id="overlayLeftTitle">Selamat Datang Kembali!</h2>
-            <p id="overlayLeftText">Untuk tetap terhubung dengan kami, silakan masuk dengan info pribadi Anda</p>
+            <h2 id="overlayLeftTitle"><?= __('overlay_welcome') ?></h2>
+            <p id="overlayLeftText"><?= __('overlay_stay_connected') ?></p>
             <div id="overlayLeftExtra" style="display: none; text-align: left; margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                <h4 style="margin-bottom: 10px;">Mengapa bergabung dengan Banding.in?</h4>
+                <h4 style="margin-bottom: 10px;" id="overlayWhyJoinTitle"><?= __('overlay_why_join') ?></h4>
                 <ul style="list-style: none; padding: 0; font-size: 14px; text-align: left;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> Produk dengan harga kompetitif akan menonjol di platform kami</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> Toko dan produk Anda akan mudah ditemukan</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-chart-line" style="color: #2ecad0;"></i> Akses analitik mendetail untuk melacak klik tautan produk Anda</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> <span id="overlayBenefit1"><?= __('overlay_benefit_1') ?></span></li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-check-circle" style="color: #2ecad0;"></i> <span id="overlayBenefit2"><?= __('overlay_benefit_2') ?></span></li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-chart-line" style="color: #2ecad0;"></i> <span id="overlayBenefit3"><?= __('overlay_benefit_3') ?></span></li>
                 </ul>
             </div>
             <button class="ghost" id="login">Sign In</button>
           </div>
 
           <div class="overlay-panel right-panel">
-            <h2 id="overlayRightTitle">Halo, Teman!</h2>
-            <p id="overlayRightText">Masukkan detail pribadi Anda dan mulai perjalanan Anda</p>
+            <h2 id="overlayRightTitle"><?= __('overlay_hello') ?></h2>
+            <p id="overlayRightText"><?= __('overlay_enter_details') ?></p>
             <button class="ghost" id="register">Sign Up</button>
           </div>
 
@@ -99,6 +126,49 @@
     </div>
   </div>
 
+  <script>
+    // Translation strings for JS
+    const AUTH_LANG = {
+      login_title_user: "<?= __('login_title_user') ?>",
+      login_title_seller: "<?= __('login_title_seller') ?>",
+      register_title_user: "<?= __('register_title_user') ?>",
+      register_title_seller: "<?= __('register_title_seller') ?>",
+      ph_username: "<?= __('ph_username') ?>",
+      ph_password: "<?= __('ph_password') ?>",
+      ph_username_seller: "<?= __('ph_username_seller') ?>",
+      ph_password_seller: "<?= __('ph_password_seller') ?>",
+      ph_store_name: "<?= __('ph_store_name') ?>",
+      ph_business_email: "<?= __('ph_business_email') ?>",
+      ph_username_reg: "<?= __('ph_username_reg') ?>",
+      ph_full_name: "<?= __('ph_full_name') ?>",
+      ph_email: "<?= __('ph_email') ?>",
+      ph_password_reg: "<?= __('ph_password_reg') ?>",
+      ph_confirm_password: "<?= __('ph_confirm_password') ?>",
+      overlay_welcome: "<?= __('overlay_welcome') ?>",
+      overlay_stay_connected: "<?= __('overlay_stay_connected') ?>",
+      overlay_hello: "<?= __('overlay_hello') ?>",
+      overlay_enter_details: "<?= __('overlay_enter_details') ?>",
+      overlay_start_selling: "<?= __('overlay_start_selling') ?>",
+      overlay_register_store: "<?= __('overlay_register_store') ?>",
+      overlay_why_join: "<?= __('overlay_why_join') ?>",
+      overlay_benefit_1: "<?= __('overlay_benefit_1') ?>",
+      overlay_benefit_2: "<?= __('overlay_benefit_2') ?>",
+      overlay_benefit_3: "<?= __('overlay_benefit_3') ?>",
+      sign_up: "<?= __('sign_up') ?>",
+      sign_in: "<?= __('sign_in') ?>",
+      signing_in: "<?= __('signing_in') ?>",
+      val_required: "<?= __('val_required') ?>",
+      val_min_chars: "<?= __('val_min_chars') ?>",
+      val_email_invalid: "<?= __('val_email_invalid') ?>",
+      val_password_mismatch: "<?= __('val_password_mismatch') ?>",
+      val_username_taken: "<?= __('val_username_taken') ?>",
+      val_username_required: "<?= __('val_username_required') ?>",
+      val_password_required: "<?= __('val_password_required') ?>",
+      val_login_failed: "<?= __('val_login_failed') ?>",
+      val_error_occurred: "<?= __('val_error_occurred') ?>",
+    };
+    const BASE_URL_AUTH = "<?= BASE_URL ?>";
+  </script>
   <script src="<?= BASE_URL ?>public/js/auth.js?v=<?= time() ?>"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <?php
@@ -111,9 +181,9 @@
                 icon: '{$icon}',
                 title: '{$title}',
                 text: '" . addslashes($flash['message']) . "',
-                background: '#1a2744',
-                color: '#e8edf2',
-                confirmButtonColor: '#2ecad0',
+                background: '#ffffff',
+                color: '#1c1c1c',
+                confirmButtonColor: '#1c1c1c',
                 customClass: { popup: 'swal-custom' },
                 heightAuto: false
             });
@@ -127,9 +197,9 @@
                 icon: 'error',
                 title: 'Gagal',
                 text: '" . addslashes($errStr) . "',
-                background: '#1a2744',
-                color: '#e8edf2',
-                confirmButtonColor: '#2ecad0',
+                background: '#ffffff',
+                color: '#1c1c1c',
+                confirmButtonColor: '#1c1c1c',
                 customClass: { popup: 'swal-custom' },
                 heightAuto: false
             });
@@ -147,23 +217,23 @@
   loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const role = loginForm.querySelector('.roleInput').value;
+    // Run validation first
+    const usernameField = document.getElementById('username');
+    const passwordField = document.getElementById('password');
+    let hasError = false;
 
-    // Client-side validation
-    if (!username) {
-      showLoginError('Username wajib diisi.');
-      return;
-    }
-    if (!password) {
-      showLoginError('Password wajib diisi.');
-      return;
-    }
+    if (!validateField(usernameField, 'loginUsernameError', null, true)) hasError = true;
+    if (!validateField(passwordField, 'loginPasswordError', null, true)) hasError = true;
+
+    if (hasError) return;
+
+    const username = usernameField.value.trim();
+    const password = passwordField.value;
+    const role = loginForm.querySelector('.roleInput').value;
 
     // Show loading state
     loginSubmitBtn.disabled = true;
-    loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+    loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + AUTH_LANG.signing_in;
     loginError.style.display = 'none';
 
     try {
@@ -177,22 +247,15 @@
         body: formData
       });
 
-      // If response redirects (302), fetch follows it automatically
-      // Check if the final URL is still the login page (error) or a different page (success)
       const responseUrl = response.url;
       const responseText = await response.text();
-
-      // Check if we got redirected back to login page (contains login form)
       const isLoginPage = responseText.includes('id="loginForm"') || responseText.includes('id="loginTitle"');
 
       if (isLoginPage) {
-        // Extract error from the response HTML
         const parser = new DOMParser();
         const doc = parser.parseFromString(responseText, 'text/html');
-        
-        // Look for SweetAlert script with error
         const scripts = doc.querySelectorAll('script');
-        let errorMsg = 'Username atau password salah.';
+        let errorMsg = AUTH_LANG.val_login_failed;
         scripts.forEach(script => {
           const content = script.textContent;
           if (content.includes("Swal.fire") && content.includes("error")) {
@@ -200,17 +263,15 @@
             if (textMatch) errorMsg = textMatch[1];
           }
         });
-
         showLoginError(errorMsg);
       } else {
-        // Success - redirect to the final URL
         window.location.href = responseUrl;
       }
     } catch (error) {
-      showLoginError('Terjadi kesalahan. Coba lagi.');
+      showLoginError(AUTH_LANG.val_error_occurred);
     } finally {
       loginSubmitBtn.disabled = false;
-      loginSubmitBtn.innerHTML = 'SIGN IN';
+      loginSubmitBtn.innerHTML = AUTH_LANG.sign_in;
     }
   });
 
@@ -218,19 +279,17 @@
     loginError.textContent = msg;
     loginError.style.display = 'block';
     
-    // Shake animation
     loginError.style.animation = 'none';
-    loginError.offsetHeight; // trigger reflow
+    loginError.offsetHeight;
     loginError.style.animation = 'shakeError 0.4s ease';
     
-    // Also show SweetAlert for prominence
     Swal.fire({
       icon: 'error',
       title: 'Gagal',
       text: msg,
-      background: '#1a2744',
-      color: '#e8edf2',
-      confirmButtonColor: '#2ecad0',
+      background: '#ffffff',
+      color: '#1c1c1c',
+      confirmButtonColor: '#1c1c1c',
       customClass: { popup: 'swal-custom' },
       heightAuto: false,
       timer: 3000,
@@ -252,5 +311,6 @@
         80% { transform: translateX(5px); }
       }
   </style>
+
 </body>
 </html>

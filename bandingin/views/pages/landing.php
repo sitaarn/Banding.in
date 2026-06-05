@@ -40,7 +40,7 @@
             <div class="dropdown-info">
 
               <div class="dropdown-info-name"><?= $_SESSION['username'] ?></div>
-              <div class="dropdown-info-label">Sedang login ✓</div>
+              <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
             </div>
             <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
               <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
@@ -66,7 +66,7 @@
         $nextLang = $currentLang === 'en' ? 'id' : 'en';
         $flagImg = $currentLang === 'en' ? 'https://flagcdn.com/w40/us.png' : 'https://flagcdn.com/w40/id.png';
       ?>
-      <button class="nav-btn" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="Switch Language">
+      <button class="nav-btn" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="window.location.href='<?= BASE_URL ?>lang/switch?lang=<?= $nextLang ?>'" title="<?= __('switch_language') ?>">
         <img src="<?= $flagImg ?>" alt="flag" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
       </button>
 
@@ -81,7 +81,7 @@
         <span class="pill">Blibli</span>
       </div>
 
-      <div class="main-card" onclick="goToSearch()">
+      <div class="main-card" onclick="goToSearch()" data-label="<?= __('click_to_start') ?>">
         <img src="./public/images/logo-b.png" alt="Banding.in Logo" class="brand-logo" />
         <div class="brand-name">banding<em>.in</em></div>
       </div>

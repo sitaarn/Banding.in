@@ -116,4 +116,7 @@ $route->middleware(['all'])->group(function ($childClass) {
     
     // Language Switcher Route
     $childClass->get('/lang/switch', [LandingController::class, 'switchLanguage']);
+
+    // Username Check API
+    $childClass->get('/api/check-username', [LandingController::class, 'checkUsername']);
 });
