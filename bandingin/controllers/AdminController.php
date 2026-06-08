@@ -1,7 +1,19 @@
 <?php
 /**
+ * ============================================
  * CONTROLLER: AdminController
- * Menangani semua operasi Super Admin Panel
+ * Praktikum Aplikasi Web - Universitas Tidar
+ * ============================================
+ * 
+ * Controller untuk Super Admin Panel.
+ * Mengelola seluruh sistem:
+ * - Dashboard (statistik ringkasan)
+ * - User management (CRUD, role, aktif/nonaktif)
+ * - Platform management (e-commerce)
+ * - Web scraper (trigger & monitor)
+ * - Activity logs (audit trail)
+ * - Product reports (laporan user)
+ * - Product verification (approve/reject dari seller)
  */
 namespace Controllers;
 
@@ -14,13 +26,14 @@ use Models\ScraperLog as ScraperLogModel;
 
 class AdminController {
 
-    private $userModel;
-    private $productModel;
-    private $platformModel;
-    private $activityLogModel;
-    private $reportModel;
-    private $scraperLogModel;
+    private $userModel;         // Model user
+    private $productModel;      // Model produk
+    private $platformModel;     // Model platform e-commerce
+    private $activityLogModel;  // Model log aktivitas
+    private $reportModel;       // Model laporan produk
+    private $scraperLogModel;   // Model log scraper
 
+    /** Constructor: inisialisasi semua model yang dibutuhkan */
     public function __construct() {
         $this->userModel = new UserModel();
         $this->productModel = new ProductModel();
@@ -30,7 +43,11 @@ class AdminController {
         $this->scraperLogModel = new ScraperLogModel();
     }
 
-    // ─── Dashboard ───────────────────────────
+    // ═══════════════════════════════════════════
+    //  DASHBOARD - Halaman utama admin
+    // ═══════════════════════════════════════════
+
+    /** Tampilkan dashboard dengan statistik ringkasan sistem */
     public function dashboard() {
         $stats = [
             'total_users' => $this->userModel->count(),
@@ -49,7 +66,11 @@ class AdminController {
         ]);
     }
 
-    // ─── Users ───────────────────────────────
+    // ═══════════════════════════════════════════
+    //  USER MANAGEMENT
+    // ═══════════════════════════════════════════
+
+    /** Tampilkan daftar semua user dengan statistik (jumlah produk & favorit) */
     public function users() {
         $users = $this->userModel->getAllWithStats();
         \view('pages/admin/panel', [
@@ -58,23 +79,25 @@ class AdminController {
         ]);
     }
 
+    /**
+     * Ubah role user (via AJAX).
+     * Proteksi: tidak bisa assign super_admin, ubah role sendiri, atau ubah super_admin lain.
+     */
     public function updateRole() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
         $userId = (int)($data['user_id'] ?? 0);
         $newRole = $data['role'] ?? '';
 
-        // Prevent self-promotion to super_admin
+        // Proteksi keamanan
         if ($newRole === 'super_admin') {
             echo json_encode(['success' => false, 'error' => 'Cannot assign super_admin role.']);
             exit;
         }
-        // Prevent modifying own role
         if ($userId === ($_SESSION['user_id'] ?? 0)) {
             echo json_encode(['success' => false, 'error' => 'Cannot modify your own role.']);
             exit;
         }
-        // Prevent modifying another super_admin
         $target = $this->userModel->getById($userId);
         if ($target && $target['role'] === 'super_admin') {
             echo json_encode(['success' => false, 'error' => 'Cannot modify another super admin.']);
@@ -92,6 +115,7 @@ class AdminController {
         exit;
     }
 
+    /** Toggle aktif/nonaktif user (via AJAX). Tidak bisa nonaktifkan diri sendiri atau super_admin. */
     public function toggleActive() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -117,6 +141,7 @@ class AdminController {
         exit;
     }
 
+    /** Hapus user (via AJAX). Tidak bisa hapus diri sendiri atau super_admin. */
     public function deleteUser() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -142,6 +167,7 @@ class AdminController {
         exit;
     }
 
+    /** Reset password user ke default 'password123' (via AJAX) */
     public function resetPassword() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -157,9 +183,11 @@ class AdminController {
         exit;
     }
 
+    // ═══════════════════════════════════════════
+    //  PLATFORM MANAGEMENT
+    // ═══════════════════════════════════════════
 
-
-    // ─── Platforms ────────────────────────────
+    /** Tampilkan daftar semua platform e-commerce (termasuk yang nonaktif) */
     public function platforms() {
         $platforms = $this->platformModel->getAllIncludingInactive();
         \view('pages/admin/panel', [
@@ -168,6 +196,7 @@ class AdminController {
         ]);
     }
 
+    /** Toggle aktif/nonaktif platform e-commerce (via AJAX) */
     public function togglePlatform() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -183,9 +212,11 @@ class AdminController {
         exit;
     }
 
+    // ═══════════════════════════════════════════
+    //  SCRAPER MANAGEMENT
+    // ═══════════════════════════════════════════
 
-
-    // ─── Scraper ─────────────────────────────
+    /** Tampilkan halaman scraper dengan log terbaru dan daftar platform */
     public function scraper() {
         $logs = $this->scraperLogModel->getAll(20);
         $platforms = $this->platformModel->getAllIncludingInactive();
@@ -196,6 +227,15 @@ class AdminController {
         ]);
     }
 
+    /**
+     * Trigger scraper Python untuk scraping produk dari e-commerce (via AJAX).
+     * 
+     * Alur:
+     * 1. Buat log entry di DB (status: running)
+     * 2. Cari script Python sesuai platform
+     * 3. Jalankan script secara async (background process)
+     * 4. Script Python akan update log status sendiri saat selesai
+     */
     public function triggerScrape() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -203,7 +243,7 @@ class AdminController {
         $keyword = sanitize($data['keyword'] ?? '');
 
         if ($platformId && !empty($keyword)) {
-            // Create a log entry
+            // Buat entry log scraper (status awal: running)
             $logId = $this->scraperLogModel->create([
                 'platform_id' => $platformId,
                 'status' => 'running',
@@ -211,6 +251,7 @@ class AdminController {
                 'triggered_by' => $_SESSION['user_id'] ?? null
             ]);
 
+            // Mapping platform ke script Python
             $platform = $this->platformModel->getById($platformId);
             $platformName = strtolower($platform['name'] ?? '');
 
@@ -223,17 +264,20 @@ class AdminController {
             if (isset($scriptMap[$platformName]) && $scriptMap[$platformName] && file_exists($scriptMap[$platformName])) {
                 $scriptPath = $scriptMap[$platformName];
                 $scriptDir = dirname($scriptPath);
-                // Execute Python script asynchronously with correct working directory
+                
+                // Jalankan script Python secara async (background)
                 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    // Use cmd /c with cd to set working directory, then run python
+                    // Windows: gunakan cmd /c dengan start /B untuk background
                     $cmd = 'cmd /c "cd /d ' . escapeshellarg($scriptDir) . ' && python ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($keyword) . ' ' . escapeshellarg($logId) . ' > NUL 2>&1"';
                     pclose(popen("start /B " . $cmd, "r"));
                 } else {
+                    // Linux/Mac: gunakan & untuk background process
                     $cmd = "cd " . escapeshellarg($scriptDir) . " && python3 " . escapeshellarg($scriptPath) . " " . escapeshellarg($keyword) . " " . escapeshellarg($logId) . " > /dev/null 2>&1 &";
                     shell_exec($cmd);
                 }
 
             } else {
+                // Script tidak ditemukan → update log status jadi failed
                 $this->scraperLogModel->updateStatus($logId, 'failed', 0, 'Scraper script not found for platform: ' . $platformName);
             }
             
@@ -245,7 +289,11 @@ class AdminController {
         exit;
     }
 
-    // ─── Activity Logs ───────────────────────
+    // ═══════════════════════════════════════════
+    //  ACTIVITY LOGS
+    // ═══════════════════════════════════════════
+
+    /** Tampilkan riwayat aktivitas sistem (200 log terbaru) */
     public function logs() {
         $logs = $this->activityLogModel->getAll(200);
         \view('pages/admin/panel', [
@@ -254,7 +302,11 @@ class AdminController {
         ]);
     }
 
-    // ─── Reports ─────────────────────────────
+    // ═══════════════════════════════════════════
+    //  PRODUCT REPORTS (Laporan produk dari user)
+    // ═══════════════════════════════════════════
+
+    /** Tampilkan daftar laporan produk dari user (100 terbaru) */
     public function reports() {
         $reports = $this->reportModel->getAll(100);
         \view('pages/admin/panel', [
@@ -263,6 +315,10 @@ class AdminController {
         ]);
     }
 
+    /**
+     * Update status laporan (via AJAX): reviewed atau dismissed.
+     * Jika laporan di-reviewed dan produk punya >= 5 laporan terbuka → auto delete produk.
+     */
     public function updateReport() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -282,7 +338,7 @@ class AdminController {
 
         $this->reportModel->updateStatus($reportId, $status);
 
-        // Auto delete if too many open reports (threshold = 5)
+        // Auto-delete produk jika sudah >= 5 laporan yang di-review
         if ($status === 'reviewed') {
             $openCount = $this->reportModel->countByProduct($report['product_id']);
             if ($openCount >= 5) {
@@ -296,7 +352,11 @@ class AdminController {
         exit;
     }
 
-    // ─── Product Verification ────────────────
+    // ═══════════════════════════════════════════
+    //  PRODUCT VERIFICATION (Verifikasi produk seller)
+    // ═══════════════════════════════════════════
+
+    /** Tampilkan semua produk dengan status (pending, approved, rejected, dll) */
     public function products() {
         $products = $this->productModel->getAllWithStatus();
         \view('pages/admin/panel', [
@@ -305,6 +365,7 @@ class AdminController {
         ]);
     }
 
+    /** Ubah status verifikasi produk: approved, rejected, atau taken_down (via AJAX) */
     public function verifyProduct() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -326,6 +387,7 @@ class AdminController {
         exit;
     }
 
+    /** Hapus produk dan update semua laporan terkait (via AJAX) */
     public function deleteProduct() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -334,7 +396,7 @@ class AdminController {
         if ($productId) {
             $product = $this->productModel->getById($productId);
             if ($product) {
-                // Update open reports to 'reviewed' and save product name snapshot
+                // Tandai laporan terbuka sebagai reviewed & simpan snapshot nama produk
                 $this->reportModel->markAsReviewedAndSnapshot($productId, $product['name']);
             }
             $this->productModel->delete($productId);
@@ -346,22 +408,43 @@ class AdminController {
         exit;
     }
 
-    public function bulkDelete() {
+    /** Hapus beberapa produk sekaligus dan update semua laporan terkait (via AJAX) */
+    public function deleteMultipleProducts() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
-        $platformId = (int)($data['platform_id'] ?? 0);
+        $productIds = $data['product_ids'] ?? [];
 
-        if ($platformId) {
-            $this->productModel->bulkDeleteByPlatform($platformId);
-            logActivity('bulk_delete', "Bulk deleted all products from platform #{$platformId}");
-            echo json_encode(['success' => true]);
+        if (is_array($productIds) && !empty($productIds)) {
+            $deletedCount = 0;
+            foreach ($productIds as $id) {
+                $id = (int)$id;
+                if ($id > 0) {
+                    $product = $this->productModel->getById($id);
+                    if ($product) {
+                        // Tandai laporan terbuka sebagai reviewed & simpan snapshot nama produk
+                        $this->reportModel->markAsReviewedAndSnapshot($id, $product['name']);
+                    }
+                    $this->productModel->delete($id);
+                    $deletedCount++;
+                }
+            }
+            logActivity('product_delete_multiple', "Deleted {$deletedCount} products");
+            echo json_encode(['success' => true, 'deleted_count' => $deletedCount]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid platform ID.']);
+            echo json_encode(['success' => false, 'error' => 'No products selected.']);
         }
         exit;
     }
 
-    // ─── Product Report (buyer side) ─────────
+    // ═══════════════════════════════════════════
+    //  PRODUCT REPORT (dari sisi buyer/user)
+    // ═══════════════════════════════════════════
+
+    /**
+     * Kirim laporan produk dari user (via AJAX).
+     * Satu user hanya bisa melaporkan satu produk sekali.
+     * Jika total laporan terbuka >= 5 → produk otomatis dihapus.
+     */
     public function submitReport() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -375,29 +458,34 @@ class AdminController {
             exit;
         }
 
+        // Cek apakah user sudah pernah melaporkan produk ini
         if ($this->reportModel->hasUserReported($productId, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Anda sudah pernah melaporkan produk ini.']);
             exit;
         }
 
-        $id = $this->reportModel->create([
-            'product_id' => $productId,
-            'platform_id' => $platformId,
-            'reporter_id' => $userId,
-            'reason' => $reason
-        ]);
+        try {
+            $id = $this->reportModel->create([
+                'product_id' => $productId,
+                'platform_id' => $platformId,
+                'reporter_id' => $userId,
+                'reason' => $reason
+            ]);
 
-        if ($id) {
-            // Check auto delete
-            $openCount = $this->reportModel->countByProduct($productId);
-            if ($openCount >= 5) {
-                $this->productModel->delete($productId);
-                logActivity('product_delete', "Product #{$productId} auto deleted (5+ reports)");
+            if ($id) {
+                // Auto-delete jika sudah >= 5 laporan terbuka
+                $openCount = $this->reportModel->countByProduct($productId);
+                if ($openCount >= 5) {
+                    $this->productModel->delete($productId);
+                    logActivity('product_delete', "Product #{$productId} auto deleted (5+ reports)");
+                }
+                logActivity('product_report', "User reported product #{$productId}");
+                echo json_encode(['success' => true, 'message' => 'Report submitted. Thank you!']);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to submit report.']);
             }
-            logActivity('product_report', "User reported product #{$productId}");
-            echo json_encode(['success' => true, 'message' => 'Report submitted. Thank you!']);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to submit report.']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
         }
         exit;
     }

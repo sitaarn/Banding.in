@@ -1,21 +1,27 @@
 <?php
 /**
- * 
- * CLASS: FileHandler
- * Menangani upload, validasi, dan penghapusan file
+ * ============================================
+ * CLASS: FileHandler - Upload & Kelola File
  * Praktikum Aplikasi Web - Universitas Tidar
+ * ============================================
  * 
+ * Class ini menangani semua operasi file:
+ * - Upload dengan validasi (ekstensi, ukuran, MIME type)
+ * - Hapus file
+ * - Generate nama file unik
+ * - Cek keberadaan file
+ * - Dapatkan URL / path file
  */
 
 class FileHandler {
-    private $uploadPath;
-    private $allowedExtensions;
-    private $allowedMimeTypes;
-    private $maxSize;
-    private $errors = [];
+    private $uploadPath;         // Path folder upload
+    private $allowedExtensions;  // Ekstensi file yang diizinkan
+    private $allowedMimeTypes;   // MIME type yang diizinkan
+    private $maxSize;            // Ukuran maksimal file (byte)
+    private $errors = [];        // Kumpulan pesan error
 
     /**
-     * Constructor
+     * Constructor: set konfigurasi upload (bisa override default dari config.php)
      */
     public function __construct($config = []) {
         $this->uploadPath = $config['upload_path'] ?? UPLOADS_PATH;
@@ -25,21 +31,21 @@ class FileHandler {
     }
 
     /**
-     * Upload file
-     * @param array $file - $_FILES['field_name']
-     * @param string $subFolder - Sub folder tujuan
-     * @param string|null $customName - Nama custom (opsional)
-     * @return string|false - Nama file baru atau false jika gagal
+     * Upload file ke server.
+     * @param array $file - Data file dari $_FILES['field_name']
+     * @param string $subFolder - Sub-folder tujuan (misal: 'avatars')
+     * @param string|null $customName - Nama file custom (tanpa ekstensi), opsional
+     * @return string|false - Nama file baru jika sukses, false jika gagal
      */
     public function upload($file, $subFolder = '', $customName = null) {
         $this->errors = [];
 
-        // Validasi file
+        // Validasi file (ekstensi, ukuran, MIME)
         if (!$this->validate($file)) {
             return false;
         }
 
-        // Tentukan path upload
+        // Tentukan path folder tujuan
         $targetPath = rtrim($this->uploadPath, '/');
         if (!empty($subFolder)) {
             $targetPath .= '/' . trim($subFolder, '/');
@@ -53,7 +59,7 @@ class FileHandler {
             }
         }
 
-        // Generate nama file
+        // Generate nama file (custom atau random unik)
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if ($customName) {
             $newFileName = $customName . '.' . $extension;
@@ -61,10 +67,8 @@ class FileHandler {
             $newFileName = $this->generateFileName($extension);
         }
 
-        // Path lengkap file
+        // Pindahkan file dari temp ke folder tujuan
         $targetFile = $targetPath . '/' . $newFileName;
-
-        // Pindahkan file
         if (move_uploaded_file($file['tmp_name'], $targetFile)) {
             return $newFileName;
         }
@@ -74,7 +78,8 @@ class FileHandler {
     }
 
     /**
-     * Validasi file
+     * Validasi file upload (cek ada/tidak, error, ukuran, ekstensi, MIME type).
+     * Return true jika valid, false jika ada masalah.
      */
     public function validate($file) {
         // Cek apakah file ada
@@ -83,7 +88,7 @@ class FileHandler {
             return false;
         }
 
-        // Cek error upload
+        // Cek error bawaan PHP saat upload
         if ($file['error'] !== UPLOAD_ERR_OK) {
             $this->errors[] = $this->getUploadErrorMessage($file['error']);
             return false;
@@ -96,14 +101,14 @@ class FileHandler {
             return false;
         }
 
-        // Cek ekstensi
+        // Cek ekstensi file (jpg, png, dll)
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $this->allowedExtensions)) {
             $this->errors[] = "Ekstensi file tidak diizinkan. Ekstensi yang diizinkan: " . implode(', ', $this->allowedExtensions);
             return false;
         }
 
-        // Cek MIME type
+        // Cek MIME type (validasi isi file sebenarnya, bukan hanya ekstensi)
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->file($file['tmp_name']);
         if (!in_array($mimeType, $this->allowedMimeTypes)) {
@@ -115,25 +120,25 @@ class FileHandler {
     }
 
     /**
-     * Hapus file
+     * Hapus file dari folder upload.
+     * Return true jika berhasil dihapus, false jika file tidak ditemukan.
      */
     public function delete($fileName, $subFolder = '') {
         $targetPath = rtrim($this->uploadPath, '/');
         if (!empty($subFolder)) {
             $targetPath .= '/' . trim($subFolder, '/');
         }
-
         $filePath = $targetPath . '/' . $fileName;
 
         if (file_exists($filePath)) {
             return unlink($filePath);
         }
-
         return false;
     }
 
     /**
-     * Generate nama file unik
+     * Generate nama file unik: timestamp + random hex.
+     * Contoh: "20260608143022_a1b2c3d4e5f6g7h8.jpg"
      */
     public function generateFileName($extension) {
         $timestamp = date('YmdHis');
@@ -142,7 +147,7 @@ class FileHandler {
     }
 
     /**
-     * Dapatkan pesan error upload
+     * Konversi error code upload PHP ke pesan yang mudah dipahami.
      */
     private function getUploadErrorMessage($errorCode) {
         $messages = [
@@ -154,46 +159,28 @@ class FileHandler {
             UPLOAD_ERR_CANT_WRITE => 'Gagal menyimpan file ke disk.',
             UPLOAD_ERR_EXTENSION => 'Upload dibatalkan oleh ekstensi PHP.'
         ];
-
         return $messages[$errorCode] ?? 'Error upload tidak diketahui.';
     }
 
-    /**
-     * Dapatkan semua error
-     */
-    public function getErrors() {
-        return $this->errors;
-    }
+    /** Ambil semua pesan error */
+    public function getErrors() { return $this->errors; }
 
-    /**
-     * Dapatkan error pertama
-     */
-    public function getFirstError() {
-        return $this->errors[0] ?? null;
-    }
+    /** Ambil error pertama saja */
+    public function getFirstError() { return $this->errors[0] ?? null; }
 
-    /**
-     * Cek apakah ada error
-     */
-    public function hasErrors() {
-        return !empty($this->errors);
-    }
+    /** Cek apakah ada error */
+    public function hasErrors() { return !empty($this->errors); }
 
-    /**
-     * Cek apakah file ada
-     */
+    /** Cek apakah file tertentu ada di folder upload */
     public function exists($fileName, $subFolder = '') {
         $targetPath = rtrim($this->uploadPath, '/');
         if (!empty($subFolder)) {
             $targetPath .= '/' . trim($subFolder, '/');
         }
-
         return file_exists($targetPath . '/' . $fileName);
     }
 
-    /**
-     * Dapatkan URL file
-     */
+    /** Dapatkan URL publik file (untuk dipakai di <img src="...">) */
     public function getUrl($fileName, $subFolder = '') {
         $path = 'uploads';
         if (!empty($subFolder)) {
@@ -202,9 +189,7 @@ class FileHandler {
         return BASE_URL . $path . '/' . $fileName;
     }
 
-    /**
-     * Dapatkan path file
-     */
+    /** Dapatkan path absolut file di server */
     public function getPath($fileName, $subFolder = '') {
         $targetPath = rtrim($this->uploadPath, '/');
         if (!empty($subFolder)) {

@@ -6,8 +6,9 @@
   <title><?= __('fav_my_favorites') ?> — Banding.in</title>
   <link rel="icon" href="<?= BASE_URL ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/list.css"/>
-  <link rel="stylesheet" href="<?= BASE_URL ?>public/css/favorit.css"/>
+  <link rel="stylesheet" href="<?= BASE_URL ?>public/css/favorit.css?v=<?= time() ?>"/>
 </head>
 <body>
 
@@ -43,7 +44,7 @@
         <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
         <button class="nav-btn favorite-nav-btn"
                 onclick="window.location.href='<?= BASE_URL ?>favorit'">
-          ❤️ <?= __('favorite') ?>
+          <i class="fa-solid fa-heart"></i> <?= __('favorite') ?>
         </button>
         <?php endif; ?>
 
@@ -60,15 +61,15 @@
               <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
             </div>
             <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
-              <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
+              <span class="dropdown-icon"><i class="fa-solid fa-circle-user"></i></span> <?= __('my_profile') ?>
             </a>
             <?php if(isSuperAdmin()): ?>
             <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
-              <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
+              <span class="dropdown-icon"><i class="fa-solid fa-shield-halved"></i></span> <?= __('admin_panel') ?>
             </a>
             <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon"></span> <?= __('logout') ?>
+              <span class="dropdown-icon"><i class="fa-solid fa-right-from-bracket"></i></span> <?= __('logout') ?>
             </div>
           </div>
         </div>
@@ -98,7 +99,7 @@
       <!-- Header Card -->
       <div class="fav-header-card">
         <div class="fav-header-left">
-          <div class="fav-header-icon">🔖</div>
+          <div class="fav-header-icon"><i class="fa-solid fa-heart" style="color: #ff6b6b;"></i></div>
           <div class="fav-header-info">
             <div class="fav-header-title"><?= __('fav_my_favorites') ?></div>
             <div class="fav-header-sub"><?= __('fav_saved_products') ?></div>
@@ -148,7 +149,7 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <script src="<?= BASE_URL ?>public/js/favorit.js"></script>
+  <script src="<?= BASE_URL ?>public/js/favorit.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

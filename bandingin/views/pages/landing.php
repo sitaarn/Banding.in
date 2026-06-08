@@ -6,6 +6,7 @@
   <title>Banding.in — Find Your Best Prices</title>
   <link rel="icon" href="./public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="./public/css/stylelanding.css">
 </head>
 <body>
@@ -43,15 +44,15 @@
               <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
             </div>
             <a class="dropdown-item" href="<?= BASE_URL . 'profile' ?>">
-              <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
+              <span class="dropdown-icon"><i class="fa-solid fa-circle-user"></i></span> <?= __('my_profile') ?>
             </a>
             <?php if(isSuperAdmin()): ?>
             <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
-              <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
+              <span class="dropdown-icon"><i class="fa-solid fa-shield-halved"></i></span> <?= __('admin_panel') ?>
             </a>
             <?php endif; ?>
             <div class="dropdown-item logout" onclick="doLogout()">
-              <span class="dropdown-icon"></span> <?= __('logout') ?>
+              <span class="dropdown-icon"><i class="fa-solid fa-right-from-bracket"></i></span> <?= __('logout') ?>
             </div>
           </div>
         </div>

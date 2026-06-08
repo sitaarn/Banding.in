@@ -83,27 +83,27 @@ $currentTab = $tab ?? 'dashboard';
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-card-icon">👥</div>
+        <div class="stat-card-icon"><i class="fa-solid fa-users text-cyan"></i></div>
         <div class="stat-card-value"><?= $stats['total_users'] ?? 0 ?></div>
         <div class="stat-card-label">Total Users</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-icon">🏪</div>
+        <div class="stat-card-icon"><i class="fa-solid fa-store text-orange"></i></div>
         <div class="stat-card-value"><?= $stats['total_sellers'] ?? 0 ?></div>
         <div class="stat-card-label">Sellers</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-icon">🛡️</div>
+        <div class="stat-card-icon"><i class="fa-solid fa-shield-halved text-red"></i></div>
         <div class="stat-card-value"><?= $stats['total_admins'] ?? 0 ?></div>
         <div class="stat-card-label">Admins</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-icon">📦</div>
+        <div class="stat-card-icon"><i class="fa-solid fa-box text-cyan"></i></div>
         <div class="stat-card-value"><?= $stats['total_products'] ?? 0 ?></div>
         <div class="stat-card-label">Products</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-icon">⏳</div>
+        <div class="stat-card-icon"><i class="fa-solid fa-hourglass-half text-orange"></i></div>
         <div class="stat-card-value"><?= $stats['pending_products'] ?? 0 ?></div>
         <div class="stat-card-label">Pending Verification</div>
       </div>
@@ -220,33 +220,20 @@ $currentTab = $tab ?? 'dashboard';
       </div>
     </div>
 
-    <!-- Bulk Delete -->
-    <div class="admin-panel">
-      <div class="admin-panel-title"><i class="fa-solid fa-trash text-red"></i> Bulk Delete</div>
-      <div class="admin-form-row">
-        <div class="admin-form-group">
-          <label class="admin-form-label">Delete all products from platform:</label>
-          <select class="admin-select" id="bulkDeletePlatform">
-            <option value="">Choose platform...</option>
-            <option value="1">Tokopedia</option>
-            <option value="2">Lazada</option>
-            <option value="3">Blibli</option>
-          </select>
-        </div>
-        <button class="admin-btn danger" onclick="bulkDelete()" style="height:42px;"><i class="fa-solid fa-trash"></i> Delete All</button>
-      </div>
-    </div>
-
     <div class="admin-panel">
       <div class="admin-panel-title" style="display:flex; justify-content:space-between; align-items:center;">
         <div><i class="fa-solid fa-box-open text-cyan"></i> All Products</div>
-        <input type="text" id="productSearch" oninput="filterAdminProducts()" placeholder="Cari nama barang..." class="admin-input" style="width:250px; padding:6px 12px; font-size:0.85rem;">
+        <div style="display:flex; gap: 10px; align-items:center;">
+          <button class="admin-btn danger" id="deleteSelectedBtn" onclick="deleteSelectedProducts()" style="display:none;"><i class="fa-solid fa-trash"></i> Hapus Terpilih</button>
+          <input type="text" id="productSearch" oninput="filterAdminProducts()" placeholder="Cari nama barang..." class="admin-input" style="width:250px; padding:6px 12px; font-size:0.85rem;">
+        </div>
       </div>
       <table class="admin-table" id="productsTable">
-        <thead><tr><th>ID</th><th>Product</th><th>Seller</th><th>Platform</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead><tr><th><input type="checkbox" id="selectAllProducts" onclick="toggleSelectAllProducts(this)"></th><th>ID</th><th>Product</th><th>Seller</th><th>Platform</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
         <?php if(!empty($products)): foreach($products as $p): ?>
           <tr id="product-row-<?= $p['id'] ?>">
+            <td><input type="checkbox" class="product-checkbox" value="<?= $p['id'] ?>" onclick="updateSelectAllState()"></td>
             <td>#<?= $p['id'] ?></td>
             <td style="color:var(--text-light);font-weight:500;"><?= e($p['name']) ?></td>
             <td><?= e($p['seller_name'] ?? '-') ?></td>
@@ -267,7 +254,7 @@ $currentTab = $tab ?? 'dashboard';
             </td>
           </tr>
         <?php endforeach; else: ?>
-          <tr><td colspan="7" class="text-soft" style="text-align:center;">No products found.</td></tr>
+          <tr><td colspan="8" class="text-soft" style="text-align:center;">No products found.</td></tr>
         <?php endif; ?>
         </tbody>
       </table>
@@ -522,11 +509,16 @@ $currentTab = $tab ?? 'dashboard';
     const query = document.getElementById('productSearch').value.toLowerCase();
     const rows = document.querySelectorAll('#productsTable tbody tr');
     rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      const nameCell = row.querySelector('td:nth-child(3)');
+      if (!nameCell) return;
+      const name = nameCell.textContent.toLowerCase();
       if (name.includes(query)) {
         row.style.display = '';
       } else {
         row.style.display = 'none';
+        // Uncheck checkbox of hidden row
+        const cb = row.querySelector('.product-checkbox');
+        if (cb) cb.checked = false;
       }
     });
 
@@ -538,14 +530,71 @@ $currentTab = $tab ?? 'dashboard';
     if (query.length === 0) {
        if (window.renderPageProducts) window.renderPageProducts(1);
     }
+
+    updateSelectAllState();
   }
-  function bulkDelete() {
-    const pid = document.getElementById('bulkDeletePlatform').value;
-    if(!pid) { showToast('Select a platform first', true); return; }
-    showConfirm('Bulk Delete', 'Delete ALL products from this platform? This cannot be undone!', async () => {
-      const r = await apiPost('admin/products/bulk-delete', {platform_id: parseInt(pid)});
-      if(r.success) { showToast('Bulk delete done!'); setTimeout(()=>location.reload(), 800); } 
-      else { showToast(r.error || 'Failed', true); }
+
+  // ── Multiple Products Selection & Deletion ──
+  function toggleSelectAllProducts(master) {
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    checkboxes.forEach(cb => {
+      const tr = cb.closest('tr');
+      if (tr && tr.style.display !== 'none') {
+        cb.checked = master.checked;
+      }
+    });
+    updateDeleteButtonVisibility();
+  }
+
+  function updateSelectAllState() {
+    const selectAll = document.getElementById('selectAllProducts');
+    const checkboxes = Array.from(document.querySelectorAll('.product-checkbox'));
+    
+    const visibleCheckboxes = checkboxes.filter(cb => {
+      const tr = cb.closest('tr');
+      return tr && tr.style.display !== 'none';
+    });
+
+    if (visibleCheckboxes.length === 0) {
+      if (selectAll) selectAll.checked = false;
+    } else {
+      const allChecked = visibleCheckboxes.every(cb => cb.checked);
+      if (selectAll) selectAll.checked = allChecked;
+    }
+    updateDeleteButtonVisibility();
+  }
+
+  // ── Delete Button Visibility ──
+  function updateDeleteButtonVisibility() {
+    const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+    const btn = document.getElementById('deleteSelectedBtn');
+    if (btn) {
+      if (checkedCount > 0) {
+        btn.style.display = 'inline-flex';
+        btn.innerHTML = `<i class="fa-solid fa-trash"></i> Hapus Terpilih (${checkedCount})`;
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+  }
+
+  async function deleteSelectedProducts() {
+    const checkedBoxes = document.querySelectorAll('.product-checkbox:checked');
+    const ids = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+    
+    if (ids.length === 0) {
+      showToast('Pilih produk yang ingin dihapus terlebih dahulu', true);
+      return;
+    }
+
+    showConfirm('Hapus Produk Terpilih', `Apakah Anda yakin ingin menghapus ${ids.length} produk yang dipilih?`, async () => {
+      const r = await apiPost('admin/products/delete-multiple', {product_ids: ids});
+      if(r.success) { 
+        showToast(`${r.deleted_count} produk berhasil dihapus!`);
+        setTimeout(() => location.reload(), 800);
+      } else { 
+        showToast(r.error || 'Gagal menghapus produk', true); 
+      }
     });
   }
 

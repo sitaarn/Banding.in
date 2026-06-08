@@ -1,7 +1,14 @@
 <?php
 /**
- *  * CONTROLLER: LandingController
+ * ============================================
+ * CONTROLLER: LandingController
+ * Praktikum Aplikasi Web - Universitas Tidar
+ * ============================================
  * 
+ * Controller untuk halaman-halaman publik/umum:
+ * - Landing page, About Us, List produk
+ * - Login, Register, Admin, Favorit
+ * - API endpoint: data produk, toggle favorit, ganti bahasa, cek username
  */
 namespace Controllers;
 
@@ -11,40 +18,46 @@ use Models\Favorite as FavoriteModel;
 
 class LandingController {
 
-    private $ProductModel;
-    private $favoriteModel;
+    private $ProductModel;   // Model untuk query produk
+    private $favoriteModel;  // Model untuk query favorit
 
+    /** Constructor: inisialisasi model yang dibutuhkan */
     public function __construct() {
         $this->ProductModel = new ProductModel();
         $this->favoriteModel = new FavoriteModel();
     }
 
-    public function index () {
-        \view('pages/landing', []);
-    }
+    // ─── Render Halaman Statis ──────────────────
+    /** Tampilkan halaman landing/beranda */
+    public function index () { \view('pages/landing', []); }
 
-    public function aboutus () {
-        \view('pages/aboutus', []);
-    }
-    public function profile () {
-        \view('pages/profile', []);
-    }
-    public function list () {
-        \view('pages/list', []);
-    }
-    public function login () {
-        \view('pages/login', []);
-    }
-    public function register () {
-        \view('pages/register', []);
-    }
-    public function admin () {
-        \view('pages/admin', []);
-    }
-    public function favorit () {
-        \view('pages/favorit', []);
-    }
+    /** Tampilkan halaman tentang kami */
+    public function aboutus () { \view('pages/aboutus', []); }
 
+    /** Tampilkan halaman profil */
+    public function profile () { \view('pages/profile', []); }
+
+    /** Tampilkan halaman daftar & pencarian produk */
+    public function list () { \view('pages/list', []); }
+
+    /** Tampilkan halaman login & register */
+    public function login () { \view('pages/login', []); }
+
+    /** Tampilkan halaman register (standalone) */
+    public function register () { \view('pages/register', []); }
+
+    /** Tampilkan halaman admin panel */
+    public function admin () { \view('pages/admin', []); }
+
+    /** Tampilkan halaman favorit */
+    public function favorit () { \view('pages/favorit', []); }
+
+    // ─── API: Toggle Favorit ────────────────────
+    /**
+     * Tambah/hapus produk dari favorit user (toggle).
+     * Menerima JSON body: { product_id, platform }
+     * Jika sudah favorit → hapus, jika belum → tambah.
+     */
     public function favoritbarang() {
         header('Content-Type: application/json');
         $data = json_decode(file_get_contents("php://input"), true);
@@ -52,11 +65,13 @@ class LandingController {
         $platform   = isset($data['platform']) ? $data['platform'] : null;
         $user_id = $_SESSION['user_id'] ?? null;
 
+        // Validasi: semua field harus ada
         if (!$user_id || !$product_id || !$platform) {
             echo json_encode(['success' => false, 'error' => 'Invalid data (user_id, product_id, platform required)']);
             exit;
         }
 
+        // Cek apakah sudah ada di favorit
         $exists = $this->favoriteModel->exists($user_id, $product_id, $platform);
 
         if ($exists) {
@@ -70,6 +85,8 @@ class LandingController {
         echo json_encode(['success' => $success, 'message' => $message]);
     }
 
+    // ─── API: Get Favorit User ──────────────────
+    /** Ambil semua data favorit user yang sedang login (JSON response) */
     public function getFavorites() {
         header('Content-Type: application/json');
         $user_id = $_SESSION['user_id'] ?? null;
@@ -81,6 +98,8 @@ class LandingController {
         echo json_encode(['success' => true, 'data' => $favorites]);
     }
 
+    // ─── API: Get All Products ──────────────────
+    /** API endpoint: return semua data produk dalam JSON (dipakai frontend) */
     public function getAllData() {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -90,6 +109,12 @@ class LandingController {
         exit;
     }
 
+    // ─── Switch Language ────────────────────────
+    /**
+     * Ganti bahasa aplikasi (ID/EN).
+     * Query parameter: ?lang=id atau ?lang=en
+     * Setelah ganti, redirect balik ke halaman sebelumnya.
+     */
     public function switchLanguage() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -98,12 +123,18 @@ class LandingController {
         if (in_array($lang, ['id', 'en'])) {
             $_SESSION['lang'] = $lang;
         }
-        // Redirect back
+        // Redirect ke halaman sebelumnya (referer)
         $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : BASE_URL;
         header("Location: " . $referer);
         exit;
     }
 
+    // ─── API: Check Username Availability ───────
+    /**
+     * Cek apakah username sudah dipakai (untuk validasi real-time saat register).
+     * Query parameter: ?username=<value>
+     * Return JSON: { exists: true/false }
+     */
     public function checkUsername() {
         header('Content-Type: application/json');
         $username = isset($_GET['username']) ? trim($_GET['username']) : '';

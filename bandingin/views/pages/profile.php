@@ -6,6 +6,7 @@
   <title>Banding.in — <?= __('my_profile') ?></title>
   <link rel="icon" href="<?= BASE_URL ?>public/images/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>public/css/profile.css?v=<?= time() ?>">
 </head>
 <body>
@@ -35,7 +36,7 @@
     <?php elseif(isset($_SESSION['role']) && $_SESSION['role'] === 'user') : ?>
     <button class="nav-btn favorite-nav-btn"
             onclick="window.location.href='<?= BASE_URL ?>favorit'">
-      ❤️ <?= __('favorite') ?>
+      <i class="fa-solid fa-heart"></i> <?= __('favorite') ?>
     </button>
     <?php endif; ?>
 
@@ -51,18 +52,18 @@
           <div class="dropdown-info-name" id="dropName"><?= htmlspecialchars($user['username'] ?? '') ?></div>
           <div class="dropdown-info-label"><?= __('logged_in_status') ?></div>
         </div>
-        <a class="dropdown-item active" href="<?= BASE_URL ?>profile"><span class="dropdown-icon">👤</span> <?= __('my_profile') ?></a>
+        <a class="dropdown-item active" href="<?= BASE_URL ?>profile"><span class="dropdown-icon"><i class="fa-solid fa-circle-user"></i></span> <?= __('my_profile') ?></a>
         <?php if(isSeller()): ?>
         <a class="dropdown-item" href="<?= BASE_URL ?>seller/products">
-          <span class="dropdown-icon">📦</span> <?= __('manage_products') ?>
+          <span class="dropdown-icon"><i class="fa-solid fa-box"></i></span> <?= __('manage_products') ?>
         </a>
         <?php endif; ?>
         <?php if(isSuperAdmin()): ?>
         <a class="dropdown-item" href="<?= BASE_URL ?>admin/dashboard">
-          <span class="dropdown-icon">🛡️</span> <?= __('admin_panel') ?>
+          <span class="dropdown-icon"><i class="fa-solid fa-shield-halved"></i></span> <?= __('admin_panel') ?>
         </a>
         <?php endif; ?>
-        <a class="dropdown-item logout" href="<?= BASE_URL ?>logout"><span class="dropdown-icon">↩</span> <?= __('logout') ?></a>
+        <a class="dropdown-item logout" href="<?= BASE_URL ?>logout"><span class="dropdown-icon"><i class="fa-solid fa-right-from-bracket"></i></span> <?= __('logout') ?></a>
       </div>
     </div>
 

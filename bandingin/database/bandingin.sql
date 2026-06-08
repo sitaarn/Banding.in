@@ -270,6 +270,45 @@ ALTER TABLE `favorites`
 ALTER TABLE `product_prices`
   ADD CONSTRAINT `product_prices_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   ADD CONSTRAINT `product_prices_ibfk_2` FOREIGN KEY (`platform_id`) REFERENCES `platforms` (`id`);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_reports`
+--
+
+CREATE TABLE IF NOT EXISTS `product_reports` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `product_name_snapshot` varchar(255) DEFAULT NULL,
+  `platform_id` int(11) DEFAULT NULL,
+  `reporter_id` int(11) NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `status` enum('open','reviewed','dismissed') DEFAULT 'open',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for table `product_reports`
+--
+ALTER TABLE `product_reports`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `reporter_id` (`reporter_id`);
+
+--
+-- AUTO_INCREMENT for table `product_reports`
+--
+ALTER TABLE `product_reports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for table `product_reports`
+--
+ALTER TABLE `product_reports`
+  ADD CONSTRAINT `product_reports_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `product_reports_ibfk_2` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

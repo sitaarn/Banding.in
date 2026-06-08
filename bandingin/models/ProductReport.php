@@ -1,24 +1,36 @@
 <?php
 /**
- * MODEL: ProductReport
- * Menangani operasi database untuk tabel product_reports
+ * ============================================
+ * MODEL: ProductReport (Laporan Produk)
+ * Banding.in - Perbandingan Harga E-commerce
+ * ============================================
+ * 
+ * Menangani operasi database untuk tabel `product_reports`.
+ * User bisa melaporkan produk yang bermasalah (harga salah, link mati, dll).
+ * Admin bisa review laporan. Produk dengan >= 5 laporan otomatis dihapus.
+ * 
+ * Tabel dibuat otomatis jika belum ada (ensureTableExists).
  */
 namespace Models;
 
 class ProductReport {
-    private $db;
-    private $table = 'product_reports';
+    private $db;                          // Object PDO koneksi database
+    private $table = 'product_reports';   // Nama tabel
 
+    /** Constructor: ambil koneksi database dan pastikan tabel sudah ada */
     public function __construct() {
         $this->db = getDB();
         $this->ensureTableExists();
     }
 
+    /**
+     * Auto-create tabel jika belum ada di database.
+     * Ini memudahkan deployment tanpa harus run SQL manual.
+     */
     private function ensureTableExists() {
         try {
             $this->db->query("SELECT 1 FROM {$this->table} LIMIT 1");
         } catch (\Exception $e) {
-            // Table doesn't exist, create it
             try {
                 $this->db->exec("
                     CREATE TABLE IF NOT EXISTS `{$this->table}` (
@@ -36,11 +48,12 @@ class ProductReport {
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
                 ");
             } catch (\Exception $e2) {
-                // Silently fail
+                // Gagal buat tabel → silent fail
             }
         }
     }
 
+    /** Buat laporan produk baru. Return ID laporan atau false. */
     public function create($data) {
         try {
             $sql = "INSERT INTO {$this->table} (product_id, platform_id, reporter_id, reason) VALUES (?, ?, ?, ?)";
@@ -54,10 +67,14 @@ class ProductReport {
             if ($result) return $this->db->lastInsertId();
             return false;
         } catch (\Exception $e) {
-            return false;
+            throw $e;
         }
     }
 
+    /**
+     * Ambil semua laporan (dengan data produk, user pelapor, dan platform).
+     * Jika produk sudah dihapus, tampilkan nama dari snapshot atau '(Barang Telah Dihapus)'.
+     */
     public function getAll($limit = 100, $offset = 0) {
         try {
             $sql = "SELECT pr.*, COALESCE(p.name, pr.product_name_snapshot, '(Barang Telah Dihapus)') AS product_name, u.username AS reporter_username,
@@ -76,6 +93,7 @@ class ProductReport {
         }
     }
 
+    /** Hitung jumlah laporan terbuka (status = 'open') untuk satu produk */
     public function countByProduct($productId) {
         try {
             $sql = "SELECT COUNT(*) FROM {$this->table} WHERE product_id = ? AND status = 'open'";
@@ -87,12 +105,14 @@ class ProductReport {
         }
     }
 
+    /** Update status laporan (reviewed/dismissed) */
     public function updateStatus($id, $status) {
         $sql = "UPDATE {$this->table} SET status = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$status, $id]);
     }
 
+    /** Hitung total semua laporan yang masih open */
     public function countOpen() {
         try {
             $sql = "SELECT COUNT(*) FROM {$this->table} WHERE status = 'open'";
@@ -103,6 +123,7 @@ class ProductReport {
         }
     }
 
+    /** Cek apakah user sudah pernah melaporkan produk ini (cegah laporan ganda) */
     public function hasUserReported($productId, $userId) {
         try {
             $sql = "SELECT COUNT(*) FROM {$this->table} WHERE product_id = ? AND reporter_id = ?";
@@ -114,6 +135,7 @@ class ProductReport {
         }
     }
 
+    /** Ambil laporan berdasarkan ID */
     public function getById($id) {
         $sql = "SELECT * FROM {$this->table} WHERE id = ?";
         $stmt = $this->db->prepare($sql);
@@ -121,6 +143,10 @@ class ProductReport {
         return $stmt->fetch();
     }
 
+    /**
+     * Tandai semua laporan untuk satu produk sebagai 'reviewed'
+     * dan simpan snapshot nama produk (sebelum produk dihapus).
+     */
     public function markAsReviewedAndSnapshot($productId, $productName) {
         $sql = "UPDATE {$this->table} SET status = 'reviewed', product_name_snapshot = ? WHERE product_id = ?";
         $stmt = $this->db->prepare($sql);

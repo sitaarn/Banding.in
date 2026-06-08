@@ -1,118 +1,95 @@
-// 
-// BANDING.IN ADMIN PANEL 
-// 
+/**
+ * ============================================
+ * admin.js - Logika Admin Panel (Legacy/Standalone)
+ * Banding.in - Perbandingan Harga E-commerce
+ * ============================================
+ * 
+ * Admin panel berbasis localStorage untuk CRUD produk.
+ * NOTE: Ini versi lama (standalone), admin panel baru menggunakan
+ * views/pages/admin/panel.php dengan backend PHP.
+ * 
+ * Menangani:
+ * - CRUD produk (tambah, edit, hapus) di localStorage
+ * - Render daftar produk dengan filter platform & search
+ * - Statistik dashboard (total, per platform, rata-rata harga)
+ * - Live preview produk saat mengisi form
+ * - Bar chart distribusi platform
+ */
 
-// ---------- DATA ----------
-let products = [];
-let nextId = 1;
-let editingId = null;
-let deleteTargetId = null;
+// ── Data State ──
+let products = [];      // Array semua produk
+let nextId = 1;         // Auto-increment ID produk
+let editingId = null;   // ID produk yang sedang diedit (null = mode tambah)
+let deleteTargetId = null; // ID produk yang akan dihapus (untuk modal konfirmasi)
 
+// Warna per platform (untuk badge & chart)
 const PLATFORM_COLORS = {
   tokopedia: '#42b549',
   lazada: '#0f146b',
   blibli: '#0095d9',
 };
 
-// ---------- INITIAL DATA ----------
+// ═══════════════════════════════════════════
+//  LOAD & SAVE DATA (localStorage)
+// ═══════════════════════════════════════════
+
+/** Load data produk dari localStorage, atau gunakan data sample jika kosong */
 function loadInitialData() {
   const stored = localStorage.getItem('banding_products');
   if (stored) {
     products = JSON.parse(stored);
     nextId = products.reduce((max, p) => Math.max(max, p.id), 0) + 1;
   } else {
+    // Data sample default (hanya ditampilkan pertama kali)
     products = [
-      {
-        id: 1,
-        name: 'Samsung Galaxy S24 Ultra',
-        platform: 'tokopedia',
-        category: 'smartphone',
-        price: 18500000,
-        orig_price: 19999000,
-        discount: 7,
-        rating: 4.9,
-        sold: 340,
-        emoji: '📱',
-        condition: 'baru',
-        url: '#',
-        img_url: '',
-        tags: 'samsung, galaxy',
-        description: 'HP flagship',
-      },
-      {
-        id: 2,
-        name: 'MacBook Air M2',
-        platform: 'lazada',
-        category: 'laptop',
-        price: 15999000,
-        orig_price: 17999000,
-        discount: 11,
-        rating: 4.8,
-        sold: 122,
-        emoji: '💻',
-        condition: 'baru',
-        url: '#',
-        tags: 'apple, laptop',
-      },
-      {
-        id: 3,
-        name: 'Sony WH-1000XM5',
-        platform: 'lazada',
-        category: 'audio',
-        price: 3899000,
-        orig_price: 4999000,
-        discount: 22,
-        rating: 4.9,
-        sold: 892,
-        emoji: '🎧',
-        condition: 'baru',
-        url: '#',
-      },
-      {
-        id: 4,
-        name: 'Erigo Pants Casual',
-        platform: 'blibli',
-        category: 'fashion',
-        price: 249000,
-        orig_price: 399000,
-        discount: 37,
-        rating: 4.7,
-        sold: 2100,
-        emoji: '👖',
-        condition: 'baru',
-        url: '#',
-      },
+      { id: 1, name: 'Samsung Galaxy S24 Ultra', platform: 'tokopedia', category: 'smartphone', price: 18500000, orig_price: 19999000, discount: 7, rating: 4.9, sold: 340, emoji: '📱', condition: 'baru', url: '#', img_url: '', tags: 'samsung, galaxy', description: 'HP flagship' },
+      { id: 2, name: 'MacBook Air M2', platform: 'lazada', category: 'laptop', price: 15999000, orig_price: 17999000, discount: 11, rating: 4.8, sold: 122, emoji: '💻', condition: 'baru', url: '#', tags: 'apple, laptop' },
+      { id: 3, name: 'Sony WH-1000XM5', platform: 'lazada', category: 'audio', price: 3899000, orig_price: 4999000, discount: 22, rating: 4.9, sold: 892, emoji: '🎧', condition: 'baru', url: '#' },
+      { id: 4, name: 'Erigo Pants Casual', platform: 'blibli', category: 'fashion', price: 249000, orig_price: 399000, discount: 37, rating: 4.7, sold: 2100, emoji: '👖', condition: 'baru', url: '#' },
     ];
     nextId = 5;
   }
   renderEverything();
 }
 
+/** Simpan data produk ke localStorage */
 function saveToLocal() {
   localStorage.setItem('banding_products', JSON.stringify(products));
 }
 
-// ---------- RENDER ALL UI ----------
+// ═══════════════════════════════════════════
+//  RENDER UI
+// ═══════════════════════════════════════════
+
+/** Render ulang semua komponen UI (list, statistik, preview) */
 function renderEverything() {
   renderProductList();
   updateStatsAndSidebar();
   updatePreview();
 }
 
+/** Render daftar produk (dengan filter platform dan search) */
 function renderProductList() {
+  // Ambil platform yang aktif (toggle on)
   const activePlatforms = [...document.querySelectorAll('.ls-platform-row.on')].map((el) => el.dataset.pf);
   const searchTerm = document.getElementById('admSearch')?.value.toLowerCase() || '';
+  
+  // Filter produk berdasarkan platform aktif dan keyword search
   let filtered = products.filter(
     (p) =>
       activePlatforms.includes(p.platform) &&
       (p.name.toLowerCase().includes(searchTerm) || (p.tags || '').toLowerCase().includes(searchTerm))
   );
+  
   const container = document.getElementById('productListWrap');
   if (!container) return;
+  
   if (filtered.length === 0) {
     container.innerHTML = '<div class="ls-empty">📭 Belum ada produk</div>';
     return;
   }
+  
+  // Generate HTML card untuk setiap produk
   container.innerHTML = filtered
     .map(
       (p, idx) => `
@@ -120,9 +97,7 @@ function renderProductList() {
         <div class="ls-card-rank ${idx === 0 ? 'gold' : ''}">${idx + 1}</div>
         <div class="ls-card-img">${p.emoji || '📦'}</div>
         <div class="ls-card-body">
-          <div><strong>${escapeHtml(p.name)}</strong><div style="font-size:12px">${p.platform} · ${
-        p.category || 'Lainnya'
-      }</div></div>
+          <div><strong>${escapeHtml(p.name)}</strong><div style="font-size:12px">${p.platform} · ${p.category || 'Lainnya'}</div></div>
           <div style="display:flex; gap:8px; margin-top:6px">
             <div class="ls-pf-dot" style="background:${PLATFORM_COLORS[p.platform]}"></div> 
             ${p.rating ? `★ ${p.rating}` : ''} · ${p.sold?.toLocaleString() || 0} terjual
@@ -145,17 +120,19 @@ function renderProductList() {
     .join('');
 }
 
+/** Update statistik dashboard & bar chart distribusi platform */
 function updateStatsAndSidebar() {
   const total = products.length;
   const counts = { tokopedia: 0, lazada: 0, blibli: 0 };
   let totalPrice = 0;
+  
   products.forEach((p) => {
     counts[p.platform]++;
     totalPrice += p.price;
   });
   const avgPrice = total ? totalPrice / total : 0;
 
-  // update sidebar mini stats
+  // Update angka di sidebar
   const statTotal = document.getElementById('statTotal');
   const statTok = document.getElementById('statTok');
   const statShop = document.getElementById('statShop');
@@ -166,7 +143,7 @@ function updateStatsAndSidebar() {
   if (statLaz) statLaz.innerText = counts.lazada;
   if (statBli) statBli.innerText = counts.blibli;
 
-  // stats grid
+  // Update grid statistik utama
   const statsGrid = document.getElementById('statsGrid');
   if (statsGrid) {
     statsGrid.innerHTML = `
@@ -178,7 +155,7 @@ function updateStatsAndSidebar() {
     `;
   }
 
-  // bar chart container
+  // Update bar chart distribusi platform (persentase)
   const barDiv = document.getElementById('barChartContainer');
   if (barDiv) {
     const platformList = ['tokopedia', 'lazada', 'blibli'];
@@ -200,7 +177,11 @@ function updateStatsAndSidebar() {
   }
 }
 
-// ---------- CRUD OPERATIONS ----------
+// ═══════════════════════════════════════════
+//  CRUD OPERATIONS
+// ═══════════════════════════════════════════
+
+/** Submit produk baru atau update produk yang sedang diedit */
 function submitProduct() {
   const name = document.getElementById('fName').value.trim();
   const platform = document.getElementById('fPlatform').value;
@@ -208,11 +189,13 @@ function submitProduct() {
   const price = parseInt(document.getElementById('fPrice').value);
   const url = document.getElementById('fUrl').value.trim();
 
+  // Validasi field wajib
   if (!name || !platform || !category || !price || !url) {
     showToast('⚠️ Lengkapi field wajib (*)', 'warn');
     return;
   }
 
+  // Buat object data produk dari form
   const productData = {
     id: editingId ? editingId : nextId++,
     name,
@@ -232,10 +215,12 @@ function submitProduct() {
   };
 
   if (editingId) {
+    // Mode edit: update produk yang sudah ada
     const index = products.findIndex((p) => p.id === editingId);
     if (index !== -1) products[index] = { ...productData, id: editingId };
     showToast('✏️ Produk diperbarui');
   } else {
+    // Mode tambah: push produk baru
     products.push(productData);
     showToast('✓ Produk ditambahkan');
   }
@@ -247,16 +232,18 @@ function submitProduct() {
   const submitBtn = document.getElementById('submitBtn');
   if (submitBtn) submitBtn.innerHTML = '💾 Simpan Produk';
 
-  // switch to list tab
+  // Pindah ke tab list setelah submit
   const listMenuItem = document.querySelector('.adm-menu-item[data-section="list"]');
   if (listMenuItem) listMenuItem.click();
 }
 
+/** Isi form dengan data produk yang akan diedit */
 function editProduct(id) {
   const prod = products.find((p) => p.id === id);
   if (!prod) return;
   editingId = id;
 
+  // Isi semua field form dengan data produk
   document.getElementById('fName').value = prod.name;
   document.getElementById('fPlatform').value = prod.platform;
   document.getElementById('fCategory').value = prod.category || '';
@@ -276,17 +263,19 @@ function editProduct(id) {
   if (submitBtn) submitBtn.innerHTML = '✏️ Update Produk';
   updatePreview();
 
-  // switch to add section
+  // Pindah ke tab form (add)
   const addMenuItem = document.querySelector('.adm-menu-item[data-section="add"]');
   if (addMenuItem) addMenuItem.click();
 }
 
+/** Tampilkan modal konfirmasi hapus */
 function deleteProduct(id) {
   deleteTargetId = id;
   const modal = document.getElementById('deleteModal');
   if (modal) modal.classList.add('visible');
 }
 
+/** Konfirmasi hapus produk dan re-render */
 function confirmDelete() {
   if (deleteTargetId) {
     products = products.filter((p) => p.id !== deleteTargetId);
@@ -298,12 +287,14 @@ function confirmDelete() {
   closeDeleteModal();
 }
 
+/** Tutup modal hapus tanpa aksi */
 function closeDeleteModal() {
   const modal = document.getElementById('deleteModal');
   if (modal) modal.classList.remove('visible');
   deleteTargetId = null;
 }
 
+/** Reset semua field form ke kosong */
 function resetForm() {
   document.getElementById('fName').value = '';
   document.getElementById('fPlatform').value = '';
@@ -326,7 +317,11 @@ function resetForm() {
   updatePreview();
 }
 
-// ---------- UI HELPERS ----------
+// ═══════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════
+
+/** Update live preview produk saat user mengisi form */
 function updatePreview() {
   const name = document.getElementById('fName').value.trim() || 'Nama Produk';
   const platform = document.getElementById('fPlatform').value;
@@ -339,6 +334,7 @@ function updatePreview() {
   const sold = parseInt(document.getElementById('fSold').value) || 0;
   const emoji = document.getElementById('fEmoji').value.trim() || '📱';
 
+  // Update setiap elemen preview
   const prevName = document.getElementById('prevName');
   const prevImg = document.getElementById('prevImg');
   const prevSub = document.getElementById('prevSub');
@@ -364,16 +360,19 @@ function updatePreview() {
   }
 }
 
+/** Re-render daftar produk (dipanggil saat search input berubah) */
 function filterProductList() {
   renderProductList();
 }
 
+/** Toggle filter platform on/off di sidebar */
 function admTogglePf(el) {
   el.classList.toggle('on');
   renderProductList();
   updateStatsAndSidebar();
 }
 
+/** Switch section (tab) di admin panel: stats / list / add */
 function switchSection(el) {
   document.querySelectorAll('.adm-menu-item').forEach((i) => i.classList.remove('on'));
   el.classList.add('on');
@@ -386,16 +385,19 @@ function switchSection(el) {
   if (target === 'list') renderProductList();
 }
 
+/** Toggle dropdown user di navbar */
 function toggleDropdown() {
   const wrap = document.getElementById('userChipWrap');
   if (wrap) wrap.classList.toggle('open');
 }
 
+/** Logout (simulasi, redirect ke #) */
 function doLogout() {
   showToast('Logout simulasi');
   window.location.href = '#';
 }
 
+/** Tampilkan toast notification selama 2.5 detik */
 function showToast(msg, type = '') {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -404,6 +406,7 @@ function showToast(msg, type = '') {
   setTimeout(() => toast.classList.remove('visible'), 2500);
 }
 
+/** Escape karakter HTML untuk cegah XSS */
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, function (m) {
@@ -414,20 +417,24 @@ function escapeHtml(str) {
   });
 }
 
-// ---------- EVENT LISTENERS & INIT ----------
+// ═══════════════════════════════════════════
+//  EVENT LISTENERS & INIT
+// ═══════════════════════════════════════════
+
 document.addEventListener('DOMContentLoaded', () => {
-  // attach input listeners for preview
+  // Pasang listener input untuk live preview
   const previewFields = ['fName', 'fPlatform', 'fCategory', 'fPrice', 'fOrigPrice', 'fDiscount', 'fRating', 'fSold', 'fEmoji'];
   previewFields.forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', updatePreview);
   });
 
-  // close dropdown when clicking outside
+  // Tutup dropdown saat klik di luar
   window.addEventListener('click', (e) => {
     const wrap = document.getElementById('userChipWrap');
     if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
   });
 
+  // Load data dan render
   loadInitialData();
 });

@@ -469,13 +469,13 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
             <div class="dropdown-info-label">Seller ✓</div>
           </div>
           <a class="dropdown-item" href="<?= $base ?>profile">
-            <span class="dropdown-icon">👤</span> <?= __('my_profile') ?>
+            <span class="dropdown-icon"><i class="fa-solid fa-circle-user"></i></span> <?= __('my_profile') ?>
           </a>
           <a class="dropdown-item active" href="<?= $base ?>seller/products">
-            <span class="dropdown-icon">📦</span> <?= __('manage_products') ?>
+            <span class="dropdown-icon"><i class="fa-solid fa-box"></i></span> <?= __('manage_products') ?>
           </a>
           <a class="dropdown-item logout" href="<?= $base ?>logout">
-            <span class="dropdown-icon">↩</span> <?= __('logout') ?>
+            <span class="dropdown-icon"><i class="fa-solid fa-right-from-bracket"></i></span> <?= __('logout') ?>
           </a>
         </div>
       </div>

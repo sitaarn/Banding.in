@@ -239,3 +239,46 @@
     linear-gradient(90deg, rgba(28,28,28,.05) 1px, transparent 1px);
   background-size: 60px 60px;
 }
+
+/* ── Custom Checkbox ── */
+.admin-table td input[type="checkbox"], 
+.admin-table th input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(28,28,28,0.3);
+  border-radius: 4px;
+  background-color: #f7f4ed;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.admin-table td input[type="checkbox"]:hover, 
+.admin-table th input[type="checkbox"]:hover {
+  border-color: #1c1c1c;
+}
+
+.admin-table td input[type="checkbox"]:checked, 
+.admin-table th input[type="checkbox"]:checked {
+  background-color: #1c1c1c;
+  border-color: #1c1c1c;
+}
+
+.admin-table td input[type="checkbox"]:checked::after, 
+.admin-table th input[type="checkbox"]:checked::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 9px;
+  color: #fcfbf8;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+

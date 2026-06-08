@@ -6,6 +6,7 @@
 <title>Banding.in - <?= __('about_us') ?></title>
 <link rel="icon" href="./public/images/favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Instrument+Serif:ital@0;1&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="./public/css/aboutus.css">
 </head>
 <body>

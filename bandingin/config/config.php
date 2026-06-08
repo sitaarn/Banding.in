@@ -1,15 +1,25 @@
 <?php
 /**
- * 
- * KONFIGURASI APLIKASI
+ * ============================================
+ * KONFIGURASI APLIKASI - Bandingin
  * Praktikum Aplikasi Web - Universitas Tidar
+ * ============================================
  * 
+ * File ini berisi semua konfigurasi global aplikasi:
+ * - Environment (dev/prod)
+ * - Base URL & path
+ * - Upload settings
+ * - Session & cookie
+ * - Autoload file helper
  */
 
-// Ini tuh buat Deteksi environment (development atau production)
-define('ENVIRONMENT', 'development'); // Ubah ke 'production' saat hosting
+// ── Environment ──
+// 'development' = tampilkan error, 'production' = sembunyikan error
+define('ENVIRONMENT', 'development');
 
-// Konfigurasi Error Reporting
+// ── Error Reporting ──
+// Development: tampilkan semua error di browser (bantu debugging)
+// Production: sembunyikan error dari user, simpan ke log file
 if (ENVIRONMENT === 'development') {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
@@ -20,7 +30,9 @@ if (ENVIRONMENT === 'development') {
     ini_set('error_log', __DIR__ . '/../logs/error.log');
 }
 
-// Base URL Aplikasi
+// ── Base URL ──
+// URL dasar aplikasi, digunakan untuk redirect, link asset, dll.
+// FIRSTSECTION_URI = path prefix di server (misal /bandingin)
 if (ENVIRONMENT === 'development') {
     define('BASE_URL', 'https://retrial-blaspheme-juice.ngrok-free.dev/bandingin/');
     define('FIRSTSECTION_URI', '/bandingin');
@@ -29,11 +41,12 @@ if (ENVIRONMENT === 'development') {
     define('FIRSTSECTION_URI', '/bandingin');
 }
 
-// Konfigurasi Aplikasi
+// ── Identitas Aplikasi ──
 define('APP_NAME', 'Bandingin');
 define('APP_VERSION', '1.0.0');
 
-// Konfigurasi Path
+// ── Path Direktori ──
+// Konstanta path ke setiap folder utama agar mudah diakses dari mana saja
 define('ROOT_PATH', dirname(__DIR__) . '/');
 define('CONFIG_PATH', ROOT_PATH . 'config/');
 define('MODELS_PATH', ROOT_PATH . 'models/');
@@ -43,27 +56,25 @@ define('INCLUDES_PATH', ROOT_PATH . 'includes/');
 define('UPLOADS_PATH', ROOT_PATH . 'uploads/');
 define('PUBLIC_PATH', ROOT_PATH . 'public/');
 
-// Konfigurasi Upload
-define('MAX_FILE_SIZE', 2 * 1024 * 1024); // 2MB
-define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif']);
-define('ALLOWED_MIME_TYPES', ['image/jpeg', 'image/png', 'image/gif']);
+// ── Konfigurasi Upload File ──
+define('MAX_FILE_SIZE', 2 * 1024 * 1024);  // Maksimal 2MB per file
+define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif']); // Ekstensi gambar yang diizinkan
+define('ALLOWED_MIME_TYPES', ['image/jpeg', 'image/png', 'image/gif']); // MIME type yang diizinkan
 
-// Konfigurasi Session
-define('SESSION_LIFETIME', 3600); // 1 jam
-define('COOKIE_LIFETIME', 86400 * 30); // 30 hari
+// ── Session & Cookie ──
+define('SESSION_LIFETIME', 3600);       // Session expired setelah 1 jam
+define('COOKIE_LIFETIME', 86400 * 30);  // Cookie "remember me" bertahan 30 hari
 
-// Timezone
+// ── Timezone ──
 date_default_timezone_set('Asia/Jakarta');
 
-// // Include file database
-require_once CONFIG_PATH . 'database.php';
-
-// // Include helper functions
-require_once INCLUDES_PATH . 'init.php';
-require_once INCLUDES_PATH . 'auth.php';
-require_once INCLUDES_PATH . 'validation.php';
-require_once INCLUDES_PATH . 'FileHandler.php';
-require_once INCLUDES_PATH . 'view.php';
-require_once INCLUDES_PATH . 'Route.php';
-require_once INCLUDES_PATH . 'lang.php';
-
+// ── Load Dependencies ──
+// Muat file-file yang dibutuhkan secara global di seluruh aplikasi
+require_once CONFIG_PATH . 'database.php';   // Koneksi database (PDO Singleton)
+require_once INCLUDES_PATH . 'init.php';      // Autoloader class & helper umum
+require_once INCLUDES_PATH . 'auth.php';      // Fungsi autentikasi & session
+require_once INCLUDES_PATH . 'validation.php'; // Class Validator untuk validasi input
+require_once INCLUDES_PATH . 'FileHandler.php'; // Class upload & kelola file
+require_once INCLUDES_PATH . 'view.php';      // Fungsi render view/template
+require_once INCLUDES_PATH . 'Route.php';     // Class routing (URL → Controller)
+require_once INCLUDES_PATH . 'lang.php';      // Sistem multi-bahasa (ID/EN)

@@ -1,10 +1,17 @@
 <?php
 
 /**
+ * ============================================
  * CONTROLLER: AuthController
- * Menangani autentikasi (login, register, logout)
  * Praktikum Aplikasi Web - Universitas Tidar
+ * ============================================
  * 
+ * Menangani semua proses autentikasi:
+ * - Login (validasi kredensial, set session)
+ * - Register (buat user baru)
+ * - Logout (hapus session)
+ * - Profil (lihat & edit profil user)
+ * - Ganti password
  */
 
 namespace Controllers;
@@ -13,27 +20,26 @@ use Models\User as UserModel;
 
 class AuthController
 {
-    private $userModel;
+    private $userModel; // Instance model User untuk query database
 
-    /**
-     * Constructor
-     */
+    /** Constructor: inisialisasi model User */
     public function __construct()
     {
         $this->userModel = new UserModel();
     }
 
     /**
-     * Halaman Login
+     * Tampilkan halaman login.
+     * Jika sudah login → redirect ke landing.
+     * Jika ada cookie remember_token → auto-login.
      */
     public function loginView()
     {
-        // Jika sudah login, redirect ke landing
         if (isLoggedIn()) {
             redirect(\BASE_URL . 'landing');
         }
 
-        // Cek remember me cookie
+        // Cek cookie "remember me" untuk auto-login
         if (isset($_COOKIE['remember_token'])) {
             $user = $this->userModel->getByRememberToken($_COOKIE['remember_token']);
             if ($user) {
@@ -44,8 +50,6 @@ class AuthController
 
         $error = $_SESSION['errors_messages'] ?? '';
 
-
-        // Tampilkan view login
         $pageTitle = 'Login';
         \view('auth/login', [
             'pageTitle' => $pageTitle,
@@ -54,7 +58,9 @@ class AuthController
     }
 
     /**
-     * Autentikasi
+     * Proses autentikasi login.
+     * Validasi input → cek kredensial → set session → redirect.
+     * Juga handle role checking (user vs seller) dan "remember me".
      */
     public function authenticaton()
     {
@@ -62,17 +68,18 @@ class AuthController
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember']);
 
-        // Validasi
+        // Validasi input
         $validator = validate($_POST);
         $validator->required('username', 'Username wajib diisi.')->required('password', 'Password wajib diisi.');
 
         if ($validator->isValid()) {
-            // Autentikasi
+            // Cek username/email + password di database
             $user = $this->userModel->authenticate($username, $password);
 
             if ($user) {
                 $loginRole = $_POST['role'] ?? 'user';
 
+                // Cegah user biasa login di form seller, dan sebaliknya
                 if ($loginRole === 'seller' && $user['role'] !== 'seller') {
                     setFlashMessage('error', 'Gagal: Akun ini bukan akun Seller.');
                     redirect(\BASE_URL . 'login');
@@ -85,16 +92,17 @@ class AuthController
                     return;
                 }
 
-                // Set session
+                // Set session user
                 setUserSession($user);
 
-                // Set remember cookie jika dicentang
+                // Handle "remember me" → simpan token ke DB dan cookie
                 if ($remember) {
                     $token = generateRememberToken();
                     $this->userModel->updateRememberToken($user['id'], $token);
                     setRememberCookie($token);
                 }
 
+                // Redirect berdasarkan role
                 if ($user['role'] === 'super_admin' || $user['role'] === 'admin') {
                     redirect(\BASE_URL . 'admin/dashboard');
                     return;
@@ -113,11 +121,11 @@ class AuthController
 
 
     /**
-     * Halaman Register
+     * Tampilkan halaman register.
+     * Jika sudah login → redirect.
      */
     public function register()
     {
-        // Jika sudah login, redirect ke landing
         if (isLoggedIn()) {
             redirect(\BASE_URL . 'landing');
         }
@@ -125,7 +133,6 @@ class AuthController
         $errors = $_SESSION['errors_messages'] ?? [];
         $old = $_SESSION['old_messages'] ?? [];
 
-        // Tampilkan view register
         $pageTitle = 'Register';
         \view('auth/register', [
             'pageTitle' => $pageTitle,
@@ -135,7 +142,9 @@ class AuthController
     }
 
     /**
-     * Tambah Register
+     * Proses registrasi user baru.
+     * Validasi semua field → cek duplikat username/email → simpan ke DB.
+     * Mendukung role 'user' (pembeli) dan 'seller' (penjual).
      */
     public function storeUser()
     {
@@ -146,7 +155,7 @@ class AuthController
             'nama_lengkap' => sanitize($_POST['nama_lengkap'] ?? '')
         ];
 
-        // Validasi
+        // Validasi semua field
         $validator = validate($_POST);
         $validator->required('username', 'Username wajib diisi.')
             ->minLength('username', 4, 'Username minimal 4 karakter.')
@@ -162,16 +171,17 @@ class AuthController
             ->matches('confirm_password', 'password', 'Konfirmasi password tidak cocok.');
 
         if ($validator->isValid()) {
-            // Cek username sudah ada
+            // Cek duplikat username
             if ($this->userModel->usernameExists($old['username'])) {
                 $errors['username'] = 'Username sudah digunakan.';
             }
 
-            // Cek email sudah ada
+            // Cek duplikat email
             if ($this->userModel->emailExists($old['email'])) {
                 $errors['email'] = 'Email sudah digunakan.';
             }
 
+            // Password tidak boleh sama dengan username
             if (empty($errors)) {
                 if ($_POST['password'] === $old['username']) {
                     $errors['password'] = 'Password tidak boleh sama dengan username.';
@@ -179,8 +189,10 @@ class AuthController
             }
 
             if (empty($errors)) {
+                // Tentukan role: seller jika dipilih, default user
                 $role = isset($_POST['role']) && $_POST['role'] === 'seller' ? 'seller' : 'user';
-                // Buat user baru
+                
+                // Simpan user baru ke database
                 try {
                     $userId = $this->userModel->create([
                         'username' => $old['username'],
@@ -205,30 +217,25 @@ class AuthController
             $errors = $validator->getErrors();
         }
 
+        // Simpan error dan old input ke session, lalu redirect balik
         $_SESSION['errors_messages'] = $errors;
         $_SESSION['old_messages'] = $old;
         redirect(\BASE_URL . 'login');
     }
 
     /**
-     * Proses Logout
+     * Proses logout: hapus session & cookie, redirect ke login.
      */
     public function logout()
     {
-        // Hapus remember token dari database
-        // if (isLoggedIn()) {
-        //     $this->userModel->clearRememberToken($_SESSION['user_id']);
-        // }
-
-        // Hapus session
         destroySession();
-
         setFlashMessage('success', 'Anda telah berhasil logout.');
         redirect(\BASE_URL . 'login');
     }
 
     /**
-     * Halaman Profil
+     * Tampilkan halaman profil user yang sedang login.
+     * Ambil data user dari DB dan render view profile.
      */
     public function profile()
     {
@@ -238,9 +245,8 @@ class AuthController
         $errors = $_SESSION['errors_messages'] ?? [];
         $success = $_SESSION['success_messages'] ?? '';
 
-        // Tampilkan view profil (menggunakan pages/profile.php)
         $pageTitle = 'Profil Saya';
-        \view('pages/profile', [   // <-- perbaikan: dari 'auth/profile' menjadi 'pages/profile'
+        \view('pages/profile', [
             'pageTitle' => $pageTitle,
             'errors' => $errors,
             'success' => $success,
@@ -249,7 +255,8 @@ class AuthController
     }
 
     /**
-     * Update Profil
+     * Update data profil (nama, email, dan opsional password baru).
+     * Validasi → cek duplikat email → update di DB → refresh session.
      */
     public function updateProfil()
     {
@@ -261,12 +268,13 @@ class AuthController
         $email = sanitize($_POST['email'] ?? '');
         $new_password = $_POST['new_password'] ?? '';
 
-        // Validasi
+        // Validasi input
         $validator = validate($_POST);
         $validator->required('nama_lengkap', 'Nama lengkap wajib diisi.')
             ->required('email', 'Email wajib diisi.')
             ->email('email', 'Format email tidak valid.');
 
+        // Validasi password baru (jika diisi)
         if (!empty($new_password)) {
             $validator->minLength('new_password', 8, 'Password baru minimal 8 karakter.');
             if ($new_password === $user['username']) {
@@ -275,7 +283,7 @@ class AuthController
         }
 
         if ($validator->isValid() && empty($errors['new_password'])) {
-            // Cek email sudah ada
+            // Cek email duplikat (kecuali email sendiri)
             if ($this->userModel->emailExists($email, $user['id'])) {
                 $errors['email'] = 'Email sudah digunakan.';
             } else {
@@ -284,12 +292,15 @@ class AuthController
                     'email' => $email
                 ];
                 
+                // Tambahkan password baru jika diisi
                 if (!empty($new_password)) {
                     $dataToUpdate['password'] = $new_password;
                 }
 
+                // Update di database
                 $this->userModel->update($user['id'], $dataToUpdate);
 
+                // Update session agar navbar, dll langsung berubah
                 $_SESSION['nama_lengkap'] = $nama_lengkap;
                 $_SESSION['email'] = $email;
 
@@ -306,7 +317,8 @@ class AuthController
     }
 
     /**
-     * Ganti Password Profil
+     * Ganti password (halaman terpisah dari profil).
+     * Cek password lama → validasi password baru → update di DB.
      */
     public function changePassword()
     {
@@ -318,7 +330,6 @@ class AuthController
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
-        // Validasi
         $validator = validate($_POST);
         $validator->required('current_password', 'Password saat ini wajib diisi.')
             ->required('new_password', 'Password baru wajib diisi.')
@@ -327,14 +338,13 @@ class AuthController
             ->matches('confirm_password', 'new_password', 'Konfirmasi password tidak cocok.');
 
         if ($validator->isValid()) {
-            // Verifikasi password saat ini
+            // Verifikasi password lama
             if (!$this->userModel->verifyPassword($current_password, $user['password'])) {
                 $errors['current_password'] = 'Password saat ini salah.';
             } else {
                 $this->userModel->update($user['id'], [
                     'password' => $new_password
                 ]);
-
                 $success = 'Password berhasil diubah.';
             }
         } else {
@@ -345,6 +355,4 @@ class AuthController
         $_SESSION['success_messages'] = $success;
         redirect(\BASE_URL . 'profile');
     }
-
-
 }
