@@ -21,7 +21,6 @@
 </div>
 
   <div class="nav-buttons">
-    <!-- Akan diisi oleh JavaScript -->
   </div>
 </nav>
 

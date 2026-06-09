@@ -82,9 +82,21 @@
         <span class="pill">Blibli</span>
       </div>
 
-      <div class="main-card" onclick="goToSearch()" data-label="<?= __('click_to_start') ?>">
-        <img src="./public/images/logo-b.png" alt="Banding.in Logo" class="brand-logo" />
-        <div class="brand-name">banding<em>.in</em></div>
+      <div class="card-pulse-wrapper">
+        <div class="pulse-ring ring-1"></div>
+        <div class="pulse-ring ring-2"></div>
+        <div class="pulse-ring ring-3"></div>
+        <div class="main-card" onclick="goToSearch()">
+          <img src="./public/images/logo-b.png" alt="Banding.in Logo" class="brand-logo" />
+          <div class="brand-name">banding<em>.in</em></div>
+        </div>
+      </div>
+
+      <div class="click-hint-wrapper">
+        <div class="click-hint">
+          <span class="hint-dot"></span>
+          <span class="hint-text"><?= __('click_to_start') ?></span>
+        </div>
       </div>
 
 

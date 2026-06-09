@@ -130,8 +130,6 @@
                 </div>
               </div>
 
-              <!-- Tag / Kata Kunci Pencarian - DIHAPUS sesuai permintaan -->
-              <!-- Deskripsi Singkat - DIHAPUS sesuai permintaan -->
 
             </div><!-- end grid -->
 
@@ -511,7 +509,7 @@
   /* ─────────────────────────────────────────
      EDIT (redirect/stub)
   ───────────────────────────────────────── */
-  function editProduct(id) { showToast('✏️ Buka form edit produk #' + id); }
+  function editProduct(id) { showToast('Buka form edit produk #' + id); }
 
   /* ─────────────────────────────────────────
      USER DROPDOWN (identik list.php)

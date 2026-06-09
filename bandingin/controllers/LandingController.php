@@ -41,7 +41,15 @@ class LandingController {
     public function list () { \view('pages/list', []); }
 
     /** Tampilkan halaman login & register */
-    public function login () { \view('pages/login', []); }
+    public function login () {
+        // Cek status login (termasuk auto-login via cookie).
+        // Jika user sudah masuk, alihkan langsung ke halaman utama (landing)
+        // agar tidak bisa mengakses form login kembali secara manual.
+        if (\isLoggedIn()) {
+            \redirect(\BASE_URL . 'landing');
+        }
+        \view('pages/login', []);
+    }
 
     /** Tampilkan halaman register (standalone) */
     public function register () { \view('pages/register', []); }

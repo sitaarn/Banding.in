@@ -221,7 +221,6 @@ $base = (defined('BASE_URL')) ? BASE_URL : 'http://localhost/bandingin/';
       <div class="modal-actions">
         <button class="modal-btn-login"    onclick="window.location.href='<?= $base ?>login'"><?= __('login') ?></button>
       </div>
-      <button class="modal-close" onclick="closeLoginModal()"><?= __('continue_without_account') ?></button>
     </div>
   </div>
 

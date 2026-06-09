@@ -57,6 +57,14 @@
           </div>
           <span class="field-error" id="loginPasswordError"></span>
 
+          <!-- CHECKBOX REMEMBER ME: Dicentang jika user ingin tetap login secara otomatis di perangkat ini -->
+          <div class="remember-me-container">
+            <label class="remember-me-label">
+              <input type="checkbox" id="remember" name="remember" value="1">
+              <span><?= __('remember_me') ?></span>
+            </label>
+          </div>
+
           <button type="submit" class="primary-btn" id="loginSubmitBtn" style="margin-top: 15px;"><?= __('sign_in') ?></button>
         </form>
       </div>
@@ -237,10 +245,18 @@
     loginError.style.display = 'none';
 
     try {
+      // Ambil elemen checkbox "Remember Me" berdasarkan id
+      const rememberCheckbox = document.getElementById('remember');
+      
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
       formData.append('role', role);
+      
+      // Jika checkbox dicentang, kirim parameter 'remember' bernilai '1' ke backend controller
+      if (rememberCheckbox && rememberCheckbox.checked) {
+        formData.append('remember', '1');
+      }
 
       const response = await fetch('<?= BASE_URL ?>login', {
         method: 'POST',

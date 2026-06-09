@@ -35,6 +35,7 @@ return [
     // Landing specific
     'tagline' => 'find your best prices.',
     'click_to_start' => 'Click to start',
+    'remember_me' => 'Remember Me',
     
     // Seller Add specific
     'add_new_product' => 'Add New Product',

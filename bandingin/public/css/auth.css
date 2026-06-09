@@ -563,3 +563,37 @@ input.input-valid {
 .toggle-password:hover {
   color: #1c1c1c;
 }
+
+/* ── Remember Me Checkbox ── */
+.remember-me-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.remember-me-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #5f5f5d;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.remember-me-label:hover {
+  color: #1c1c1c;
+}
+
+.remember-me-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  accent-color: #1c1c1c;
+  cursor: pointer;
+  transform: scale(1.1);
+}

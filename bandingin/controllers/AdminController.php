@@ -2,7 +2,6 @@
 /**
  * ============================================
  * CONTROLLER: AdminController
- * Praktikum Aplikasi Web - Universitas Tidar
  * ============================================
  * 
  * Controller untuk Super Admin Panel.

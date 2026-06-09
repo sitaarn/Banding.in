@@ -35,6 +35,7 @@ return [
     // Landing specific
     'tagline' => 'temukan harga terbaikmu.',
     'click_to_start' => 'Klik untuk mulai',
+    'remember_me' => 'Remember Me',
     
     // Seller Add specific
     'add_new_product' => 'Tambah Produk Baru',

@@ -25,10 +25,42 @@ function startSession() {
     }
 }
 
-/** Cek apakah user sudah login (ada user_id di session) */
+/** Cek apakah user sudah login (ada user_id di session) atau mendeteksi cookie auto-login */
 function isLoggedIn() {
+    // Pastikan session PHP sudah berjalan
     startSession();
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+    
+    // Tahap 1: Cek apakah user sudah memiliki session aktif di server
+    if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+        return true;
+    }
+    
+    // Tahap 2: Fitur "Remember Me" (Auto-login via Cookie)
+    // Jika tidak ada session tetapi ada cookie 'remember_token' di browser user:
+    if (isset($_COOKIE['remember_token'])) {
+        try {
+            $db = getDB();
+            // Cari data user berdasarkan token unik yang tersimpan di cookie
+            $sql = "SELECT * FROM users WHERE remember_token = ? LIMIT 1";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$_COOKIE['remember_token']]);
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            // Jika token terdaftar di database, buatkan session baru secara otomatis
+            if ($user) {
+                setUserSession($user);
+                return true;
+            } else {
+                // Keamanan: Jika cookie dikirim tetapi tidak cocok dengan DB (token kedaluwarsa/tidak valid),
+                // hapus cookie tersebut dari browser agar tidak terus-menerus membebani database
+                setcookie('remember_token', '', time() - 3600, '/');
+            }
+        } catch (\Exception $e) {
+            // Abaikan error database di dalam helper agar tidak merusak alur aplikasi
+        }
+    }
+    
+    return false;
 }
 
 /** Cek apakah user belum login (guest) */
@@ -95,14 +127,27 @@ function setUserSession($user) {
     $_SESSION['login_time'] = time();
 }
 
-/** Hapus semua session dan cookie (proses logout) */
+/** Hapus semua session dan cookie (proses logout total) */
 function destroySession() {
     startSession();
 
-    // Kosongkan semua data session
+    // Keamanan: Hapus nilai remember_token di database terlebih dahulu.
+    // Ini memastikan bahwa cookie "remember_token" lama tidak bisa digunakan kembali untuk login otomatis.
+    if (isset($_SESSION['user_id'])) {
+        try {
+            $db = getDB();
+            $sql = "UPDATE users SET remember_token = NULL WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$_SESSION['user_id']]);
+        } catch (\Exception $e) {
+            // Abaikan error database jika ada kendala koneksi
+        }
+    }
+
+    // 1. Kosongkan data array session di PHP runtime
     $_SESSION = [];
 
-    // Hapus cookie session dari browser
+    // 2. Hapus cookie identitas session (PHPSESSID) yang tersimpan di browser user
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(
@@ -112,11 +157,12 @@ function destroySession() {
         );
     }
 
-    // Hapus cookie "remember me" jika ada
+    // 3. Hapus cookie persistent "Remember Me" di browser user (set waktu kedaluwarsa ke masa lalu)
     if (isset($_COOKIE['remember_token'])) {
         setcookie('remember_token', '', time() - 3600, '/');
     }
 
+    // 4. Hancurkan data session di file system server
     session_destroy();
 }
 

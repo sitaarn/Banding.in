@@ -26,36 +26,44 @@ use Controllers\AdminController;
 // Buat instance router untuk mendaftarkan semua route
 $route = new Route();
 
-// Mulai session PHP (untuk login state, flash messages, dll)
+// Mulai session PHP (untuk menyimpan state login, data user, flash messages, dll)
 startSession();
+
+// Fitur "Remember Me": Cek apakah ada cookie remember_token di browser.
+// Jika session user belum aktif tapi cookie remember_token terdeteksi, jalankan fungsi isLoggedIn().
+// Fungsi isLoggedIn() akan otomatis memverifikasi token ke database dan me-login-kan user kembali.
+if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
+    isLoggedIn();
+}
 
 /**
  * ─── ROUTE GROUP: GUEST (belum login) ──────────────
- * Halaman yang hanya bisa diakses saat BELUM login.
- * Termasuk landing page, about, list produk, login & register.
+ * Kelompok halaman/endpoint yang hanya boleh diakses ketika user BELUM login.
+ * Jika sudah login, middleware 'guest' akan menyaring agar tidak masuk ke sini.
  */
 $route->middleware(['guest'])->group(function ($childClass) {
-    $childClass->get('/', [LandingController::class, 'index']);          // Halaman utama
+    $childClass->get('/', [LandingController::class, 'index']);          // Halaman utama / home
     $childClass->get('/landing', [LandingController::class, 'index']);   // Alias landing page
-    $childClass->get('/aboutus', [LandingController::class, 'aboutus']);  // Halaman tentang kami
-    $childClass->get('/list', [LandingController::class, 'list']);        // Halaman daftar & cari produk
+    $childClass->get('/aboutus', [LandingController::class, 'aboutus']);  // Halaman tentang kami (About Us)
+    $childClass->get('/list', [LandingController::class, 'list']);        // Halaman pencarian dan perbandingan produk
     $childClass->get('/login', [LandingController::class, 'login']);      // Form login & register
-    $childClass->post('/login', [AuthController::class, 'authenticaton']); // Proses login
-    $childClass->post('/register', [AuthController::class, 'storeUser']); // Proses registrasi
+    $childClass->post('/login', [AuthController::class, 'authenticaton']); // Proses submit form login (autentikasi)
+    $childClass->post('/register', [AuthController::class, 'storeUser']); // Proses submit form registrasi (menyimpan user baru)
 });
 
 /**
  * ─── ROUTE GROUP: LOGIN (sudah login, semua role) ──
- * Halaman yang bisa diakses oleh SEMUA user yang sudah login
- * (user biasa, seller, admin, super_admin).
+ * Kelompok halaman/endpoint yang hanya boleh diakses oleh user yang SUDAH login.
+ * Berlaku untuk semua role: user biasa, seller, admin, dan super_admin.
  */
 $route->middleware(['login'])->group(function ($childClass) {
-    $childClass->get('/', [LandingController::class, 'index']);               // Landing page
+    $childClass->get('/', [LandingController::class, 'index']);               // Landing page (tampilan login)
     $childClass->get('/landing', [LandingController::class, 'index']);        // Alias landing
     $childClass->get('/aboutus', [LandingController::class, 'aboutus']);      // Tentang kami
-    $childClass->get('/profile', [AuthController::class, 'profile']);          // Halaman profil user
-    $childClass->get('/list', [LandingController::class, 'list']);            // Daftar & cari produk
-    $childClass->get('/logout', [AuthController::class, 'logout']);           // Proses logout
+    $childClass->get('/profile', [AuthController::class, 'profile']);          // Halaman profil/akun user
+    $childClass->get('/list', [LandingController::class, 'list']);            // Daftar produk
+    $childClass->get('/login', [LandingController::class, 'login']);          // Jika sudah login mengakses /login, dialihkan ke /landing
+    $childClass->get('/logout', [AuthController::class, 'logout']);           // Proses logout (menghapus session dan cookie)
     $childClass->get('/admin', [LandingController::class, 'admin']);          // Halaman admin (legacy)
     $childClass->post('/profile/update', [AuthController::class,'updateProfil']); // Update data profil
     $childClass->post('/product/report', [AdminController::class, 'submitReport']); // Laporkan produk

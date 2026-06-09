@@ -21,7 +21,6 @@ from db_helper import is_valid_product, parse_price, save_to_mysql, update_scrap
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
 ]
 
 # JS yang lebih agresif untuk Lazada — menggunakan 3 strategi berbeda
@@ -151,9 +150,11 @@ def scrape_lazada(keyword: str, debug: bool = False) -> list:
             headless=False,
             args=['--disable-blink-features=AutomationControlled', '--no-sandbox']
         )
+        user_agent = random.choice(USER_AGENTS)
         context = browser.new_context(
             viewport={'width': 1366, 'height': 768},
-            locale='id-ID'
+            locale='id-ID',
+            user_agent=user_agent
         )
         context.add_init_script(
             "Object.defineProperty(navigator, 'webdriver', { get: () => undefined })"
@@ -218,6 +219,7 @@ def scrape_lazada(keyword: str, debug: bool = False) -> list:
             if debug:
                 import traceback
                 traceback.print_exc()
+            raise e
         finally:
             context.close()
             browser.close()

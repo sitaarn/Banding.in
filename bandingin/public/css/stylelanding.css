@@ -459,42 +459,162 @@ nav {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-  animation: fadeUp 0.9s 0.2s ease both;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  z-index: 3;
 }
 
 .main-card:hover {
   background: #fcfbf8;
   box-shadow: 0 16px 60px rgba(0,0,0,0.1);
-  transform: translateY(-3px);
-  border-color: rgba(46, 202, 208, 0.2);
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(46, 202, 208, 0.3);
 }
 
-.main-card::after {
-  content: attr(data-label);
-  position: absolute;
-  bottom: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.72rem;
-  color: rgba(155, 176, 196, 0.5);
-  white-space: nowrap;
-  letter-spacing: 0.05em;
-  font-weight: 400;
-}
-
-.brand-logo { filter: grayscale(100%) brightness(15%);
+.brand-logo {
   width: 80px;
   height: auto;
-  filter: drop-shadow(0 4px 20px rgba(46, 202, 208, 0.25));
-  transition: filter 0.3s ease;
+  filter: grayscale(100%) brightness(15%) drop-shadow(0 4px 20px rgba(46, 202, 208, 0.25));
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
 }
 
-.main-card:hover .brand-logo { filter: grayscale(100%) brightness(15%);
-  filter: drop-shadow(0 6px 28px rgba(46, 202, 208, 0.4));
+.main-card:hover .brand-logo {
+  transform: scale(1.08) rotate(-2deg);
+  filter: grayscale(100%) brightness(15%) drop-shadow(0 6px 28px rgba(46, 202, 208, 0.4));
+}
+
+/* Card Pulse Wrapper */
+.card-pulse-wrapper {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeUp 0.9s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both, cardFloat 6s ease-in-out 1.1s infinite alternate;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 24px;
+  border: 1.5px solid rgba(46, 202, 208, 0.15);
+  box-shadow: 0 0 20px rgba(46, 202, 208, 0.05);
+  pointer-events: none;
+  animation: pulseRipple 4.5s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  opacity: 0;
+  z-index: 1;
+}
+
+.pulse-ring.ring-1 {
+  animation-delay: 0s;
+}
+
+.pulse-ring.ring-2 {
+  animation-delay: 1.5s;
+}
+
+.pulse-ring.ring-3 {
+  animation-delay: 3s;
+}
+
+.card-pulse-wrapper:hover .pulse-ring {
+  border-color: rgba(46, 202, 208, 0.35);
+  box-shadow: 0 0 30px rgba(46, 202, 208, 0.15);
+  animation-duration: 2.25s;
+}
+
+/* Click Hint Indicator */
+.click-hint-wrapper {
+  animation: fadeUp 0.9s 0.3s ease both;
+  margin-top: -12px;
+  margin-bottom: -12px;
+  z-index: 10;
+}
+
+.click-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  opacity: 0.8;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  animation: hintBreath 2.5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.hint-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-green);
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+}
+
+.hint-dot::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--accent-green);
+  border-radius: 50%;
+  animation: dotPulse 1.8s infinite ease-out;
+  opacity: 0;
+}
+
+/* Animations */
+@keyframes pulseRipple {
+  0% {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+@keyframes cardFloat {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes hintBreath {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes dotPulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
 }
 
 .brand-name {

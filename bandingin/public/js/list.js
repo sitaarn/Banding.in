@@ -602,7 +602,7 @@ function showLoginModal(title = 'Save to Favorites', icon = '❤️', sub = 'Log
   const iEl = document.getElementById('loginModalIcon');
   const sEl = document.getElementById('loginModalSub');
   if (tEl) tEl.innerText = title;
-  if (iEl) iEl.innerText = icon;
+  if (iEl) iEl.innerHTML = icon;
   if (sEl) sEl.innerText = sub;
   document.getElementById('loginModal').classList.add('visible');
 }

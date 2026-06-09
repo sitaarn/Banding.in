@@ -119,8 +119,6 @@ EXTRACT_JS = r"""
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
 ]
 
 
@@ -139,10 +137,12 @@ def scrape_tokopedia(keyword: str, max_pages: int = 2) -> list:
             headless=False,
             args=["--disable-blink-features=AutomationControlled", "--no-sandbox"]
         )
+        user_agent = random.choice(USER_AGENTS)
         context = browser.new_context(
             viewport={"width": 1920, "height": 1080},
             locale="id-ID",
-            timezone_id="Asia/Jakarta"
+            timezone_id="Asia/Jakarta",
+            user_agent=user_agent
         )
         context.add_init_script(
             "Object.defineProperty(navigator, 'webdriver', { get: () => undefined })"
